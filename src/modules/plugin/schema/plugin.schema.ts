@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { User } from '../../user/schema/user.schema'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
-export class Widget extends Document {
+export class Plugin extends Document {
   @Prop({ required: true, ref: User.name })
   user: MongooseSchema.Types.ObjectId
 
@@ -11,4 +11,4 @@ export class Widget extends Document {
   active: boolean
 }
 
-export const WidgetSchema = SchemaFactory.createForClass(Widget)
+export const PluginSchema = SchemaFactory.createForClass(Plugin)

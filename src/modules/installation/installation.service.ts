@@ -39,9 +39,9 @@ export class InstallationService {
       `
     })
     if (data.scriptTags.edges.length) return
-    const widgetUrl = this.configService.get('WIDGET_URL')
-    const scriptPath = this.configService.get('WIDGET_SCRIPT_PATH')
-    const scriptUrl = `${widgetUrl}/${scriptPath}`
+    const pluginUrl = this.configService.get('PLUGIN_URL')
+    const scriptPath = this.configService.get('PLUGIN_SCRIPT_PATH')
+    const scriptUrl = `${pluginUrl}/${scriptPath}`
     this.shopifyService.createRequest({
       query: `
         mutation {

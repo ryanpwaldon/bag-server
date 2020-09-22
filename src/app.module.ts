@@ -7,7 +7,7 @@ import { ShopifyModule } from './modules/shopify/shopify.module'
 import { DiscountModule } from './modules/discount/discount.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { InstallationModule } from './modules/installation/installation.module'
-import { WidgetModule } from './modules/widget/widget.module'
+import { PluginModule } from './modules/plugin/plugin.module'
 import { LoggerModule } from 'nestjs-pino'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
@@ -45,7 +45,7 @@ import prettifier from 'pino-colada'
     DiscountModule,
     SubscriptionModule,
     InstallationModule,
-    WidgetModule,
+    PluginModule,
     GdprModule,
     MonitorModule
   ]

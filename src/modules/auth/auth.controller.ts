@@ -7,7 +7,7 @@ import { AuthService } from './auth.service'
 import { generate } from 'nonce-next'
 import { Response } from 'express'
 import qs from 'qs'
-import { WidgetService } from '../widget/widget.service'
+import { PluginService } from '../plugin/plugin.service'
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +17,7 @@ export class AuthController {
     private authService: AuthService,
     private installationService: InstallationService,
     private subscriptionService: SubscriptionService,
-    private widgetService: WidgetService
+    private pluginService: PluginService
   ) {}
 
   @Get()
@@ -48,7 +48,7 @@ export class AuthController {
       this.subscriptionService.registerOnUpdateWebhook(),
       this.installationService.registerUninstallWebhook(),
       this.installationService.createScriptTag(),
-      this.widgetService.findMyOrCreate()
+      this.pluginService.findMyOrCreate()
     ])
     const redirectUrl = await this.installationService.findAppUrl()
     res.redirect(redirectUrl)
