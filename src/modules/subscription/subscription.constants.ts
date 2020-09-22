@@ -25,7 +25,7 @@ export const Plans: Readonly<Plan>[] = [
     price: 0,
     trialDays: null,
     interval: null,
-    features: ['Confetti widget', 'Display 2 discounts'],
+    features: ['Cart integration'],
     active: true,
     subscribed: false,
     id: null
@@ -34,22 +34,10 @@ export const Plans: Readonly<Plan>[] = [
     name: 'Premium (1.0)',
     title: 'Premium',
     slug: Role.Premium,
-    price: 30,
+    price: 29,
     trialDays: 7,
     interval: 'monthly',
-    features: ['Confetti widget', 'Display unlimited discounts'],
-    active: false,
-    subscribed: false,
-    id: null
-  },
-  {
-    name: 'Premium (1.1)',
-    title: 'Premium',
-    slug: Role.Premium,
-    price: 19,
-    trialDays: 7,
-    interval: 'monthly',
-    features: ['Confetti widget', 'Display unlimited discounts'],
+    features: ['Cart integration', 'Upsell module'],
     active: true,
     subscribed: false,
     id: null
