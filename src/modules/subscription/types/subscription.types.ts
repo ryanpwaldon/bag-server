@@ -1,4 +1,4 @@
-import { Role } from '../../common/constants/role.constants'
+import { Role } from '../../../common/constants/role.constants'
 
 export type Plan = {
   name: string

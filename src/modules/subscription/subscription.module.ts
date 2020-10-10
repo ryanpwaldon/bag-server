@@ -3,11 +3,11 @@ import { SubscriptionController } from './subscription.controller'
 import { ShopifyModule } from '../shopify/shopify.module'
 import { SubscriptionService } from './subscription.service'
 import { UserModule } from '../user/user.module'
-import { InstallationModule } from '../installation/installation.module'
+import { MetaModule } from '../meta/meta.module'
 
 @Module({
   controllers: [SubscriptionController],
-  imports: [ShopifyModule, UserModule, InstallationModule],
+  imports: [ShopifyModule, UserModule, MetaModule],
   providers: [SubscriptionService],
   exports: [SubscriptionService]
 })

@@ -1,16 +1,21 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { AuthModule } from './modules/auth/auth.module'
 import { UserModule } from './modules/user/user.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { ShopifyModule } from './modules/shopify/shopify.module'
-import { DiscountModule } from './modules/discount/discount.module'
+import { OfferModule } from './modules/offer/offer.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { PluginModule } from './modules/plugin/plugin.module'
 import { LoggerModule } from 'nestjs-pino'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
+import { DiscountModule } from './modules/discount/discount.module'
+import { WebhookModule } from './modules/webhook/webhook.module'
+import { MetaModule } from './modules/meta/meta.module'
+import { ScriptTagModule } from './modules/script-tag/script-tag.module'
+import { OrderModule } from './modules/order/order.module';
+import { ProductModule } from './modules/product/product.module';
 import prettifier from 'pino-colada'
 
 @Module({
@@ -39,15 +44,20 @@ import prettifier from 'pino-colada'
         useCreateIndex: true
       })
     }),
-    AuthModule,
     UserModule,
     ShopifyModule,
-    DiscountModule,
+    OfferModule,
     SubscriptionModule,
     InstallationModule,
     PluginModule,
     GdprModule,
-    MonitorModule
+    MonitorModule,
+    DiscountModule,
+    WebhookModule,
+    MetaModule,
+    ScriptTagModule,
+    OrderModule,
+    ProductModule
   ]
 })
 export class AppModule {}

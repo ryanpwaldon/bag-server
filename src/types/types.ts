@@ -1,4 +1,8 @@
 interface FindAllResponse<T> {
   items: T[]
-  hasNextPage: boolean
+  first: number
+  last: number
+  total: number
+  pages: number
+  page: number
 }

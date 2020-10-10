@@ -1,13 +1,12 @@
 import { Injectable, BadRequestException, Inject, Scope } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { ShopifyService } from '../shopify/shopify.service'
-import { Plans, Plan } from './subscription.constants'
+import { Plans, Plan } from './types/subscription.types'
 import { UserService } from '../user/user.service'
 import { REQUEST } from '@nestjs/core'
-import { InstallationService } from '../installation/installation.service'
 import cloneDeep from 'lodash/cloneDeep'
-import { Logger } from 'nestjs-pino'
 import { Role } from '../../common/constants/role.constants'
+import { MetaService } from '../meta/meta.service'
 
 @Injectable({ scope: Scope.REQUEST })
 export class SubscriptionService {
@@ -15,10 +14,16 @@ export class SubscriptionService {
     private readonly shopifyService: ShopifyService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-    private readonly installationService: InstallationService,
-    private readonly logger: Logger,
+    private readonly metaService: MetaService,
     @Inject(REQUEST) private req
   ) {}
+
+  async sync() {
+    const user = await this.userService.findById(this.req.user.id)
+    const plan = await this.findMyActivePlan()
+    user.plan = plan.slug
+    user.save()
+  }
 
   async findAllPlans(): Promise<Plan[]> {
     const activePlan = await this.findMyActivePlan()
@@ -26,13 +31,6 @@ export class SubscriptionService {
     plans.push(activePlan)
     plans.sort((a, b) => a.price - b.price)
     return plans
-  }
-
-  async sync() {
-    const user = await this.userService.findById(this.req.user.id)
-    const plan = await this.findMyActivePlan()
-    user.plan = plan.slug
-    user.save()
   }
 
   convertToShopifyInterval(interval: 'monthly' | 'annually') {
@@ -49,7 +47,7 @@ export class SubscriptionService {
     await user.save()
     if (plan.price === 0) return this.cancel()
     const isProduction = this.configService.get('APP_ENV') === 'production'
-    const redirectUrl = `${await this.installationService.findAppUrl()}/actions/sync`
+    const redirectUrl = `${await this.metaService.getAppUrl()}/actions/sync`
     const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
     const { data } = await this.shopifyService.createRequest({
       query: `
@@ -103,42 +101,6 @@ export class SubscriptionService {
     plan.id = subscription && subscription.id
     plan.subscribed = this.req.user.onboarded && true
     return plan
-  }
-
-  async registerOnUpdateWebhook() {
-    const topic = 'APP_SUBSCRIPTIONS_UPDATE'
-    const webhooks = (
-      await this.shopifyService.createRequest({
-        query: `
-        {
-          webhookSubscriptions (first: 1, topics: ${topic}) {
-            edges {
-              node {
-                id
-              }
-            }
-          }
-        }
-      `
-      })
-    ).data.webhookSubscriptions.edges
-    if (webhooks.length) return
-    const callbackUrl = `${this.configService.get('SERVER_URL')}/subscription/sync`
-    this.shopifyService.createRequest({
-      query: `
-        mutation {
-          webhookSubscriptionCreate (topic: ${topic}, webhookSubscription: {
-            callbackUrl: "${callbackUrl}",
-            format: JSON
-          }) {
-            webhookSubscription {
-              id
-            }
-          }
-        }
-      `
-    })
-    this.logger.log(`Webhook created: ${topic}`)
   }
 
   async cancel() {
