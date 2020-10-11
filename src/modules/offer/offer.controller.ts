@@ -1,6 +1,5 @@
-import { Controller, Post, Body, Get, Param, Put, Query, Delete, UseGuards } from '@nestjs/common'
+import { Controller, Post, Body, Get, Param, Put, Query, Delete, UseGuards, ParseIntPipe } from '@nestjs/common'
 import { OfferService } from './offer.service'
-import { User } from '../../common/decorators/user.decorator'
 import { RoleGuard } from '../../common/guards/role.guard'
 import { Roles } from '../../common/decorators/role.decorator'
 import { Role } from '../../common/constants/role.constants'
@@ -20,9 +19,8 @@ export class OfferController {
   @Get()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  findAll(@User() user, @Query() { filters = {} as any, page, itemsPerPage }) {
-    filters.user = user.id
-    return this.offerService.findAll(filters, page, itemsPerPage)
+  findAll(@Query(new ParseIntPipe()) { query, page, limit }) {
+    return this.offerService.findAll(query, page, limit)
   }
 
   @Get(':id')

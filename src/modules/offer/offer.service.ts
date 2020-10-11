@@ -3,12 +3,15 @@ import { CreateOfferDto } from './dto/create-offer.dto'
 import { InjectModel } from '@nestjs/mongoose'
 import { Offer } from './schema/offer.schema'
 import { REQUEST } from '@nestjs/core'
-import { Model } from 'mongoose'
+import { PaginateModel, PaginateResult } from 'mongoose'
 import { merge } from 'lodash'
 
 @Injectable({ scope: Scope.REQUEST })
 export class OfferService {
-  constructor(@Inject(REQUEST) private req, @InjectModel(Offer.name) private readonly offerModel: Model<Offer>) {}
+  constructor(
+    @Inject(REQUEST) private req,
+    @InjectModel(Offer.name) private readonly offerModel: PaginateModel<Offer>
+  ) {}
 
   async create(createOfferDto: CreateOfferDto): Promise<Offer> {
     const offer = new this.offerModel(createOfferDto)
@@ -16,19 +19,8 @@ export class OfferService {
     return offer.save()
   }
 
-  async findAll(filters, page, itemsPerPage): Promise<FindAllResponse<Offer>> {
-    itemsPerPage = parseInt(itemsPerPage)
-    const skip = (page - 1) * itemsPerPage
-    const items = await this.offerModel
-      .find(filters)
-      .skip(skip)
-      .limit(itemsPerPage)
-      .exec()
-    const first = skip + 1
-    const last = first + items.length - 1
-    const total = await this.offerModel.where(filters).countDocuments()
-    const pages = Math.ceil(total / itemsPerPage)
-    return { items, total, first, last, pages, page }
+  async findAll(query, page, limit): Promise<PaginateResult<Offer>> {
+    return this.offerModel.paginate(query, { page, limit })
   }
 
   findOneById(id): Promise<Offer> {

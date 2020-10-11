@@ -14,8 +14,9 @@ import { DiscountModule } from './modules/discount/discount.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { MetaModule } from './modules/meta/meta.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
-import { OrderModule } from './modules/order/order.module';
-import { ProductModule } from './modules/product/product.module';
+import { OrderModule } from './modules/order/order.module'
+import { ProductModule } from './modules/product/product.module'
+import paginate from 'mongoose-paginate'
 import prettifier from 'pino-colada'
 
 @Module({
@@ -41,7 +42,11 @@ import prettifier from 'pino-colada'
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URI'),
         useFindAndModify: false,
-        useCreateIndex: true
+        useCreateIndex: true,
+        connectionFactory: connection => {
+          connection.plugin(paginate)
+          return connection
+        }
       })
     }),
     UserModule,
