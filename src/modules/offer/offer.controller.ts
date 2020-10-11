@@ -19,7 +19,7 @@ export class OfferController {
   @Get()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  findAll(@Query(new ParseIntPipe()) { query, page, limit }) {
+  findAll(@Query('query') query, @Query('page', new ParseIntPipe()) page, @Query('page', new ParseIntPipe()) limit) {
     return this.offerService.findAll(query, page, limit)
   }
 
