@@ -19,8 +19,8 @@ export class OfferService {
     return offer.save()
   }
 
-  async findAll(query, page, limit): Promise<PaginateResult<Offer>> {
-    return this.offerModel.paginate(query, { page, limit })
+  findAll(query, sort, page, limit): Promise<PaginateResult<Offer>> {
+    return this.offerModel.paginate(query, { sort, page, limit })
   }
 
   findOneById(id): Promise<Offer> {
