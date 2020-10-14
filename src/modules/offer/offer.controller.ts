@@ -16,6 +16,13 @@ export class OfferController {
     return this.offerService.create(createOfferDto)
   }
 
+  @Put(':id')
+  @UseGuards(RoleGuard)
+  @Roles(Role.Installed)
+  async update(@Param('id') id, @Body() createOfferDto: CreateOfferDto) {
+    return this.offerService.updateOneById(id, createOfferDto)
+  }
+
   @Get()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
