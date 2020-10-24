@@ -1,13 +1,29 @@
-import { Controller, Post, Body, Get, Param, Put, Query, Delete, UseGuards, ParseIntPipe } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Put,
+  Query,
+  Delete,
+  UseGuards,
+  ParseIntPipe,
+  BadRequestException
+} from '@nestjs/common'
 import { OfferService } from './offer.service'
 import { RoleGuard } from '../../common/guards/role.guard'
 import { Roles } from '../../common/decorators/role.decorator'
 import { Role } from '../../common/constants/role.constants'
 import { CreateOfferDto } from './dto/create-offer.dto'
+import { UserService } from 'src/modules/user/user.service'
+import { User } from 'src/common/decorators/user.decorator'
+import { MongooseFilterQuery } from 'mongoose'
+import { Offer } from 'src/modules/offer/schema/offer.schema'
 
 @Controller('offer')
 export class OfferController {
-  constructor(private readonly offerService: OfferService) {}
+  constructor(private readonly offerService: OfferService, private readonly userService: UserService) {}
 
   @Post()
   @UseGuards(RoleGuard)
@@ -25,12 +41,15 @@ export class OfferController {
 
   @Get()
   @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
-  findAll(
-    @Query() { query, sort },
+  async findAll(
+    @User() user,
     @Query('page', new ParseIntPipe()) page,
-    @Query('limit', new ParseIntPipe()) limit
+    @Query('limit', new ParseIntPipe()) limit,
+    @Query() { query = {} as MongooseFilterQuery<Offer>, sort, shopOrigin }
   ) {
+    const userId = user.id || (shopOrigin ? (await this.userService.findOne({ shopOrigin })).id : null)
+    if (!userId) throw new BadRequestException()
+    query.user = user.id
     return this.offerService.findAll(query, sort, page, limit)
   }
 
