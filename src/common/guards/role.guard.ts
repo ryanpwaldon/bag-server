@@ -16,15 +16,22 @@ export class RoleGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const requiredRoles: Role[] = this.reflector.get('roles', context.getHandler())
+    if (!requiredRoles) return true
     const req = context.switchToHttp().getRequest()
-    const token = req.headers.authorization.split(' ')[1]
-    const verified = this.verify(token)
-    if (!verified) return requiredRoles ? false : true
-    const shopOrigin = this.extractShopOrigin(token)
+    let shopOrigin = null
+    if (requiredRoles.includes(Role.Plugin) && req.headers['shop-origin']) {
+      shopOrigin = req.headers['shop-origin']
+    } else {
+      const token = req.headers.authorization?.split(' ')[1]
+      const verified = this.verify(token)
+      if (!verified) return false
+      const payload: any = jwt.decode(token)
+      shopOrigin = parseUrl(payload.dest).resource
+    }
     const user = await this.userService.findOne({ shopOrigin })
     if (!user) return false
     req.user = user
-    return requiredRoles ? user.roles.some(role => requiredRoles.includes(role)) : true
+    return requiredRoles.includes(Role.Plugin) || user.roles.some(role => requiredRoles.includes(role))
   }
 
   verify(token): boolean {
@@ -40,10 +47,5 @@ export class RoleGuard implements CanActivate {
     } catch {
       return false
     }
-  }
-
-  extractShopOrigin(token) {
-    const payload: any = jwt.decode(token)
-    return parseUrl(payload.dest).resource
   }
 }
