@@ -10,7 +10,7 @@ export class ProductController {
 
   @Get('one')
   @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
+  @Roles(Role.Plugin)
   findOneById(@Query('id') id) {
     return this.productService.findOneById(id)
   }
