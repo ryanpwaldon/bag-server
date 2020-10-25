@@ -19,7 +19,7 @@ export class OfferService {
     return offer.save()
   }
 
-  findAll(query, sort, page, limit): Promise<PaginateResult<Offer>> {
+  findAll(query, sort, page = 1, limit = 20): Promise<PaginateResult<Offer>> {
     return this.offerModel.paginate(query, { sort, page, limit })
   }
 

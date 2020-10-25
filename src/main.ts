@@ -10,7 +10,7 @@ async function bootstrap() {
   const appEnv = process.env.APP_ENV
   const httpsOptions = appEnv === 'development' ? await httpsLocalhost().getCerts() : undefined
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { httpsOptions })
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe({ transform: true }))
   app.set('trust proxy', true)
   app.enableCors()
   app.use(helmet())

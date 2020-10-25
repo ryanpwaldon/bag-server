@@ -1,16 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  Put,
-  Query,
-  Delete,
-  UseGuards,
-  ParseIntPipe,
-  BadRequestException
-} from '@nestjs/common'
+import { Controller, Post, Body, Get, Param, Put, Query, Delete, UseGuards } from '@nestjs/common'
 import { OfferService } from './offer.service'
 import { RoleGuard } from '../../common/guards/role.guard'
 import { Roles } from '../../common/decorators/role.decorator'
@@ -39,30 +27,24 @@ export class OfferController {
     return this.offerService.updateOneById(id, createOfferDto)
   }
 
-  @Get()
-  @UseGuards(RoleGuard)
-  async findAll(
-    @User() user,
-    @Query('page', new ParseIntPipe()) page,
-    @Query('limit', new ParseIntPipe()) limit,
-    @Query() { query = {} as MongooseFilterQuery<Offer>, sort, shopOrigin }
-  ) {
-    const userId = user.id || (shopOrigin ? (await this.userService.findOne({ shopOrigin })).id : null)
-    if (!userId) throw new BadRequestException()
-    query.user = user.id
-    return this.offerService.findAll(query, sort, page, limit)
-  }
-
   @Get(':id')
   @UseGuards(RoleGuard)
   findOneById(@Param('id') id) {
     return this.offerService.findOneById(id)
   }
 
-  @Put(':id')
+  @Get()
   @UseGuards(RoleGuard)
-  updateOneById(@Param('id') id, @Body() body) {
-    return this.offerService.updateOneById(id, body)
+  @Roles(Role.Installed, Role.Plugin)
+  async findAll(
+    @User() user,
+    @Query('sort') sort: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('query') query: MongooseFilterQuery<Offer> = {}
+  ) {
+    query.user = user.id
+    return this.offerService.findAll(query, sort, page, limit)
   }
 
   @Delete(':id')
