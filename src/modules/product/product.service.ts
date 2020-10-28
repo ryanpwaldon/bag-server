@@ -20,7 +20,7 @@ export class ProductService {
               edges {
                 node {
                   legacyResourceId
-                  displayName
+                  title
                   image {
                     originalSrc
                     transformedSrc
