@@ -15,13 +15,29 @@ export class ProductService {
             featuredImage {
               originalSrc
             }
+            hasOnlyDefaultVariant
+            variants(first: 100) {
+              edges {
+                node {
+                  legacyResourceId
+                  displayName
+                  image {
+                    originalSrc
+                    transformedSrc
+                  }
+                  price
+                  availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
           }
         }
       `
     })
-    return {
-      title: data.product.title,
-      image: data.product.featuredImage.originalSrc
-    }
+    return data.product
   }
 }
