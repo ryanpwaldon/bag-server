@@ -10,7 +10,7 @@ import { PluginModule } from './modules/plugin/plugin.module'
 import { LoggerModule } from 'nestjs-pino'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
-import { DiscountModule } from './modules/discount/discount.module'
+import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { MetaModule } from './modules/meta/meta.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
@@ -57,7 +57,7 @@ import prettifier from 'pino-colada'
     PluginModule,
     GdprModule,
     MonitorModule,
-    DiscountModule,
+    AdminDiscountModule,
     WebhookModule,
     MetaModule,
     ScriptTagModule,

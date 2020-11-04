@@ -11,7 +11,7 @@ export class CreateOfferDto {
   @ValidateIf(typeIs([OfferType.MinimumSpend]))
   @IsNotEmpty()
   @IsString()
-  discountId: string
+  adminDiscountId: string
 
   @ValidateIf(typeIs([OfferType.ProductAddOn]))
   @IsNotEmpty()

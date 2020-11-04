@@ -18,7 +18,7 @@ export class Offer extends Document {
   activeFor: number
 
   @Prop()
-  discountId: string
+  adminDiscountId: string
 
   @Prop()
   title: string
