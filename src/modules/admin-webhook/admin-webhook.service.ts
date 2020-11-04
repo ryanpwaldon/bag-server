@@ -4,7 +4,7 @@ import { ShopifyService } from '../shopify/shopify.service'
 import { Logger } from 'nestjs-pino'
 
 @Injectable()
-export class WebhookService {
+export class AdminWebhookService {
   constructor(
     private readonly configService: ConfigService,
     private readonly shopifyService: ShopifyService,

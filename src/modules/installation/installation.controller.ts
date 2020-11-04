@@ -2,7 +2,7 @@ import { Controller, Get, Query, BadRequestException, Res, Req, Post, Body } fro
 import { SubscriptionService } from '../subscription/subscription.service'
 import { AdminScriptTagService } from '../admin-script-tag/admin-script-tag.service'
 import { InstallationService } from './installation.service'
-import { WebhookService } from '../webhook/webhook.service'
+import { AdminWebhookService } from '../admin-webhook/admin-webhook.service'
 import { PluginService } from '../plugin/plugin.service'
 import { AdminMetaService } from '../admin-meta/admin-meta.service'
 import { UserService } from '../user/user.service'
@@ -19,7 +19,7 @@ export class InstallationController {
     private readonly userService: UserService,
     private readonly installationService: InstallationService,
     private readonly adminMetaService: AdminMetaService,
-    private readonly webhookService: WebhookService,
+    private readonly adminWebhookService: AdminWebhookService,
     private readonly adminScriptTagService: AdminScriptTagService,
     private readonly subscriptionService: SubscriptionService,
     private readonly pluginService: PluginService,
@@ -56,8 +56,8 @@ export class InstallationController {
     // run installation tasks
     await Promise.all([
       this.subscriptionService.sync(),
-      this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
-      this.webhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
+      this.adminWebhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
+      this.adminWebhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
       this.adminScriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL')),
       this.pluginService.findMyOrCreate()
     ])

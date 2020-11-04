@@ -4,7 +4,7 @@ import { InstallationController } from './installation.controller'
 import { ShopifyModule } from '../shopify/shopify.module'
 import { UserModule } from '../user/user.module'
 import { AdminMetaModule } from '../admin-meta/admin-meta.module'
-import { WebhookModule } from '../webhook/webhook.module'
+import { AdminWebhookModule } from '../admin-webhook/admin-webhook.module'
 import { AdminScriptTagModule } from '../admin-script-tag/admin-script-tag.module'
 import { SubscriptionModule } from '../subscription/subscription.module'
 import { PluginModule } from '../plugin/plugin.module'
@@ -16,7 +16,7 @@ import { PluginModule } from '../plugin/plugin.module'
     ShopifyModule,
     UserModule,
     AdminMetaModule,
-    WebhookModule,
+    AdminWebhookModule,
     AdminScriptTagModule,
     SubscriptionModule,
     PluginModule
