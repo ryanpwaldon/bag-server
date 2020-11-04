@@ -1,6 +1,6 @@
 import { Document } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Plans } from '../../subscription/types/subscription.types'
+import { Plans } from '../../admin-subscription/types/subscription.types'
 import { Role } from '../../../common/constants/role.constants'
 import Cryptr from 'cryptr'
 import moment from 'moment'

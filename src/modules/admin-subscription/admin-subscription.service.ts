@@ -9,7 +9,7 @@ import { Role } from '../../common/constants/role.constants'
 import { AdminMetaService } from '../admin-meta/admin-meta.service'
 
 @Injectable({ scope: Scope.REQUEST })
-export class SubscriptionService {
+export class AdminSubscriptionService {
   constructor(
     private readonly shopifyService: ShopifyService,
     private readonly configService: ConfigService,
