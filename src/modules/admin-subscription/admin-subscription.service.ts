@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Inject, Scope } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AdminService } from '../admin/admin.service'
-import { Plans, Plan } from './types/subscription.types'
+import { Plans, Plan } from './types/plan.types'
 import { UserService } from '../user/user.service'
 import { REQUEST } from '@nestjs/core'
 import cloneDeep from 'lodash/cloneDeep'
