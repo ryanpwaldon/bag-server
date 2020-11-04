@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { ShopifyService } from '../shopify/shopify.service'
-import { Product } from './product.types'
+import { Product } from './admin-product.types'
 
 @Injectable()
-export class ProductService {
+export class AdminProductService {
   constructor(private readonly shopifyService: ShopifyService) {}
 
   async findOneById(id): Promise<Product> {

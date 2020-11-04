@@ -15,7 +15,7 @@ import { WebhookModule } from './modules/webhook/webhook.module'
 import { AdminMetaModule } from './modules/admin-meta/admin-meta.module'
 import { AdminScriptTagModule } from './modules/admin-script-tag/admin-script-tag.module'
 import { OrderModule } from './modules/order/order.module'
-import { ProductModule } from './modules/product/product.module'
+import { AdminProductModule } from './modules/admin-product/admin-product.module'
 import paginate from 'mongoose-paginate'
 import prettifier from 'pino-colada'
 
@@ -62,7 +62,7 @@ import prettifier from 'pino-colada'
     AdminMetaModule,
     AdminScriptTagModule,
     OrderModule,
-    ProductModule
+    AdminProductModule
   ]
 })
 export class AppModule {}
