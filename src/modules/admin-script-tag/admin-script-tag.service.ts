@@ -3,7 +3,7 @@ import { ShopifyService } from '../shopify/shopify.service'
 import { Logger } from 'nestjs-pino'
 
 @Injectable()
-export class ScriptTagService {
+export class AdminScriptTagService {
   constructor(private readonly shopifyService: ShopifyService, private readonly logger: Logger) {}
 
   async create(src) {

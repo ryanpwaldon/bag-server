@@ -13,7 +13,7 @@ import { MonitorModule } from './modules/monitor/monitor.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { MetaModule } from './modules/meta/meta.module'
-import { ScriptTagModule } from './modules/script-tag/script-tag.module'
+import { AdminScriptTagModule } from './modules/admin-script-tag/admin-script-tag.module'
 import { OrderModule } from './modules/order/order.module'
 import { ProductModule } from './modules/product/product.module'
 import paginate from 'mongoose-paginate'
@@ -60,7 +60,7 @@ import prettifier from 'pino-colada'
     AdminDiscountModule,
     WebhookModule,
     MetaModule,
-    ScriptTagModule,
+    AdminScriptTagModule,
     OrderModule,
     ProductModule
   ]
