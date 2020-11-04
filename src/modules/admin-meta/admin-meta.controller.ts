@@ -2,16 +2,16 @@ import { Controller, Get, UseGuards } from '@nestjs/common'
 import { Role } from '../../common/constants/role.constants'
 import { Roles } from '../../common/decorators/role.decorator'
 import { RoleGuard } from '../../common/guards/role.guard'
-import { MetaService } from './meta.service'
+import { AdminMetaService } from './admin-meta.service'
 
-@Controller('meta')
-export class MetaController {
-  constructor(private readonly metaService: MetaService) {}
+@Controller('admin-meta')
+export class AdminMetaController {
+  constructor(private readonly adminMetaService: AdminMetaService) {}
 
   @Get('app-url')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
   findAppUrl() {
-    return this.metaService.getAppUrl()
+    return this.adminMetaService.getAppUrl()
   }
 }

@@ -4,7 +4,7 @@ import { AdminScriptTagService } from '../admin-script-tag/admin-script-tag.serv
 import { InstallationService } from './installation.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { PluginService } from '../plugin/plugin.service'
-import { MetaService } from '../meta/meta.service'
+import { AdminMetaService } from '../admin-meta/admin-meta.service'
 import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
 import { generate } from 'nonce-next'
@@ -18,7 +18,7 @@ export class InstallationController {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly installationService: InstallationService,
-    private readonly metaService: MetaService,
+    private readonly adminMetaService: AdminMetaService,
     private readonly webhookService: WebhookService,
     private readonly adminScriptTagService: AdminScriptTagService,
     private readonly subscriptionService: SubscriptionService,
@@ -62,7 +62,7 @@ export class InstallationController {
       this.pluginService.findMyOrCreate()
     ])
     // redirect to app url
-    const redirectUrl = await this.metaService.getAppUrl()
+    const redirectUrl = await this.adminMetaService.getAppUrl()
     res.redirect(redirectUrl)
   }
 

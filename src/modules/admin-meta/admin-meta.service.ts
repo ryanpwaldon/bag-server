@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ShopifyService } from '../shopify/shopify.service'
 
 @Injectable()
-export class MetaService {
+export class AdminMetaService {
   constructor(private readonly shopifyService: ShopifyService) {}
 
   async getAppUrl() {

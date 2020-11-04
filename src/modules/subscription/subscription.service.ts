@@ -6,7 +6,7 @@ import { UserService } from '../user/user.service'
 import { REQUEST } from '@nestjs/core'
 import cloneDeep from 'lodash/cloneDeep'
 import { Role } from '../../common/constants/role.constants'
-import { MetaService } from '../meta/meta.service'
+import { AdminMetaService } from '../admin-meta/admin-meta.service'
 
 @Injectable({ scope: Scope.REQUEST })
 export class SubscriptionService {
@@ -14,7 +14,7 @@ export class SubscriptionService {
     private readonly shopifyService: ShopifyService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-    private readonly metaService: MetaService,
+    private readonly adminMetaService: AdminMetaService,
     @Inject(REQUEST) private req
   ) {}
 
@@ -47,7 +47,7 @@ export class SubscriptionService {
     await user.save()
     if (plan.price === 0) return this.cancel()
     const isProduction = this.configService.get('APP_ENV') === 'production'
-    const redirectUrl = `${await this.metaService.getAppUrl()}/actions/sync`
+    const redirectUrl = `${await this.adminMetaService.getAppUrl()}/actions/sync`
     const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
     const { data } = await this.shopifyService.createRequest({
       query: `
