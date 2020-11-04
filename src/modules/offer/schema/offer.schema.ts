@@ -6,31 +6,31 @@ import { OfferType } from '../offer.types'
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class Offer extends Document {
   @Prop({ required: true, ref: User.name })
-  user: MongooseSchema.Types.ObjectId
+  user!: MongooseSchema.Types.ObjectId
 
   @Prop({ enum: Object.values(OfferType) })
-  type: OfferType
+  type!: OfferType
 
   @Prop({ default: false })
-  active: boolean
+  active!: boolean
 
   @Prop()
-  activeFor: number
+  activeFor!: number
 
   @Prop()
-  adminDiscountId: string
+  adminDiscountId!: string
 
   @Prop()
-  title: string
+  title!: string
 
   @Prop()
-  subtitle: string
+  subtitle!: string
 
   @Prop([String])
-  triggers: string[]
+  triggers!: string[]
 
   @Prop()
-  productId: string
+  productId!: string
 }
 
 export const OfferSchema = SchemaFactory.createForClass(Offer)

@@ -1,3 +1,3 @@
 export class CreateUserDto {
-  readonly shopOrigin: string
+  readonly shopOrigin!: string
 }

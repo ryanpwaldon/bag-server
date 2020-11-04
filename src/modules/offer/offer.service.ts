@@ -3,13 +3,15 @@ import { CreateOfferDto } from './dto/create-offer.dto'
 import { InjectModel } from '@nestjs/mongoose'
 import { Offer } from './schema/offer.schema'
 import { REQUEST } from '@nestjs/core'
-import { PaginateModel, PaginateResult } from 'mongoose'
+import { MongooseFilterQuery, PaginateModel } from 'mongoose'
 import { merge } from 'lodash'
+import { User } from 'src/modules/user/schema/user.schema'
+import { Request } from 'express'
 
 @Injectable({ scope: Scope.REQUEST })
 export class OfferService {
   constructor(
-    @Inject(REQUEST) private req,
+    @Inject(REQUEST) private req: Request & { user: User },
     @InjectModel(Offer.name) private readonly offerModel: PaginateModel<Offer>
   ) {}
 
@@ -19,20 +21,20 @@ export class OfferService {
     return offer.save()
   }
 
-  findAll(query, sort, page = 1, limit = 20): Promise<PaginateResult<Offer>> {
+  findAll(query: MongooseFilterQuery<Offer>, sort: string, page = 1, limit = 20) {
     return this.offerModel.paginate(query, { sort, page, limit })
   }
 
-  findOneById(id): Promise<Offer> {
+  findOneById(id: string) {
     return this.offerModel.findById(id).exec()
   }
 
-  async updateOneById(id, body): Promise<Offer> {
+  async updateOneById(id: string, body: Partial<Offer>) {
     const offer = await this.offerModel.findById(id)
     return merge(offer, body).save()
   }
 
-  deleteOneById(id): Promise<Offer> {
+  deleteOneById(id: string) {
     return this.offerModel.findByIdAndDelete(id).exec()
   }
 }

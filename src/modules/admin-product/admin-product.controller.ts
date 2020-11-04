@@ -11,7 +11,7 @@ export class AdminProductController {
   @Get('one')
   @UseGuards(RoleGuard)
   @Roles(Role.Plugin)
-  findOneById(@Query('id') id) {
+  findOneById(@Query('id') id: string) {
     return this.adminProductService.findOneById(id)
   }
 }

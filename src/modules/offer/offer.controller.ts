@@ -6,7 +6,7 @@ import { Role } from '../../common/constants/role.constants'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UserService } from 'src/modules/user/user.service'
 import { User } from 'src/common/decorators/user.decorator'
-import { MongooseFilterQuery } from 'mongoose'
+import { MongooseFilterQuery, Schema } from 'mongoose'
 import { Offer } from 'src/modules/offer/schema/offer.schema'
 
 @Controller('offer')
@@ -23,13 +23,13 @@ export class OfferController {
   @Put(':id')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  async update(@Param('id') id, @Body() createOfferDto: CreateOfferDto) {
+  async update(@Param('id') id: string, @Body() createOfferDto: CreateOfferDto) {
     return this.offerService.updateOneById(id, createOfferDto)
   }
 
   @Get(':id')
   @UseGuards(RoleGuard)
-  findOneById(@Param('id') id) {
+  findOneById(@Param('id') id: string) {
     return this.offerService.findOneById(id)
   }
 
@@ -37,19 +37,19 @@ export class OfferController {
   @UseGuards(RoleGuard)
   @Roles(Role.Installed, Role.Plugin)
   async findAll(
-    @User() user,
+    @User('id') userId: Schema.Types.ObjectId,
     @Query('sort') sort: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('query') query: MongooseFilterQuery<Offer> = {}
   ) {
-    query.user = user.id
+    query.user = userId
     return this.offerService.findAll(query, sort, page, limit)
   }
 
   @Delete(':id')
   @UseGuards(RoleGuard)
-  deleteOneById(@Param('id') id) {
+  deleteOneById(@Param('id') id: string) {
     return this.offerService.deleteOneById(id)
   }
 }

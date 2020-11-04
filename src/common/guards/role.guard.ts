@@ -34,7 +34,7 @@ export class RoleGuard implements CanActivate {
     return requiredRoles.includes(Role.Plugin) || user.roles.some(role => requiredRoles.includes(role))
   }
 
-  verify(token): boolean {
+  verify(token: string): boolean {
     try {
       const apiKey = this.configService.get('SHOPIFY_API_KEY')
       const secretKey = this.configService.get('SHOPIFY_API_SECRET_KEY')

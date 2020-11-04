@@ -1,70 +1,74 @@
 import { Document } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Plans } from '../../admin-subscription/types/plan.types'
+import { getPlans } from '../../admin-subscription/types/plan.types'
 import { Role } from '../../../common/constants/role.constants'
 import Cryptr from 'cryptr'
 import moment from 'moment'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class User extends Document {
-  declare roles
+  declare roles: Role[]
+
+  declare _previousPlan: string
 
   @Prop({ unique: true })
-  shopOrigin: string
+  shopOrigin!: string
 
   @Prop({ default: false })
-  onboarded: boolean
+  onboarded!: boolean
 
   @Prop()
-  uninstalled: boolean
+  uninstalled!: boolean
 
   @Prop()
-  planUpdatedAt: Date
+  planUpdatedAt!: Date
 
   @Prop({
-    get(value) {
-      return value && new Cryptr(process.env.CRYPTO_SECRET).decrypt(value)
+    get(value: string) {
+      return value && new Cryptr(process.env.CRYPTO_SECRET as string).decrypt(value)
     },
-    set(value) {
-      return value && new Cryptr(process.env.CRYPTO_SECRET).encrypt(value)
+    set(value: string) {
+      return value && new Cryptr(process.env.CRYPTO_SECRET as string).encrypt(value)
     }
   })
-  accessToken: string
+  accessToken!: string
 
   @Prop({
-    set(plan) {
+    set(this: User, plan: string) {
       this._previousPlan = this.plan
       return plan
     }
   })
-  plan: string
+  plan!: string
 
   @Prop({
     default: 0,
-    get(value) {
+    get(value: number) {
       const duration = this.plan ? value + moment().diff(this.planUpdatedAt) : value
       return Math.round(moment.duration(duration).asDays())
     }
   })
-  totalTimeSubscribed: number
+  totalTimeSubscribed!: number
 
   @Prop()
-  super: boolean
+  super!: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
 
-UserSchema.virtual('roles').get(function() {
+UserSchema.virtual('roles').get(function(this: User) {
   const roles: string[] = []
-  const plans = Plans.filter(plan => plan.active).map(plan => plan.slug)
+  const plans = getPlans()
+    .filter(plan => plan.active)
+    .map(plan => plan.slug)
   roles.push(Role.Installed)
   if (!this.onboarded) roles.push(Role.Unsubscribed)
-  else roles.push(...plans.slice(0, plans.indexOf(this.plan) + 1))
+  else roles.push(...plans.slice(0, plans.indexOf(this.plan as Role) + 1))
   if (this.super) roles.push(...plans)
   return [...new Set(roles)]
 })
 
-export async function beforeSave() {
+export async function beforeSave(this: User) {
   if (this.isModified('plan')) {
     if (this._previousPlan) {
       const previousTotalTimeSubscribed = this.get('totalTimeSubscribed', undefined, { getters: false })

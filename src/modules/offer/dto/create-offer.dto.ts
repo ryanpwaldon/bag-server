@@ -6,34 +6,34 @@ const typeIs = (types: OfferType[]) => ({ type }: CreateOfferDto) => types.inclu
 export class CreateOfferDto {
   @IsNotEmpty()
   @IsEnum(OfferType)
-  type: OfferType
+  type!: OfferType
 
   @ValidateIf(typeIs([OfferType.MinimumSpend]))
   @IsNotEmpty()
   @IsString()
-  adminDiscountId: string
+  adminDiscountId!: string
 
   @ValidateIf(typeIs([OfferType.ProductAddOn]))
   @IsNotEmpty()
   @IsString()
-  title: string
+  title!: string
 
   @ValidateIf(typeIs([OfferType.ProductAddOn]))
   @IsNotEmpty()
   @IsString()
-  subtitle: string
+  subtitle!: string
 
   @ValidateIf(typeIs([OfferType.ProductAddOn]))
   @IsNotEmpty()
   @IsString()
-  productId: string
+  productId!: string
 
   @ValidateIf(typeIs([OfferType.ProductAddOn]))
   @IsNotEmpty()
   @IsString({ each: true })
-  triggers: string[]
+  triggers!: string[]
 
   @IsNotEmpty()
   @IsBoolean()
-  active: boolean
+  active!: boolean
 }

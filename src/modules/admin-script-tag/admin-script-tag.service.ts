@@ -6,7 +6,7 @@ import { Logger } from 'nestjs-pino'
 export class AdminScriptTagService {
   constructor(private readonly adminService: AdminService, private readonly logger: Logger) {}
 
-  async create(src) {
+  async create(src: string) {
     const exists = await this.checkExistence()
     if (exists) return
     this.adminService.createRequest({

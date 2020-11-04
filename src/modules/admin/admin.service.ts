@@ -3,17 +3,19 @@ import { ConfigService } from '@nestjs/config'
 import { REQUEST } from '@nestjs/core'
 import { Error } from '../../common/constants/error.constants'
 import { Logger } from 'nestjs-pino'
+import { Request } from 'express'
+import { User } from 'src/modules/user/schema/user.schema'
 
 @Injectable({ scope: Scope.REQUEST })
 export class AdminService {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
     private readonly logger: Logger,
-    @Inject(REQUEST) private req
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+    @Inject(REQUEST) private req: Request & { user: User }
   ) {}
 
-  async createRequest(data) {
+  async createRequest(data: any) {
     const method = 'post'
     const { shopOrigin, accessToken } = this.req.user
     const url = `https://${shopOrigin}/admin/api/${this.configService.get('SHOPIFY_API_VERSION')}/graphql.json`

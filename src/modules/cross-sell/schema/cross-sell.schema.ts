@@ -5,25 +5,25 @@ import { User } from '../../user/schema/user.schema'
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class CrossSell extends Document {
   @Prop({ required: true, ref: User.name })
-  user: MongooseSchema.Types.ObjectId
+  user!: MongooseSchema.Types.ObjectId
 
   @Prop({ default: false })
-  active: boolean
+  active!: boolean
 
   @Prop()
-  activeFor: number
+  activeFor!: number
 
   @Prop()
-  adminProductId: string
+  adminProductId!: string
 
   @Prop()
-  title: string
+  title!: string
 
   @Prop()
-  subtitle: string
+  subtitle!: string
 
   @Prop([String])
-  triggers: string[]
+  triggers!: string[]
 }
 
 export const CrossSellSchema = SchemaFactory.createForClass(CrossSell)

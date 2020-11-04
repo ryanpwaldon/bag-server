@@ -4,11 +4,9 @@ import Honeybadger from 'honeybadger'
 
 @Injectable()
 export class MonitorService {
-  client = null
-
   constructor(readonly configService: ConfigService) {
-    this.client = Honeybadger.configure({
-      apiKey: configService.get('HONEYBADGER_API_KEY'),
+    Honeybadger.configure({
+      apiKey: configService.get('HONEYBADGER_API_KEY') as string,
       environment: configService.get('APP_ENV'),
       developmentEnvironments: ['development']
     })

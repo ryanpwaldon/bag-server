@@ -5,7 +5,7 @@ import { AdminService } from '../admin/admin.service'
 export class AdminDiscountService {
   constructor(private readonly adminService: AdminService) {}
 
-  async findOne(id) {
+  async findOne(id: string) {
     const { data } = await this.adminService.createRequest({
       query: `
         {

@@ -6,7 +6,7 @@ import { Product } from './admin-product.types'
 export class AdminProductService {
   constructor(private readonly adminService: AdminService) {}
 
-  async findOneById(id): Promise<Product> {
+  async findOneById(id: string): Promise<Product> {
     const { data } = await this.adminService.createRequest({
       query: `
         {

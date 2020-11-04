@@ -11,7 +11,7 @@ export class AdminWebhookService {
     private readonly logger: Logger
   ) {}
 
-  async create(topic, url) {
+  async create(topic: string, url: string) {
     const exists = await this.checkExistence(topic)
     if (exists) return
     url = `${this.configService.get('SERVER_URL')}${url}`
@@ -32,7 +32,7 @@ export class AdminWebhookService {
     this.logger.log(`Webhook created: ${topic}`)
   }
 
-  async checkExistence(topic) {
+  async checkExistence(topic: string) {
     const { data } = await this.adminService.createRequest({
       query: `
         {

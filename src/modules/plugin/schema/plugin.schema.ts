@@ -5,10 +5,10 @@ import { User } from '../../user/schema/user.schema'
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class Plugin extends Document {
   @Prop({ required: true, ref: User.name })
-  user: MongooseSchema.Types.ObjectId
+  user!: MongooseSchema.Types.ObjectId
 
   @Prop({ default: false })
-  active: boolean
+  active!: boolean
 }
 
 export const PluginSchema = SchemaFactory.createForClass(Plugin)

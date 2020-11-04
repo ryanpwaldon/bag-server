@@ -9,8 +9,9 @@ import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
 import { generate } from 'nonce-next'
 import { Logger } from 'nestjs-pino'
-import { Response } from 'express'
+import { Request, Response } from 'express'
 import qs from 'qs'
+import { User } from 'src/modules/user/schema/user.schema'
 
 @Controller('installation')
 export class InstallationController {
@@ -27,7 +28,7 @@ export class InstallationController {
   ) {}
 
   @Get('install')
-  install(@Res() res, @Query() { shop: shopOrigin }) {
+  install(@Res() res: Response, @Query('shop') shopOrigin: string) {
     if (!shopOrigin) throw new BadRequestException('Missing shop query param.')
     const nonce = generate()
     const scope = this.configService.get('SHOPIFY_SCOPE')
@@ -40,7 +41,14 @@ export class InstallationController {
   }
 
   @Get('install/confirm')
-  async installConfirm(@Res() res: Response, @Req() req, @Query() { hmac, state, shop: shopOrigin, code: authCode }) {
+  async installConfirm(
+    @Res() res: Response,
+    @Req() req: Request & { user: User },
+    @Query('hmac') hmac: string,
+    @Query('state') state: string,
+    @Query('shop') shopOrigin: string,
+    @Query('code') authCode: string
+  ) {
     // verify request authenticity
     this.installationService.verifyHmac(hmac, req.query)
     this.installationService.verifyOrigin(req.cookies.state, state)
@@ -58,7 +66,7 @@ export class InstallationController {
       this.adminSubscriptionService.sync(),
       this.adminWebhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
       this.adminWebhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
-      this.adminScriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL')),
+      this.adminScriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.pluginService.findMyOrCreate()
     ])
     // redirect to app url
@@ -67,10 +75,11 @@ export class InstallationController {
   }
 
   @Post('uninstall')
-  async uninstall(@Body() body) {
+  async uninstall(@Body() body: { myshopify_domain: string }) {
     this.logger.log('Webhook triggered: APP_UNINSTALLED')
     const shopOrigin = body.myshopify_domain
     const user = await this.userService.findOne({ shopOrigin })
+    if (!user) return
     user.uninstalled = true
     user.onboarded = false
     return user.save()

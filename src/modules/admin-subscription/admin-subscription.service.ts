@@ -1,12 +1,20 @@
-import { Injectable, BadRequestException, Inject, Scope } from '@nestjs/common'
+import {
+  Injectable,
+  BadRequestException,
+  Inject,
+  Scope,
+  NotFoundException,
+  InternalServerErrorException
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AdminService } from '../admin/admin.service'
-import { Plans, Plan } from './types/plan.types'
+import { getPlanByName, getPlanBySlug, getPlans, Plan } from './types/plan.types'
 import { UserService } from '../user/user.service'
 import { REQUEST } from '@nestjs/core'
-import cloneDeep from 'lodash/cloneDeep'
 import { Role } from '../../common/constants/role.constants'
 import { AdminMetaService } from '../admin-meta/admin-meta.service'
+import { Request } from 'express'
+import { User } from 'src/modules/user/schema/user.schema'
 
 @Injectable({ scope: Scope.REQUEST })
 export class AdminSubscriptionService {
@@ -15,11 +23,12 @@ export class AdminSubscriptionService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly adminMetaService: AdminMetaService,
-    @Inject(REQUEST) private req
+    @Inject(REQUEST) private req: Request & { user: User }
   ) {}
 
   async sync() {
     const user = await this.userService.findById(this.req.user.id)
+    if (!user) throw new NotFoundException('User not found.')
     const plan = await this.findMyActivePlan()
     user.plan = plan.slug
     user.save()
@@ -27,7 +36,7 @@ export class AdminSubscriptionService {
 
   async findAllPlans(): Promise<Plan[]> {
     const activePlan = await this.findMyActivePlan()
-    const plans: Plan[] = cloneDeep(Plans).filter(plan => plan.active && plan.name !== activePlan.name)
+    const plans: Plan[] = getPlans().filter(plan => plan.active && plan.name !== activePlan.name)
     plans.push(activePlan)
     plans.sort((a, b) => a.price - b.price)
     return plans
@@ -39,10 +48,11 @@ export class AdminSubscriptionService {
     throw new BadRequestException('Interval is not valid.')
   }
 
-  async create(name) {
-    const plan = Plans.find(plan => plan.name === name)
-    if (!plan) throw new BadRequestException('Plan does not exist.')
+  async create(name: string) {
+    const plan = getPlanByName(name)
+    if (!plan) throw new NotFoundException('Plan not found.')
     const user = await this.userService.findById(this.req.user.id)
+    if (!user) throw new NotFoundException('User not found.')
     user.onboarded = true
     await user.save()
     if (plan.price === 0) return this.cancel()
@@ -65,7 +75,7 @@ export class AdminSubscriptionService {
                       amount: ${plan.price},
                       currencyCode: USD
                     },
-                    interval: ${this.convertToShopifyInterval(plan.interval)}
+                    interval: ${this.convertToShopifyInterval(plan.interval as 'monthly' | 'annually')}
                   }
                 }
               }
@@ -93,11 +103,9 @@ export class AdminSubscriptionService {
       `
     })
     const [subscription] = data.appInstallation.activeSubscriptions
-    const plan = {
-      ...(subscription
-        ? Plans.find(plan => plan.name === subscription.name)
-        : Plans.find(plan => plan.slug === Role.Starter))
-    }
+    if (!subscription) throw new NotFoundException('Subscription not found.')
+    const plan = getPlanByName(subscription.name) || getPlanBySlug(Role.Starter)
+    if (!plan) throw new InternalServerErrorException()
     plan.id = subscription && subscription.id
     plan.subscribed = this.req.user.onboarded && true
     return plan

@@ -8,11 +8,11 @@ import qs from 'qs'
 export class InstallationService {
   constructor(private configService: ConfigService) {}
 
-  verifyOrigin(cookieState, requestState) {
+  verifyOrigin(cookieState: string, requestState: string) {
     if (cookieState !== requestState) throw new ForbiddenException('Request origin validation failed.')
   }
 
-  verifyHmac(hmac, data) {
+  verifyHmac(hmac: string, data: any) {
     data = Object.assign({}, data)
     delete data.hmac
     const message = qs.stringify(data)
@@ -24,7 +24,7 @@ export class InstallationService {
     if (decryptedHmac !== hmac) throw new BadRequestException('HMAC validation failed.')
   }
 
-  async getAccessToken(shopOrigin, authCode) {
+  async getAccessToken(shopOrigin: string, authCode: string) {
     const apiKey = this.configService.get('SHOPIFY_API_KEY')
     const apiSecret = this.configService.get('SHOPIFY_API_SECRET_KEY')
     const accessTokenRequestUrl = `https://${shopOrigin}/admin/oauth/access_token`

@@ -5,10 +5,10 @@ import { Offer } from '../../offer/schema/offer.schema'
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class Order extends Document {
   @Prop({ required: true, ref: Offer.name })
-  offer: MongooseSchema.Types.ObjectId
+  offer!: MongooseSchema.Types.ObjectId
 
   @Prop({ required: true })
-  orderId: string
+  orderId!: string
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order)
