@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { ShopifyService } from '../shopify/shopify.service'
+import { AdminService } from '../admin/admin.service'
 import { Logger } from 'nestjs-pino'
 
 @Injectable()
 export class AdminScriptTagService {
-  constructor(private readonly shopifyService: ShopifyService, private readonly logger: Logger) {}
+  constructor(private readonly adminService: AdminService, private readonly logger: Logger) {}
 
   async create(src) {
     const exists = await this.checkExistence()
     if (exists) return
-    this.shopifyService.createRequest({
+    this.adminService.createRequest({
       query: `
         mutation {
           scriptTagCreate(input: {
@@ -30,7 +30,7 @@ export class AdminScriptTagService {
   }
 
   async checkExistence() {
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         {
           scriptTags(first: 1) {

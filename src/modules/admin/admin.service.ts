@@ -5,7 +5,7 @@ import { Error } from '../../common/constants/error.constants'
 import { Logger } from 'nestjs-pino'
 
 @Injectable({ scope: Scope.REQUEST })
-export class ShopifyService {
+export class AdminService {
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,

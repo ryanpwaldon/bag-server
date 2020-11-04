@@ -3,11 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { UserService } from './user.service'
 import { User, UserSchema, beforeSave } from './schema/user.schema'
 import { UserController } from './user.controller'
-import { ShopifyModule } from '../shopify/shopify.module'
+import { AdminModule } from '../admin/admin.module'
 
 @Module({
   imports: [
-    ShopifyModule,
+    AdminModule,
     MongooseModule.forFeatureAsync([
       {
         name: User.name,

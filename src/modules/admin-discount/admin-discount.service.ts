@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { ShopifyService } from '../shopify/shopify.service'
+import { AdminService } from '../admin/admin.service'
 
 @Injectable()
 export class AdminDiscountService {
-  constructor(private readonly shopifyService: ShopifyService) {}
+  constructor(private readonly adminService: AdminService) {}
 
   async findOne(id) {
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         {
           codeDiscountNode(id: "${id}") {

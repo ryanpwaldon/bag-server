@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
-import { ShopifyModule } from '../shopify/shopify.module'
+import { AdminModule } from '../admin/admin.module'
 import { AdminScriptTagService } from './admin-script-tag.service'
 
 @Module({
-  imports: [ShopifyModule],
+  imports: [AdminModule],
   providers: [AdminScriptTagService],
   exports: [AdminScriptTagService]
 })

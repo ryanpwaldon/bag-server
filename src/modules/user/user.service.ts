@@ -4,13 +4,13 @@ import { Model } from 'mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User } from './schema/user.schema'
 import { merge } from 'lodash'
-import { ShopifyService } from '../shopify/shopify.service'
+import { AdminService } from '../admin/admin.service'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
-    private readonly shopifyService: ShopifyService
+    private readonly adminService: AdminService
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -32,7 +32,7 @@ export class UserService {
 
   async attachDetails(user) {
     user = user.toObject()
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         {
           shop {

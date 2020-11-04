@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { InstallationService } from './installation.service'
 import { InstallationController } from './installation.controller'
-import { ShopifyModule } from '../shopify/shopify.module'
+import { AdminModule } from '../admin/admin.module'
 import { UserModule } from '../user/user.module'
 import { AdminMetaModule } from '../admin-meta/admin-meta.module'
 import { AdminWebhookModule } from '../admin-webhook/admin-webhook.module'
@@ -13,7 +13,7 @@ import { PluginModule } from '../plugin/plugin.module'
   providers: [InstallationService],
   controllers: [InstallationController],
   imports: [
-    ShopifyModule,
+    AdminModule,
     UserModule,
     AdminMetaModule,
     AdminWebhookModule,

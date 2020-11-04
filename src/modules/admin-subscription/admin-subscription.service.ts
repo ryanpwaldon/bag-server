@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, Inject, Scope } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { ShopifyService } from '../shopify/shopify.service'
+import { AdminService } from '../admin/admin.service'
 import { Plans, Plan } from './types/subscription.types'
 import { UserService } from '../user/user.service'
 import { REQUEST } from '@nestjs/core'
@@ -11,7 +11,7 @@ import { AdminMetaService } from '../admin-meta/admin-meta.service'
 @Injectable({ scope: Scope.REQUEST })
 export class AdminSubscriptionService {
   constructor(
-    private readonly shopifyService: ShopifyService,
+    private readonly adminService: AdminService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly adminMetaService: AdminMetaService,
@@ -49,7 +49,7 @@ export class AdminSubscriptionService {
     const isProduction = this.configService.get('APP_ENV') === 'production'
     const redirectUrl = `${await this.adminMetaService.getAppUrl()}/actions/sync`
     const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         mutation {
           appSubscriptionCreate(
@@ -80,7 +80,7 @@ export class AdminSubscriptionService {
   }
 
   async findMyActivePlan(): Promise<Plan> {
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         {
           appInstallation {
@@ -106,7 +106,7 @@ export class AdminSubscriptionService {
   async cancel() {
     const plan = await this.findMyActivePlan()
     if (!plan.id) return
-    await this.shopifyService.createRequest({
+    await this.adminService.createRequest({
       query: `
         mutation {
           appSubscriptionCancel(id: "${plan.id}") {

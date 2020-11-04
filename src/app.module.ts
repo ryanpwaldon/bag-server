@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { UserModule } from './modules/user/user.module'
 import { MongooseModule } from '@nestjs/mongoose'
-import { ShopifyModule } from './modules/shopify/shopify.module'
+import { AdminModule } from './modules/admin/admin.module'
 import { OfferModule } from './modules/offer/offer.module'
 import { AdminSubscriptionModule } from './modules/admin-subscription/admin-subscription.module'
 import { InstallationModule } from './modules/installation/installation.module'
@@ -50,7 +50,7 @@ import prettifier from 'pino-colada'
       })
     }),
     UserModule,
-    ShopifyModule,
+    AdminModule,
     OfferModule,
     AdminSubscriptionModule,
     InstallationModule,

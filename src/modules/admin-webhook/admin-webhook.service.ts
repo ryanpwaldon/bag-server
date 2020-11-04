@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { ShopifyService } from '../shopify/shopify.service'
+import { AdminService } from '../admin/admin.service'
 import { Logger } from 'nestjs-pino'
 
 @Injectable()
 export class AdminWebhookService {
   constructor(
     private readonly configService: ConfigService,
-    private readonly shopifyService: ShopifyService,
+    private readonly adminService: AdminService,
     private readonly logger: Logger
   ) {}
 
@@ -15,7 +15,7 @@ export class AdminWebhookService {
     const exists = await this.checkExistence(topic)
     if (exists) return
     url = `${this.configService.get('SERVER_URL')}${url}`
-    this.shopifyService.createRequest({
+    this.adminService.createRequest({
       query: `
         mutation {
           webhookSubscriptionCreate (topic: ${topic}, webhookSubscription: {
@@ -33,7 +33,7 @@ export class AdminWebhookService {
   }
 
   async checkExistence(topic) {
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         {
           webhookSubscriptions (first: 1, topics: ${topic}) {

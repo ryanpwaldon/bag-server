@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import { ShopifyService } from '../shopify/shopify.service'
+import { AdminService } from '../admin/admin.service'
 import { Product } from './admin-product.types'
 
 @Injectable()
 export class AdminProductService {
-  constructor(private readonly shopifyService: ShopifyService) {}
+  constructor(private readonly adminService: AdminService) {}
 
   async findOneById(id): Promise<Product> {
-    const { data } = await this.shopifyService.createRequest({
+    const { data } = await this.adminService.createRequest({
       query: `
         {
           product(id: "${id}") {
