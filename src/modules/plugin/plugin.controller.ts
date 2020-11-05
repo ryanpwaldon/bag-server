@@ -1,4 +1,4 @@
-import { Controller, Body, Get, Put, Headers, BadRequestException, NotFoundException, UseGuards } from '@nestjs/common'
+import { Controller, Body, Get, Put, UseGuards } from '@nestjs/common'
 import { PluginService } from './plugin.service'
 import { Role } from '../../common/constants/role.constants'
 import { Roles } from '../../common/decorators/role.decorator'
@@ -13,24 +13,16 @@ export class PluginController {
   constructor(private readonly pluginService: PluginService, private readonly userService: UserService) {}
 
   @Get()
-  async findOneByShopOrigin(@Headers('shop-origin') shopOrigin: string) {
-    if (!shopOrigin) throw new BadRequestException(`Missing 'shop-origin' header.`)
-    const user = await this.userService.findOne({ shopOrigin })
-    if (!user) throw new NotFoundException()
-    return this.pluginService.findOne({ user: user.id })
-  }
-
-  @Get('my')
   @UseGuards(RoleGuard)
-  @Roles(Role.Starter)
-  findMy() {
-    return this.pluginService.findMyOrCreate()
+  @Roles(Role.Starter, Role.Plugin)
+  findOneByUserId(@User('id') userId: Schema.Types.ObjectId) {
+    return this.pluginService.findOne({ user: userId })
   }
 
   @Put()
   @UseGuards(RoleGuard)
   @Roles(Role.Starter)
-  updateMy(@User('id') userId: Schema.Types.ObjectId, @Body() body: Partial<Plugin>) {
-    return this.pluginService.updateMy(userId, body)
+  updateOneByUserId(@User('id') userId: Schema.Types.ObjectId, @Body() body: Partial<Plugin>) {
+    return this.pluginService.updateOne({ user: userId }, body)
   }
 }

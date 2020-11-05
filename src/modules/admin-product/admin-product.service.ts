@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { AdminService } from '../admin/admin.service'
-import { Product } from './admin-product.types'
 
 @Injectable()
 export class AdminProductService {
   constructor(private readonly adminService: AdminService) {}
 
-  async findOneById(id: string): Promise<Product> {
+  async findOneById(id: string) {
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         {

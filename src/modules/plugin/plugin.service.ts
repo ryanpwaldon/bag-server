@@ -14,7 +14,7 @@ export class PluginService {
     @InjectModel(Plugin.name) private readonly pluginModel: Model<Plugin>
   ) {}
 
-  async findMyOrCreate(): Promise<Plugin> {
+  async create() {
     const userId = this.req.user.id
     const plugin = await this.pluginModel.findOne({ user: userId })
     return plugin || new this.pluginModel({ user: userId }).save()
@@ -24,8 +24,8 @@ export class PluginService {
     return this.pluginModel.findOne(query).exec()
   }
 
-  async updateMy(userId: Schema.Types.ObjectId, body: Partial<Plugin>): Promise<Plugin> {
-    const plugin = await this.pluginModel.findOne({ user: userId })
+  async updateOne(query: MongooseFilterQuery<Plugin>, body: Partial<Plugin>): Promise<Plugin> {
+    const plugin = await this.pluginModel.findOne(query)
     return merge(plugin, body).save()
   }
 }

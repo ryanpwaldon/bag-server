@@ -5,7 +5,7 @@ import { AdminService } from '../admin/admin.service'
 export class AdminMetaService {
   constructor(private readonly adminService: AdminService) {}
 
-  async getAppUrl() {
+  async findAppUrl() {
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         {

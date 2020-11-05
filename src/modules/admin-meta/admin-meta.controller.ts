@@ -12,6 +12,6 @@ export class AdminMetaController {
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
   findAppUrl() {
-    return this.adminMetaService.getAppUrl()
+    return this.adminMetaService.findAppUrl()
   }
 }

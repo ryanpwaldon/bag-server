@@ -10,8 +10,8 @@ import { ConfigService } from '@nestjs/config'
 import { generate } from 'nonce-next'
 import { Logger } from 'nestjs-pino'
 import { Request, Response } from 'express'
-import qs from 'qs'
 import { User } from 'src/modules/user/schema/user.schema'
+import qs from 'qs'
 
 @Controller('installation')
 export class InstallationController {
@@ -67,10 +67,10 @@ export class InstallationController {
       this.adminWebhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
       this.adminWebhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
       this.adminScriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
-      this.pluginService.findMyOrCreate()
+      this.pluginService.create()
     ])
     // redirect to app url
-    const redirectUrl = await this.adminMetaService.getAppUrl()
+    const redirectUrl = await this.adminMetaService.findAppUrl()
     res.redirect(redirectUrl)
   }
 

@@ -57,7 +57,7 @@ export class AdminSubscriptionService {
     await user.save()
     if (plan.price === 0) return this.cancel()
     const isProduction = this.configService.get('APP_ENV') === 'production'
-    const redirectUrl = `${await this.adminMetaService.getAppUrl()}/actions/sync`
+    const redirectUrl = `${await this.adminMetaService.findAppUrl()}/actions/sync`
     const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
