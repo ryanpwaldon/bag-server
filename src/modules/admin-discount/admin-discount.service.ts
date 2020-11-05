@@ -7,7 +7,7 @@ export class AdminDiscountService {
 
   async findOne(id: string) {
     const { data } = await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         {
           codeDiscountNode(id: "${id}") {
             id

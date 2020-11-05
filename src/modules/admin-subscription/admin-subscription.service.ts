@@ -60,7 +60,7 @@ export class AdminSubscriptionService {
     const redirectUrl = `${await this.adminMetaService.getAppUrl()}/actions/sync`
     const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
     const { data } = await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         mutation {
           appSubscriptionCreate(
             name: "${plan.name}",
@@ -91,7 +91,7 @@ export class AdminSubscriptionService {
 
   async findMyActivePlan(): Promise<Plan> {
     const { data } = await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         {
           appInstallation {
             activeSubscriptions {
@@ -115,7 +115,7 @@ export class AdminSubscriptionService {
     const plan = await this.findMyActivePlan()
     if (!plan.id) return
     await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         mutation {
           appSubscriptionCancel(id: "${plan.id}") {
             appSubscription {

@@ -8,7 +8,7 @@ export class AdminProductService {
 
   async findOneById(id: string): Promise<Product> {
     const { data } = await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         {
           product(id: "${id}") {
             title

@@ -7,7 +7,7 @@ export class AdminMetaService {
 
   async getAppUrl() {
     const { data } = await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         {
           appInstallation {
             launchUrl

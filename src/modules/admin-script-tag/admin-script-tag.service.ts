@@ -10,7 +10,7 @@ export class AdminScriptTagService {
     const exists = await this.checkExistence()
     if (exists) return
     this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         mutation {
           scriptTagCreate(input: {
             src: "${src}"
@@ -31,7 +31,7 @@ export class AdminScriptTagService {
 
   async checkExistence() {
     const { data } = await this.adminService.createRequest({
-      query: `
+      query: /* GraphQL */ `
         {
           scriptTags(first: 1) {
             edges {
