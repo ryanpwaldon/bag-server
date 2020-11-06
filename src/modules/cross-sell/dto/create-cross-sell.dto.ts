@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator'
+import { IsNotEmpty, IsString } from 'class-validator'
 
 export class CreateCrossSellDto {
   @IsNotEmpty()
@@ -11,13 +11,9 @@ export class CreateCrossSellDto {
 
   @IsNotEmpty()
   @IsString()
-  adminProductId!: string
+  productId!: string
 
   @IsNotEmpty()
   @IsString({ each: true })
-  triggers!: string[]
-
-  @IsNotEmpty()
-  @IsBoolean()
-  active!: boolean
+  triggerProductIds!: string[]
 }

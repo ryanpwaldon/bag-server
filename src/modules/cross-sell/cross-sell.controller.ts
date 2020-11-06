@@ -4,14 +4,17 @@ import { RoleGuard } from '../../common/guards/role.guard'
 import { Roles } from '../../common/decorators/role.decorator'
 import { Role } from '../../common/constants/role.constants'
 import { CreateCrossSellDto } from './dto/create-cross-sell.dto'
-import { UserService } from 'src/modules/user/user.service'
 import { User } from 'src/common/decorators/user.decorator'
-import { MongooseFilterQuery, Schema } from 'mongoose'
+import { MongooseFilterQuery, PaginateResult, Schema } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
+import { AdminProductService } from 'src/modules/admin-product/admin-product.service'
 
 @Controller('cross-sell')
 export class CrossSellController {
-  constructor(private readonly crossSellService: CrossSellService, private readonly userService: UserService) {}
+  constructor(
+    private readonly crossSellService: CrossSellService,
+    private readonly adminProductService: AdminProductService
+  ) {}
 
   @Post()
   @UseGuards(RoleGuard)
@@ -44,7 +47,11 @@ export class CrossSellController {
     @Query('query') query: MongooseFilterQuery<CrossSell> = {}
   ) {
     query.user = userId
-    return this.crossSellService.findAll(query, sort, page, limit)
+    type CrossSellExtended = CrossSell & { product?: any }
+    const result: PaginateResult<CrossSellExtended> = await this.crossSellService.findAll(query, sort, page, limit)
+    const products = await Promise.all(result.docs.map(item => this.adminProductService.findOneById(item.productId)))
+    result.docs.forEach((item, i) => (item.product = products[i]))
+    return result
   }
 
   @Delete(':id')

@@ -22,7 +22,7 @@ export class CrossSellService {
   }
 
   findAll(query: MongooseFilterQuery<CrossSell>, sort: string, page = 1, limit = 20) {
-    return this.crossSellModel.paginate(query, { sort, page, limit })
+    return this.crossSellModel.paginate(query, { sort, page, limit, lean: true })
   }
 
   findOneById(id: string) {

@@ -7,14 +7,14 @@ export class CrossSell extends Document {
   @Prop({ required: true, ref: User.name })
   user!: MongooseSchema.Types.ObjectId
 
-  @Prop({ default: false })
+  @Prop({ default: true })
   active!: boolean
 
   @Prop()
   activeFor!: number
 
   @Prop()
-  adminProductId!: string
+  productId!: string
 
   @Prop()
   title!: string
@@ -23,7 +23,7 @@ export class CrossSell extends Document {
   subtitle!: string
 
   @Prop([String])
-  triggers!: string[]
+  triggerProductIds!: string[]
 }
 
 export const CrossSellSchema = SchemaFactory.createForClass(CrossSell)
