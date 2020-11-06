@@ -9,7 +9,7 @@ import { MongooseFilterQuery, PaginateResult, Schema } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { AdminProductService } from 'src/modules/admin-product/admin-product.service'
 
-type CrossSellExtended = CrossSell & { product?: any }
+type CrossSellExtended = Partial<CrossSell> & { product?: any }
 
 @Controller('cross-sell')
 export class CrossSellController {
@@ -53,7 +53,9 @@ export class CrossSellController {
   ) {
     query.user = userId
     const result: PaginateResult<CrossSellExtended> = await this.crossSellService.findAll(query, sort, page, limit)
-    const products = await Promise.all(result.docs.map(item => this.adminProductService.findOneById(item.productId)))
+    const products = await Promise.all(
+      result.docs.map(item => this.adminProductService.findOneById(item.productId as string))
+    )
     result.docs.forEach((item, i) => (item.product = products[i]))
     return result
   }

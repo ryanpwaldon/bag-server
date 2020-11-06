@@ -26,7 +26,10 @@ export class CrossSellService {
   }
 
   findOneById(id: string) {
-    return this.crossSellModel.findById(id).exec()
+    return this.crossSellModel
+      .findById(id)
+      .lean()
+      .exec()
   }
 
   async updateOneById(id: string, body: Partial<CrossSell>): Promise<CrossSell> {
