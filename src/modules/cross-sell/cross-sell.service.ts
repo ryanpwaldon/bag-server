@@ -22,14 +22,11 @@ export class CrossSellService {
   }
 
   findAll(query: MongooseFilterQuery<CrossSell>, sort: string, page = 1, limit = 20) {
-    return this.crossSellModel.paginate(query, { sort, page, limit, lean: true })
+    return this.crossSellModel.paginate(query, { sort, page, limit })
   }
 
   findOneById(id: string) {
-    return this.crossSellModel
-      .findById(id)
-      .lean()
-      .exec()
+    return this.crossSellModel.findById(id).exec()
   }
 
   async updateOneById(id: string, body: Partial<CrossSell>): Promise<CrossSell> {
