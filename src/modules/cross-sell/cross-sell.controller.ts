@@ -9,6 +9,8 @@ import { MongooseFilterQuery, PaginateResult, Schema } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { AdminProductService } from 'src/modules/admin-product/admin-product.service'
 
+type CrossSellExtended = CrossSell & { product?: any }
+
 @Controller('cross-sell')
 export class CrossSellController {
   constructor(
@@ -32,8 +34,11 @@ export class CrossSellController {
 
   @Get(':id')
   @UseGuards(RoleGuard)
-  findOneById(@Param('id') id: string) {
-    return this.crossSellService.findOneById(id)
+  @Roles(Role.Installed)
+  async findOneById(@Param('id') id: string) {
+    const item: CrossSellExtended | null = await this.crossSellService.findOneById(id)
+    if (item?.productId) item.product = await this.adminProductService.findOneById(item.productId)
+    return item
   }
 
   @Get()
@@ -47,7 +52,6 @@ export class CrossSellController {
     @Query('query') query: MongooseFilterQuery<CrossSell> = {}
   ) {
     query.user = userId
-    type CrossSellExtended = CrossSell & { product?: any }
     const result: PaginateResult<CrossSellExtended> = await this.crossSellService.findAll(query, sort, page, limit)
     const products = await Promise.all(result.docs.map(item => this.adminProductService.findOneById(item.productId)))
     result.docs.forEach((item, i) => (item.product = products[i]))
