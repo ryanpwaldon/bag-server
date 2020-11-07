@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model, MongooseFilterQuery } from 'mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
+import { Model, MongooseFilterQuery } from 'mongoose'
+import { InjectModel } from '@nestjs/mongoose'
+import { Injectable } from '@nestjs/common'
 import { User } from './schema/user.schema'
-import { merge } from 'lodash'
+import assign from 'lodash/assign'
 
 @Injectable()
 export class UserService {
@@ -23,6 +23,6 @@ export class UserService {
 
   async updateOneById(id: string, body: Partial<User>): Promise<User> {
     const user = await this.userModel.findById(id)
-    return merge(user, body).save()
+    return assign(user, body).save()
   }
 }

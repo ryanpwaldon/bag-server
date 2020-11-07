@@ -1,11 +1,11 @@
 import { Injectable, Scope, Inject } from '@nestjs/common'
+import { User } from 'src/modules/user/schema/user.schema'
+import { Model, MongooseFilterQuery } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { Plugin } from './schema/plugin.schema'
-import { Model, MongooseFilterQuery, Schema } from 'mongoose'
-import { merge } from 'lodash'
 import { REQUEST } from '@nestjs/core'
+import assign from 'lodash/assign'
 import { Request } from 'express'
-import { User } from 'src/modules/user/schema/user.schema'
 
 @Injectable({ scope: Scope.REQUEST })
 export class PluginService {
@@ -26,6 +26,6 @@ export class PluginService {
 
   async updateOne(query: MongooseFilterQuery<Plugin>, body: Partial<Plugin>): Promise<Plugin> {
     const plugin = await this.pluginModel.findOne(query)
-    return merge(plugin, body).save()
+    return assign(plugin, body).save()
   }
 }

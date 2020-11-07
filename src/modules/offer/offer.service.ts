@@ -1,11 +1,11 @@
+import { MongooseFilterQuery, PaginateModel } from 'mongoose'
 import { Injectable, Scope, Inject } from '@nestjs/common'
+import { User } from 'src/modules/user/schema/user.schema'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { InjectModel } from '@nestjs/mongoose'
 import { Offer } from './schema/offer.schema'
 import { REQUEST } from '@nestjs/core'
-import { MongooseFilterQuery, PaginateModel } from 'mongoose'
-import { merge } from 'lodash'
-import { User } from 'src/modules/user/schema/user.schema'
+import assign from 'lodash/assign'
 import { Request } from 'express'
 
 @Injectable({ scope: Scope.REQUEST })
@@ -31,7 +31,7 @@ export class OfferService {
 
   async updateOneById(id: string, body: Partial<Offer>) {
     const offer = await this.offerModel.findById(id)
-    return merge(offer, body).save()
+    return assign(offer, body).save()
   }
 
   deleteOneById(id: string) {

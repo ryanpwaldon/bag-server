@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { CrossSell } from './schema/cross-sell.schema'
 import { REQUEST } from '@nestjs/core'
 import { MongooseFilterQuery, PaginateModel } from 'mongoose'
-import { merge } from 'lodash'
+import assign from 'lodash/assign'
 import { Request } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
 
@@ -31,7 +31,7 @@ export class CrossSellService {
 
   async updateOneById(id: string, body: Partial<CrossSell>): Promise<CrossSell> {
     const crossSell = await this.crossSellModel.findById(id)
-    return merge(crossSell, body).save()
+    return assign(crossSell, body).save()
   }
 
   deleteOneById(id: string) {
