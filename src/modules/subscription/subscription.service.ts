@@ -12,7 +12,7 @@ import { getPlanByName, getPlanBySlug, getPlans, Plan } from './types/plan.types
 import { UserService } from '../user/user.service'
 import { REQUEST } from '@nestjs/core'
 import { Role } from '../../common/constants/role.constants'
-import { AdminMetaService } from '../admin-meta/admin-meta.service'
+import { AppUrlService } from '../app-url/app-url.service'
 import { Request } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
 
@@ -22,7 +22,7 @@ export class SubscriptionService {
     private readonly adminService: AdminService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-    private readonly adminMetaService: AdminMetaService,
+    private readonly appUrlService: AppUrlService,
     @Inject(REQUEST) private req: Request & { user: User }
   ) {}
 
@@ -57,7 +57,7 @@ export class SubscriptionService {
     await user.save()
     if (plan.price === 0) return this.cancel()
     const isProduction = this.configService.get('APP_ENV') === 'production'
-    const redirectUrl = `${await this.adminMetaService.findAppUrl()}/actions/sync`
+    const redirectUrl = `${await this.appUrlService.find()}/actions/sync`
     const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `

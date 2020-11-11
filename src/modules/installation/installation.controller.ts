@@ -4,7 +4,7 @@ import { ScriptTagService } from '../script-tag/script-tag.service'
 import { InstallationService } from './installation.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { PluginService } from '../plugin/plugin.service'
-import { AdminMetaService } from '../admin-meta/admin-meta.service'
+import { AppUrlService } from '../app-url/app-url.service'
 import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
 import { generate } from 'nonce-next'
@@ -19,7 +19,7 @@ export class InstallationController {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly installationService: InstallationService,
-    private readonly adminMetaService: AdminMetaService,
+    private readonly appUrlService: AppUrlService,
     private readonly webhookService: WebhookService,
     private readonly scriptTagService: ScriptTagService,
     private readonly subscriptionService: SubscriptionService,
@@ -70,7 +70,7 @@ export class InstallationController {
       this.pluginService.create()
     ])
     // redirect to app url
-    const redirectUrl = await this.adminMetaService.findAppUrl()
+    const redirectUrl = await this.appUrlService.find()
     res.redirect(redirectUrl)
   }
 

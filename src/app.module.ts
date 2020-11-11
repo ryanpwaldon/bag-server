@@ -12,7 +12,7 @@ import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
-import { AdminMetaModule } from './modules/admin-meta/admin-meta.module'
+import { AppUrlModule } from './modules/app-url/app-url.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ProductModule } from './modules/product/product.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
@@ -60,7 +60,7 @@ import prettifier from 'pino-colada'
     MonitorModule,
     AdminDiscountModule,
     WebhookModule,
-    AdminMetaModule,
+    AppUrlModule,
     ScriptTagModule,
     ProductModule,
     CrossSellModule,
