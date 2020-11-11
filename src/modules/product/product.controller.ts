@@ -5,7 +5,7 @@ import { RoleGuard } from '../../common/guards/role.guard'
 import { ProductService } from './product.service'
 import { composeGid } from '@shopify/admin-graphql-api-utilities'
 
-@Controller('admin-product')
+@Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
