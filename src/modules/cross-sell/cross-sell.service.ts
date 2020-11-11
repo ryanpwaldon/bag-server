@@ -1,11 +1,12 @@
-import { Injectable, Scope, Inject } from '@nestjs/common'
 import { CreateCrossSellDto } from './dto/create-cross-sell.dto'
-import { InjectModel } from '@nestjs/mongoose'
-import { CrossSell } from './schema/cross-sell.schema'
-import { REQUEST } from '@nestjs/core'
-import { MongooseFilterQuery, PaginateModel, UpdateQuery } from 'mongoose'
-import { Request } from 'express'
+import { MongooseFilterQuery, PaginateModel } from 'mongoose'
 import { User } from 'src/modules/user/schema/user.schema'
+import { Injectable, Scope, Inject } from '@nestjs/common'
+import { CrossSell } from './schema/cross-sell.schema'
+import { InjectModel } from '@nestjs/mongoose'
+import { REQUEST } from '@nestjs/core'
+import { Request } from 'express'
+import assign from 'lodash/assign'
 
 @Injectable({ scope: Scope.REQUEST })
 export class CrossSellService {
@@ -28,13 +29,9 @@ export class CrossSellService {
     return this.crossSellModel.findById(id).exec()
   }
 
-  // async updateOneById(id: string, body: Partial<CrossSell>): Promise<CrossSell> {
-  //   const crossSell = await this.crossSellModel.findById(id)
-  //   return assign(crossSell, body).save()
-  // }
-
-  updateOneById(id: string, body: UpdateQuery<CrossSell>) {
-    return this.crossSellModel.findByIdAndUpdate(id, body).exec()
+  async updateOneById(id: string, body: Partial<CrossSell>): Promise<CrossSell> {
+    const crossSell = await this.crossSellModel.findById(id)
+    return assign(crossSell, body).save()
   }
 
   deleteOneById(id: string) {
