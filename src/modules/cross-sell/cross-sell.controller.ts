@@ -8,21 +8,18 @@ import { UpdateCrossSellDto } from './dto/update-cross-sell.dto'
 import { User } from 'src/common/decorators/user.decorator'
 import { MongooseFilterQuery, Schema } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
-import { AdminProductService } from 'src/modules/admin-product/admin-product.service'
+import { ProductService } from 'src/modules/product/product.service'
 
 type CrossSellExtended = Partial<CrossSell> & { product?: any }
 
 @Controller('cross-sell')
 export class CrossSellController {
-  constructor(
-    private readonly crossSellService: CrossSellService,
-    private readonly adminProductService: AdminProductService
-  ) {}
+  constructor(private readonly crossSellService: CrossSellService, private readonly productService: ProductService) {}
 
   async populate(item: CrossSell | null) {
     if (item === null) return null
     const result: CrossSellExtended = item.toObject()
-    result.product = await this.adminProductService.findOneById(item.productId)
+    result.product = await this.productService.findOneById(item.productId)
     return result
   }
 

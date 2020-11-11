@@ -14,7 +14,7 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
 import { AdminWebhookModule } from './modules/admin-webhook/admin-webhook.module'
 import { AdminMetaModule } from './modules/admin-meta/admin-meta.module'
 import { AdminScriptTagModule } from './modules/admin-script-tag/admin-script-tag.module'
-import { AdminProductModule } from './modules/admin-product/admin-product.module'
+import { ProductModule } from './modules/product/product.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { CartEventModule } from './modules/cart-event/cart-event.module'
 import paginate from 'mongoose-paginate'
@@ -62,7 +62,7 @@ import prettifier from 'pino-colada'
     AdminWebhookModule,
     AdminMetaModule,
     AdminScriptTagModule,
-    AdminProductModule,
+    ProductModule,
     CrossSellModule,
     CartEventModule
   ]
