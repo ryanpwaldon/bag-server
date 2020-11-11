@@ -4,7 +4,7 @@ import { UserModule } from './modules/user/user.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { AdminModule } from './modules/admin/admin.module'
 import { OfferModule } from './modules/offer/offer.module'
-import { AdminSubscriptionModule } from './modules/admin-subscription/admin-subscription.module'
+import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { PluginModule } from './modules/plugin/plugin.module'
 import { LoggerModule } from 'nestjs-pino'
@@ -53,7 +53,7 @@ import prettifier from 'pino-colada'
     UserModule,
     AdminModule,
     OfferModule,
-    AdminSubscriptionModule,
+    SubscriptionModule,
     InstallationModule,
     PluginModule,
     GdprModule,

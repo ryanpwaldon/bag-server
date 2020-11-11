@@ -17,7 +17,7 @@ import { Request } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
 
 @Injectable({ scope: Scope.REQUEST })
-export class AdminSubscriptionService {
+export class SubscriptionService {
   constructor(
     private readonly adminService: AdminService,
     private readonly configService: ConfigService,

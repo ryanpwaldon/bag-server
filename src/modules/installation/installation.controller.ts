@@ -1,5 +1,5 @@
 import { Controller, Get, Query, BadRequestException, Res, Req, Post, Body } from '@nestjs/common'
-import { AdminSubscriptionService } from '../admin-subscription/admin-subscription.service'
+import { SubscriptionService } from '../subscription/subscription.service'
 import { AdminScriptTagService } from '../admin-script-tag/admin-script-tag.service'
 import { InstallationService } from './installation.service'
 import { WebhookService } from '../webhook/webhook.service'
@@ -22,7 +22,7 @@ export class InstallationController {
     private readonly adminMetaService: AdminMetaService,
     private readonly webhookService: WebhookService,
     private readonly adminScriptTagService: AdminScriptTagService,
-    private readonly adminSubscriptionService: AdminSubscriptionService,
+    private readonly subscriptionService: SubscriptionService,
     private readonly pluginService: PluginService,
     private readonly logger: Logger
   ) {}
@@ -63,7 +63,7 @@ export class InstallationController {
     req.user = user
     // run installation tasks
     await Promise.all([
-      this.adminSubscriptionService.sync(),
+      this.subscriptionService.sync(),
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
       this.webhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
       this.adminScriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),

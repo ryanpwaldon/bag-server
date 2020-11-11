@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get, Headers, Req, UseGuards, NotFoundException } from '@nestjs/common'
-import { AdminSubscriptionService } from './admin-subscription.service'
+import { SubscriptionService } from './subscription.service'
 import { UserService } from '../user/user.service'
 import { Roles } from '../../common/decorators/role.decorator'
 import { Role } from '../../common/constants/role.constants'
@@ -9,9 +9,9 @@ import { Request } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
 
 @Controller('admin-subscription')
-export class AdminSubscriptionController {
+export class SubscriptionController {
   constructor(
-    private readonly adminSubscriptionService: AdminSubscriptionService,
+    private readonly subscriptionService: SubscriptionService,
     private readonly userService: UserService,
     private readonly logger: Logger
   ) {}
@@ -20,14 +20,14 @@ export class AdminSubscriptionController {
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
   create(@Body('name') name: string) {
-    return this.adminSubscriptionService.create(name)
+    return this.subscriptionService.create(name)
   }
 
   @Get('sync')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
   syncViaClient() {
-    return this.adminSubscriptionService.sync()
+    return this.subscriptionService.sync()
   }
 
   @Post('sync')
@@ -36,20 +36,20 @@ export class AdminSubscriptionController {
     const user = await this.userService.findOne({ shopOrigin })
     if (!user) throw new NotFoundException()
     req.user = user
-    return this.adminSubscriptionService.sync()
+    return this.subscriptionService.sync()
   }
 
   @Get('cancel')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
   cancel() {
-    return this.adminSubscriptionService.cancel()
+    return this.subscriptionService.cancel()
   }
 
   @Get('plans')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
   findAllPlans() {
-    return this.adminSubscriptionService.findAllPlans()
+    return this.subscriptionService.findAllPlans()
   }
 }

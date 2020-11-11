@@ -6,7 +6,7 @@ import { UserModule } from '../user/user.module'
 import { AdminMetaModule } from '../admin-meta/admin-meta.module'
 import { WebhookModule } from '../webhook/webhook.module'
 import { AdminScriptTagModule } from '../admin-script-tag/admin-script-tag.module'
-import { AdminSubscriptionModule } from '../admin-subscription/admin-subscription.module'
+import { SubscriptionModule } from '../subscription/subscription.module'
 import { PluginModule } from '../plugin/plugin.module'
 
 @Module({
@@ -18,7 +18,7 @@ import { PluginModule } from '../plugin/plugin.module'
     AdminMetaModule,
     WebhookModule,
     AdminScriptTagModule,
-    AdminSubscriptionModule,
+    SubscriptionModule,
     PluginModule
   ],
   exports: [InstallationService]
