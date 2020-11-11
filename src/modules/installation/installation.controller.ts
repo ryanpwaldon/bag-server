@@ -64,8 +64,9 @@ export class InstallationController {
     // run installation tasks
     await Promise.all([
       this.subscriptionService.sync(),
+      this.webhookService.create('ORDERS_CREATE', '/order/event/created'),
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
-      this.webhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
+      this.webhookService.create('APP_UNINSTALLED', '/installation/event/uninstalled'),
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.pluginService.create()
     ])
@@ -74,8 +75,8 @@ export class InstallationController {
     res.redirect(redirectUrl)
   }
 
-  @Post('uninstall')
-  async uninstall(@Body() body: { myshopify_domain: string }) {
+  @Post('event/uninstalled')
+  async onUninstalled(@Body() body: { myshopify_domain: string }) {
     this.logger.log('Webhook triggered: APP_UNINSTALLED')
     const shopOrigin = body.myshopify_domain
     const user = await this.userService.findOne({ shopOrigin })
