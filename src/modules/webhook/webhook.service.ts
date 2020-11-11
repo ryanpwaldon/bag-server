@@ -4,7 +4,7 @@ import { AdminService } from '../admin/admin.service'
 import { Logger } from 'nestjs-pino'
 
 @Injectable()
-export class AdminWebhookService {
+export class WebhookService {
   constructor(
     private readonly configService: ConfigService,
     private readonly adminService: AdminService,
