@@ -103,8 +103,7 @@ export class SubscriptionService {
       `
     })
     const [subscription] = data.appInstallation.activeSubscriptions
-    if (!subscription) throw new NotFoundException('Subscription not found.')
-    const plan = getPlanByName(subscription.name) || getPlanBySlug(Role.Starter)
+    const plan = getPlanByName(subscription?.name) || getPlanBySlug(Role.Starter)
     if (!plan) throw new InternalServerErrorException()
     plan.id = subscription && subscription.id
     plan.subscribed = this.req.user.onboarded && true
