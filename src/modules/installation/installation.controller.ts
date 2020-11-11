@@ -1,6 +1,6 @@
 import { Controller, Get, Query, BadRequestException, Res, Req, Post, Body } from '@nestjs/common'
 import { SubscriptionService } from '../subscription/subscription.service'
-import { AdminScriptTagService } from '../admin-script-tag/admin-script-tag.service'
+import { ScriptTagService } from '../script-tag/script-tag.service'
 import { InstallationService } from './installation.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { PluginService } from '../plugin/plugin.service'
@@ -21,7 +21,7 @@ export class InstallationController {
     private readonly installationService: InstallationService,
     private readonly adminMetaService: AdminMetaService,
     private readonly webhookService: WebhookService,
-    private readonly adminScriptTagService: AdminScriptTagService,
+    private readonly scriptTagService: ScriptTagService,
     private readonly subscriptionService: SubscriptionService,
     private readonly pluginService: PluginService,
     private readonly logger: Logger
@@ -66,7 +66,7 @@ export class InstallationController {
       this.subscriptionService.sync(),
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
       this.webhookService.create('APP_UNINSTALLED', '/installation/uninstall'),
-      this.adminScriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
+      this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.pluginService.create()
     ])
     // redirect to app url

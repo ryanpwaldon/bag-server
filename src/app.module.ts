@@ -13,7 +13,7 @@ import { MonitorModule } from './modules/monitor/monitor.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { AdminMetaModule } from './modules/admin-meta/admin-meta.module'
-import { AdminScriptTagModule } from './modules/admin-script-tag/admin-script-tag.module'
+import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ProductModule } from './modules/product/product.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { CartEventModule } from './modules/cart-event/cart-event.module'
@@ -61,7 +61,7 @@ import prettifier from 'pino-colada'
     AdminDiscountModule,
     WebhookModule,
     AdminMetaModule,
-    AdminScriptTagModule,
+    ScriptTagModule,
     ProductModule,
     CrossSellModule,
     CartEventModule

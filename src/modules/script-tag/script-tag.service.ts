@@ -3,7 +3,7 @@ import { AdminService } from '../admin/admin.service'
 import { Logger } from 'nestjs-pino'
 
 @Injectable()
-export class AdminScriptTagService {
+export class ScriptTagService {
   constructor(private readonly adminService: AdminService, private readonly logger: Logger) {}
 
   async create(src: string) {
