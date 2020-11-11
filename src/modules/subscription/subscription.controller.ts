@@ -8,7 +8,7 @@ import { RoleGuard } from '../../common/guards/role.guard'
 import { Request } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
 
-@Controller('admin-subscription')
+@Controller('subscription')
 export class SubscriptionController {
   constructor(
     private readonly subscriptionService: SubscriptionService,
