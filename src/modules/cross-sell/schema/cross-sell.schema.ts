@@ -13,17 +13,20 @@ export class CrossSell extends Document {
   @Prop()
   activeFor!: number
 
-  @Prop()
+  @Prop({ required: true })
   productId!: string
 
-  @Prop()
+  @Prop({ required: true })
   title!: string
 
-  @Prop()
+  @Prop({ required: true })
   subtitle!: string
 
   @Prop([String])
   triggerProductIds!: string[]
+
+  @Prop([String])
+  orders!: string[]
 }
 
 export const CrossSellSchema = SchemaFactory.createForClass(CrossSell)
