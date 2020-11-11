@@ -18,6 +18,7 @@ import { ProductModule } from 'src/modules/product/product.module'
     ])
   ],
   controllers: [CrossSellController],
-  providers: [CrossSellService]
+  providers: [CrossSellService],
+  exports: [CrossSellService]
 })
 export class CrossSellModule {}

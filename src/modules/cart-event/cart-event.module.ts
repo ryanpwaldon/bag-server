@@ -16,6 +16,7 @@ import { CartEventService } from './cart-event.service'
     ])
   ],
   controllers: [CartEventController],
-  providers: [CartEventService]
+  providers: [CartEventService],
+  exports: [CartEventService]
 })
 export class CartEventModule {}
