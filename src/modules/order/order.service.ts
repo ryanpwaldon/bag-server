@@ -11,6 +11,7 @@ export class OrderService {
         {
           nodes(ids: ${JSON.stringify(ids)}) {
             ...on Order {
+              id
               name
               processedAt
               totalPriceSet {
