@@ -20,7 +20,8 @@ export class OrderController {
   @Get('ids')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  findByIds(@Query('ids') ids: string[]) {
+  findByIds(@Query('ids') ids: string[] | undefined) {
+    if (!ids?.length) return []
     return this.orderService.findByIds(ids)
   }
 
