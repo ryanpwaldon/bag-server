@@ -18,6 +18,7 @@ import { ProductModule } from './modules/product/product.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { CartEventModule } from './modules/cart-event/cart-event.module'
 import { OrderModule } from './modules/order/order.module'
+import { CartModule } from './modules/cart/cart.module'
 import paginate from 'mongoose-paginate'
 import prettifier from 'pino-colada'
 
@@ -66,7 +67,8 @@ import prettifier from 'pino-colada'
     ProductModule,
     CrossSellModule,
     CartEventModule,
-    OrderModule
+    OrderModule,
+    CartModule
   ]
 })
 export class AppModule {}
