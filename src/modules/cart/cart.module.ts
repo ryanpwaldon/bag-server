@@ -12,6 +12,7 @@ import { Cart, CartSchema } from 'src/modules/cart/schema/cart.schema'
       }
     ])
   ],
-  providers: [CartService]
+  providers: [CartService],
+  exports: [CartService]
 })
 export class CartModule {}

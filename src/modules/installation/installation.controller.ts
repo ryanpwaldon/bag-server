@@ -11,6 +11,7 @@ import { generate } from 'nonce-next'
 import { Logger } from 'nestjs-pino'
 import { Request, Response } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
+import { CartService } from 'src/modules/cart/cart.service'
 import qs from 'qs'
 
 @Controller('installation')
@@ -24,6 +25,7 @@ export class InstallationController {
     private readonly scriptTagService: ScriptTagService,
     private readonly subscriptionService: SubscriptionService,
     private readonly pluginService: PluginService,
+    private readonly cartService: CartService,
     private readonly logger: Logger
   ) {}
 
@@ -68,6 +70,7 @@ export class InstallationController {
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
       this.webhookService.create('APP_UNINSTALLED', '/installation/event/uninstalled'),
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
+      this.cartService.create({ user: user.id }),
       this.pluginService.create()
     ])
     // redirect to app url
