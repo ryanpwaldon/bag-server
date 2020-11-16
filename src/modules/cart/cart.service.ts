@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model, MongooseFilterQuery } from 'mongoose'
 import { CreateCartDto } from 'src/modules/cart/dto/create-cart.dto'
 import { Cart } from 'src/modules/cart/schema/cart.schema'
+import { InjectModel } from '@nestjs/mongoose'
+import { Injectable } from '@nestjs/common'
+import { Model, Schema } from 'mongoose'
+import assign from 'lodash/assign'
 
 @Injectable()
 export class CartService {
@@ -13,7 +14,12 @@ export class CartService {
     return cart || new this.cartModel(createCartDto).save()
   }
 
-  findAll(query: MongooseFilterQuery<Cart>) {
-    return this.cartModel.find(query)
+  findOneByUserId(userId: Schema.Types.ObjectId) {
+    return this.cartModel.findOne({ user: userId })
+  }
+
+  async updateOneByUserId(userId: Schema.Types.ObjectId, body: Partial<Cart>): Promise<Cart> {
+    const cart = await this.cartModel.findOne({ user: userId })
+    return assign(cart, body).save()
   }
 }
