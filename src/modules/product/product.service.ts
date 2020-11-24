@@ -11,6 +11,7 @@ export class ProductService {
         {
           product(id: "${id}") {
             title
+            handle
             featuredImage {
               originalSrc
             }
