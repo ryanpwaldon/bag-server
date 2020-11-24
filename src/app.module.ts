@@ -6,7 +6,6 @@ import { AdminModule } from './modules/admin/admin.module'
 import { OfferModule } from './modules/offer/offer.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { InstallationModule } from './modules/installation/installation.module'
-import { PluginModule } from './modules/plugin/plugin.module'
 import { LoggerModule } from 'nestjs-pino'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
@@ -57,7 +56,6 @@ import prettifier from 'pino-colada'
     OfferModule,
     SubscriptionModule,
     InstallationModule,
-    PluginModule,
     GdprModule,
     MonitorModule,
     AdminDiscountModule,
