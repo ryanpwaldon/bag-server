@@ -3,7 +3,6 @@ import { SubscriptionService } from '../subscription/subscription.service'
 import { ScriptTagService } from '../script-tag/script-tag.service'
 import { InstallationService } from './installation.service'
 import { WebhookService } from '../webhook/webhook.service'
-import { PluginService } from '../plugin/plugin.service'
 import { AppUrlService } from '../app-url/app-url.service'
 import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
@@ -24,7 +23,6 @@ export class InstallationController {
     private readonly webhookService: WebhookService,
     private readonly scriptTagService: ScriptTagService,
     private readonly subscriptionService: SubscriptionService,
-    private readonly pluginService: PluginService,
     private readonly cartService: CartService,
     private readonly logger: Logger
   ) {}
@@ -70,8 +68,7 @@ export class InstallationController {
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
       this.webhookService.create('APP_UNINSTALLED', '/installation/event/uninstalled'),
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
-      this.cartService.create({ user: user.id }),
-      this.pluginService.create()
+      this.cartService.create({ user: user.id })
     ])
     // redirect to app url
     const redirectUrl = await this.appUrlService.find()
