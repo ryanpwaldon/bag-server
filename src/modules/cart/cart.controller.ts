@@ -13,7 +13,7 @@ export class CartController {
 
   @Get()
   @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
+  @Roles(Role.Installed, Role.Plugin)
   async findOneByUserId(@User('id') id: Schema.Types.ObjectId) {
     return this.cartService.findOneByUserId(id)
   }
