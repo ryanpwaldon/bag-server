@@ -5,9 +5,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 export class Lead extends Document {
   @Prop({ required: true })
   email!: string
-
-  @Prop({ required: true })
-  shopUrl!: string
 }
 
 export const LeadSchema = SchemaFactory.createForClass(Lead)
