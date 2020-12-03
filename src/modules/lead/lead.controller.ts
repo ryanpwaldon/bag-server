@@ -1,13 +1,16 @@
 import { Body, Controller, Post } from '@nestjs/common'
 import { CreateLeadDto } from 'src/modules/lead/dto/create-lead.dto'
 import { LeadService } from 'src/modules/lead/lead.service'
+import { MailService } from 'src/modules/mail/mail.service'
 
 @Controller('lead')
 export class LeadController {
-  constructor(private readonly leadService: LeadService) {}
+  constructor(private readonly leadService: LeadService, private readonly mailService: MailService) {}
 
   @Post()
   async create(@Body() createLeadDto: CreateLeadDto) {
-    return this.leadService.create(createLeadDto)
+    const lead = await this.leadService.create(createLeadDto)
+    this.mailService.sendWithTemplate({ to: lead.email, name: 'welcome' })
+    return lead
   }
 }

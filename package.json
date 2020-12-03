@@ -38,6 +38,7 @@
     "nonce-next": "^1.1.0",
     "parse-url": "^5.0.2",
     "pino-colada": "^2.0.1",
+    "postmark": "^2.6.0",
     "qs": "^6.9.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",

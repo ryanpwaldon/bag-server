@@ -19,6 +19,7 @@ import { CartEventModule } from './modules/cart-event/cart-event.module'
 import { OrderModule } from './modules/order/order.module'
 import { CartModule } from './modules/cart/cart.module'
 import { LeadModule } from './modules/lead/lead.module'
+import { MailModule } from './modules/mail/mail.module'
 import paginate from 'mongoose-paginate'
 import prettifier from 'pino-colada'
 
@@ -68,7 +69,8 @@ import prettifier from 'pino-colada'
     CartEventModule,
     OrderModule,
     CartModule,
-    LeadModule
+    LeadModule,
+    MailModule
   ]
 })
 export class AppModule {}
