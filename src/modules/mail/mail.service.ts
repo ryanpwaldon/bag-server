@@ -1,11 +1,11 @@
 import { Client } from 'postmark'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Templates, getTemplateByName } from 'src/modules/mail/constants/templates'
+import { Template } from './types/template'
 
 type Message = {
   to: string
-  name: keyof Templates
+  template: Template
   model?: Record<string, any>
 }
 
@@ -19,13 +19,13 @@ export class MailService {
     this.client = new Client(this.configService.get('POSTMARK_AUTH_TOKEN') as string)
   }
 
-  sendWithTemplate({ to, name, model = {} }: Message) {
+  sendWithTemplate({ to, template, model = {} }: Message) {
     this.client.sendEmailWithTemplate({
       To: to,
       From: `${this.fromName} <${this.fromAddress}>`,
-      TemplateId: getTemplateByName(name),
+      TemplateAlias: template,
       TemplateModel: model,
-      Tag: name
+      Tag: template
     })
   }
 }
