@@ -15,12 +15,14 @@ import { AppUrlModule } from './modules/app-url/app-url.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ProductModule } from './modules/product/product.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
-import { CartEventModule } from './modules/cart-event/cart-event.module'
+import { EventModule } from './modules/event/event.module'
 import { OrderModule } from './modules/order/order.module'
 import { CartModule } from './modules/cart/cart.module'
 import { LeadModule } from './modules/lead/lead.module'
 import { MailModule } from './modules/mail/mail.module'
+import { ConversionModule } from './modules/conversion/conversion.module'
 import paginate from 'mongoose-paginate'
+import autopopulate from 'mongoose-autopopulate'
 import prettifier from 'pino-colada'
 
 @Module({
@@ -49,6 +51,7 @@ import prettifier from 'pino-colada'
         useCreateIndex: true,
         connectionFactory: connection => {
           connection.plugin(paginate)
+          connection.plugin(autopopulate)
           return connection
         }
       })
@@ -66,11 +69,12 @@ import prettifier from 'pino-colada'
     ScriptTagModule,
     ProductModule,
     CrossSellModule,
-    CartEventModule,
+    EventModule,
     OrderModule,
     CartModule,
     LeadModule,
-    MailModule
+    MailModule,
+    ConversionModule
   ]
 })
 export class AppModule {}

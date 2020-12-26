@@ -5,7 +5,6 @@ import { Role } from 'src/common/constants/role.constants'
 import { User } from 'src/common/decorators/user.decorator'
 import { Cart } from 'src/modules/cart/schema/cart.schema'
 import { RoleGuard } from 'src/common/guards/role.guard'
-import { Schema } from 'mongoose'
 
 @Controller('cart')
 export class CartController {
@@ -14,14 +13,14 @@ export class CartController {
   @Get()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed, Role.Plugin)
-  async findOneByUserId(@User('id') id: Schema.Types.ObjectId) {
-    return this.cartService.findOneByUserId(id)
+  async findOneByUserId(@User('id') userId: string) {
+    return this.cartService.findOneByUserId(userId)
   }
 
   @Put()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  async updateOneByUserId(@User('id') id: Schema.Types.ObjectId, @Body() body: Partial<Cart>) {
-    return this.cartService.updateOneByUserId(id, body)
+  async updateOneByUserId(@User('id') userId: string, @Body() body: Partial<Cart>) {
+    return this.cartService.updateOneByUserId(userId, body)
   }
 }

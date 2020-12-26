@@ -1,5 +1,5 @@
 import { CreateUserDto } from './dto/create-user.dto'
-import { Model, MongooseFilterQuery } from 'mongoose'
+import { Model, FilterQuery } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { Injectable } from '@nestjs/common'
 import { User } from './schema/user.schema'
@@ -13,11 +13,11 @@ export class UserService {
     return new this.userModel(createUserDto).save()
   }
 
-  findById(id: string) {
+  findById(id?: string) {
     return this.userModel.findById(id).exec()
   }
 
-  findOne(query: MongooseFilterQuery<User>) {
+  findOne(query: FilterQuery<User>) {
     return this.userModel.findOne(query).exec()
   }
 

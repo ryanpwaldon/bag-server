@@ -1,5 +1,4 @@
-import { CreateCrossSellDto } from './dto/create-cross-sell.dto'
-import { MongooseFilterQuery, PaginateModel } from 'mongoose'
+import { FilterQuery, PaginateModel } from 'mongoose'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Injectable, Scope, Inject } from '@nestjs/common'
 import { CrossSell } from './schema/cross-sell.schema'
@@ -15,13 +14,12 @@ export class CrossSellService {
     @InjectModel(CrossSell.name) private readonly crossSellModel: PaginateModel<CrossSell>
   ) {}
 
-  async create(createCrossSellDto: CreateCrossSellDto) {
-    const crossSell = new this.crossSellModel(createCrossSellDto)
-    crossSell.user = this.req.user.id
+  async create(data: Partial<CrossSell>) {
+    const crossSell = new this.crossSellModel(data)
     return crossSell.save()
   }
 
-  findAll(query: MongooseFilterQuery<CrossSell>, sort: string, page = 1, limit = 20) {
+  findAll(query: FilterQuery<CrossSell>, sort: string, page = 1, limit = 20) {
     return this.crossSellModel.paginate(query, { sort, page, limit })
   }
 

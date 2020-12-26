@@ -1,8 +1,8 @@
 import { IsMongoId, IsNotEmpty } from 'class-validator'
-import { Schema } from 'mongoose'
+import { Types } from 'mongoose'
 
 export class CreateCartDto {
   @IsNotEmpty()
   @IsMongoId()
-  user!: Schema.Types.ObjectId
+  user!: Types.ObjectId
 }

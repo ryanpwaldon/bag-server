@@ -5,10 +5,10 @@ import Honeybadger from 'honeybadger'
 @Injectable()
 export class MonitorService {
   constructor(readonly configService: ConfigService) {
-    Honeybadger.configure({
-      apiKey: configService.get('HONEYBADGER_API_KEY') as string,
-      environment: configService.get('APP_ENV'),
-      developmentEnvironments: ['development']
-    })
+    // Honeybadger.configure({
+    //   apiKey: configService.get('HONEYBADGER_API_KEY') as string,
+    //   environment: configService.get('APP_ENV'),
+    //   developmentEnvironments: ['development']
+    // })
   }
 }

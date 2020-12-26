@@ -12,6 +12,7 @@ import { Request, Response } from 'express'
 import { User } from 'src/modules/user/schema/user.schema'
 import { CartService } from 'src/modules/cart/cart.service'
 import qs from 'qs'
+import { Types } from 'mongoose'
 
 @Controller('installation')
 export class InstallationController {
@@ -64,18 +65,18 @@ export class InstallationController {
     // run installation tasks
     await Promise.all([
       this.subscriptionService.sync(),
-      this.webhookService.create('ORDERS_CREATE', '/order/event/created'),
+      this.webhookService.create('ORDERS_CREATE', '/order/created'),
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
-      this.webhookService.create('APP_UNINSTALLED', '/installation/event/uninstalled'),
+      this.webhookService.create('APP_UNINSTALLED', '/installation/uninstalled'),
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
-      this.cartService.create({ user: user.id })
+      this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
     // redirect to app url
     const redirectUrl = await this.appUrlService.find()
     res.redirect(redirectUrl)
   }
 
-  @Post('event/uninstalled')
+  @Post('uninstalled')
   async onUninstalled(@Body() body: { myshopify_domain: string }) {
     this.logger.log('Webhook triggered: APP_UNINSTALLED')
     const shopOrigin = body.myshopify_domain

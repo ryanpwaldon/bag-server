@@ -6,7 +6,7 @@ import { Role } from '../../common/constants/role.constants'
 import { CreateCrossSellDto } from './dto/create-cross-sell.dto'
 import { UpdateCrossSellDto } from './dto/update-cross-sell.dto'
 import { User } from 'src/common/decorators/user.decorator'
-import { MongooseFilterQuery, Schema } from 'mongoose'
+import { FilterQuery, Types } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { ProductService } from 'src/modules/product/product.service'
 
@@ -26,8 +26,8 @@ export class CrossSellController {
   @Post()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  async create(@Body() createCrossSellDto: CreateCrossSellDto) {
-    return this.crossSellService.create(createCrossSellDto)
+  async create(@Body() createCrossSellDto: CreateCrossSellDto, @User('id') userId: Types.ObjectId) {
+    return this.crossSellService.create({ ...createCrossSellDto, user: userId })
   }
 
   @Put(':id')
@@ -50,11 +50,11 @@ export class CrossSellController {
   @UseGuards(RoleGuard)
   @Roles(Role.Installed, Role.Plugin)
   async findAll(
-    @User('id') userId: Schema.Types.ObjectId,
+    @User('id') userId: Types.ObjectId,
     @Query('sort') sort: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('query') query: MongooseFilterQuery<CrossSell> = {}
+    @Query('query') query: FilterQuery<CrossSell> = {}
   ) {
     query.user = userId
     const result = await this.crossSellService.findAll(query, sort, page, limit)

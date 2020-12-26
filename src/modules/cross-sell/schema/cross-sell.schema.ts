@@ -1,11 +1,15 @@
-import { Document, Schema as MongooseSchema } from 'mongoose'
+import { Document, Types, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { User } from '../../user/schema/user.schema'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class CrossSell extends Document {
-  @Prop({ required: true, ref: User.name })
-  user!: MongooseSchema.Types.ObjectId
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: User.name,
+    required: true
+  })
+  user!: Types.ObjectId
 
   @Prop({ default: true })
   active!: boolean

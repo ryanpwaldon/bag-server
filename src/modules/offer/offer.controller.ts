@@ -6,7 +6,7 @@ import { Role } from '../../common/constants/role.constants'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UserService } from 'src/modules/user/user.service'
 import { User } from 'src/common/decorators/user.decorator'
-import { MongooseFilterQuery, Schema } from 'mongoose'
+import { FilterQuery, Types } from 'mongoose'
 import { Offer } from 'src/modules/offer/schema/offer.schema'
 
 @Controller('offer')
@@ -16,8 +16,8 @@ export class OfferController {
   @Post()
   @UseGuards(RoleGuard)
   @Roles(Role.Installed)
-  async create(@Body() createOfferDto: CreateOfferDto) {
-    return this.offerService.create(createOfferDto)
+  async create(@Body() createOfferDto: CreateOfferDto, @User('id') user: Types.ObjectId) {
+    return this.offerService.create({ ...createOfferDto, user })
   }
 
   @Put(':id')
@@ -37,11 +37,11 @@ export class OfferController {
   @UseGuards(RoleGuard)
   @Roles(Role.Installed, Role.Plugin)
   async findAll(
-    @User('id') userId: Schema.Types.ObjectId,
+    @User('id') userId: Types.ObjectId,
     @Query('sort') sort: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('query') query: MongooseFilterQuery<Offer> = {}
+    @Query('query') query: FilterQuery<Offer> = {}
   ) {
     query.user = userId
     return this.offerService.findAll(query, sort, page, limit)
