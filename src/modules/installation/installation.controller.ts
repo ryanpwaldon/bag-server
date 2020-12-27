@@ -76,6 +76,7 @@ export class InstallationController {
     res.redirect(redirectUrl)
   }
 
+  // webhook
   @Post('uninstalled')
   async onUninstalled(@Body() body: { myshopify_domain: string }) {
     this.logger.log('Webhook triggered: APP_UNINSTALLED')
