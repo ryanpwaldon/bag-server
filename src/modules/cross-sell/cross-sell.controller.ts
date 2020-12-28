@@ -10,17 +10,24 @@ import { FilterQuery, Types } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { ProductService } from 'src/modules/product/product.service'
 
-type CrossSellExtended = Partial<CrossSell> & { product?: any }
-
 @Controller('cross-sell')
 export class CrossSellController {
   constructor(private readonly crossSellService: CrossSellService, private readonly productService: ProductService) {}
 
-  async populate(item: CrossSell | null) {
-    if (item === null) return null
-    const result: CrossSellExtended = item.toObject()
-    result.product = await this.productService.findOneById(item.productId)
-    return result
+  async populateProduct(item: CrossSell | null) {
+    if (!item) return null
+    const leanItem = item.toObject()
+    leanItem.product = await this.productService.findOneById(leanItem.productId)
+    return leanItem
+  }
+
+  async populateProducts(items: CrossSell[]) {
+    if (!items.length) return items
+    const leanItems = items.map(item => item.toObject())
+    const products = await this.productService.findByIds(leanItems.map(leanItem => leanItem.productId))
+    for (const leanItem of leanItems)
+      leanItem.product = products.find((product: any) => leanItem.productId === product.id)
+    return leanItems
   }
 
   @Post()
@@ -35,7 +42,7 @@ export class CrossSellController {
   @Roles(Role.Installed)
   async update(@Param('id') id: string, @Body() updateCrossSellDto: UpdateCrossSellDto) {
     const item = await this.crossSellService.updateOneById(id, updateCrossSellDto)
-    return this.populate(item)
+    return this.populateProduct(item)
   }
 
   @Get(':id')
@@ -43,7 +50,7 @@ export class CrossSellController {
   @Roles(Role.Installed)
   async findOneById(@Param('id') id: string) {
     const item = await this.crossSellService.findOneById(id)
-    return this.populate(item)
+    return this.populateProduct(item)
   }
 
   @Get()
@@ -58,7 +65,7 @@ export class CrossSellController {
   ) {
     query.user = userId
     const result = await this.crossSellService.findAll(query, sort, page, limit)
-    const docs = (await Promise.all(result.docs.map(item => this.populate(item)))) as CrossSellExtended[]
+    const docs = await this.populateProducts(result.docs)
     return { ...result, docs }
   }
 

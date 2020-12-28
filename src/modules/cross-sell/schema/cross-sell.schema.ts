@@ -31,6 +31,8 @@ export class CrossSell extends Document {
 
   @Prop([String])
   orders!: string[]
+
+  product?: any
 }
 
 export const CrossSellSchema = SchemaFactory.createForClass(CrossSell)

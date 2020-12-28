@@ -10,6 +10,7 @@ export class ProductService {
       query: /* GraphQL */ `
         {
           product(id: "${id}") {
+            id
             title
             handle
             featuredImage {
@@ -39,5 +40,44 @@ export class ProductService {
       `
     })
     return data.product
+  }
+
+  async findByIds(ids: string[]) {
+    const { data } = await this.adminService.createRequest({
+      query: /* GraphQL */ `
+        {
+          nodes(ids: ${JSON.stringify(ids)}) {
+            ...on Product {
+              id
+              title
+              handle
+              featuredImage {
+                originalSrc
+              }
+              hasOnlyDefaultVariant
+              variants(first: 100) {
+                edges {
+                  node {
+                    legacyResourceId
+                    title
+                    image {
+                      originalSrc
+                      transformedSrc
+                    }
+                    price
+                    availableForSale
+                    selectedOptions {
+                      name
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+    return data.nodes
   }
 }
