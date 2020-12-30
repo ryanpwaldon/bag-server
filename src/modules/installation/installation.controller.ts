@@ -1,5 +1,6 @@
 import { Controller, Get, Query, BadRequestException, Res, Req, UseGuards, HttpService } from '@nestjs/common'
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
+import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { ScriptTagService } from '../script-tag/script-tag.service'
 import { CartService } from 'src/modules/cart/cart.service'
@@ -12,6 +13,11 @@ import { Request, Response } from 'express'
 import { generate } from 'nonce-next'
 import { Types } from 'mongoose'
 import qs from 'qs'
+import {
+  WEBHOOK_PATH_ORDER_CREATED,
+  WEBHOOK_PATH_SUBSCRIPTION_UPDATED,
+  WEBHOOK_PATH_UNINSTALLED
+} from 'src/modules/webhook/webhook.constants'
 
 type RequestWithUser = Request & { user: User }
 
@@ -34,14 +40,14 @@ export class InstallationController {
     const nonce = generate()
     const scope = this.configService.get('SHOPIFY_SCOPE')
     const apiKey = this.configService.get('SHOPIFY_API_KEY')
-    const redirectUrl = `${this.configService.get('SERVER_URL')}/installation/install/confirm`
+    const redirectUrl = `${this.configService.get('SERVER_URL')}/installation/${REDIRECT_PATH}`
     const querystring = qs.stringify({ client_id: apiKey, scope, redirect_uri: redirectUrl, state: nonce })
     const authorizationUrl = `https://${shopOrigin}/admin/oauth/authorize?${querystring}`
     res.cookie('state', nonce, { sameSite: 'none', secure: true })
     res.redirect(authorizationUrl)
   }
 
-  @Get('finalise')
+  @Get(REDIRECT_PATH)
   @UseGuards(ShopifyInstallationGuard)
   async finalise(
     @Res() res: Response,
@@ -57,9 +63,9 @@ export class InstallationController {
     req.user = user
     await Promise.all([
       this.subscriptionService.sync(),
-      this.webhookService.create('ORDERS_CREATE', '/webhook/order-created'),
-      this.webhookService.create('APP_UNINSTALLED', '/webhook/uninstalled'),
-      this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/webhook/subscription-updated'),
+      this.webhookService.create('ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),
+      this.webhookService.create('APP_UNINSTALLED', `/webhook/${WEBHOOK_PATH_UNINSTALLED}`),
+      this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
