@@ -61,10 +61,12 @@ export class CrossSellController {
     @Query('sort') sort: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('query') query: FilterQuery<CrossSell> = {}
+    @Query('query') query: FilterQuery<CrossSell> = {},
+    @Query('populateProducts') populateProducts = true
   ) {
     query.user = userId
     const result = await this.crossSellService.findAll(query, sort, page, limit)
+    if (!populateProducts) return result
     const docs = await this.populateProducts(result.docs)
     return { ...result, docs }
   }

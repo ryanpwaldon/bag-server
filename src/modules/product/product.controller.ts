@@ -9,19 +9,19 @@ import { composeGid } from '@shopify/admin-graphql-api-utilities'
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Get(':id')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Plugin)
-  findOneById(@Param('id') legacyId: string) {
-    const id = composeGid('Product', legacyId)
-    return this.productService.findOneById(id)
-  }
-
   @Get('ids')
   @UseGuards(RoleGuard)
   @Roles(Role.Installed, Role.Plugin)
   findByIds(@Query('ids') ids: string[] | undefined) {
     if (!ids?.length) return []
     return this.productService.findByIds(ids)
+  }
+
+  @Get(':id')
+  @UseGuards(RoleGuard)
+  @Roles(Role.Plugin)
+  findOneById(@Param('id') legacyId: string) {
+    const id = composeGid('Product', legacyId)
+    return this.productService.findOneById(id)
   }
 }
