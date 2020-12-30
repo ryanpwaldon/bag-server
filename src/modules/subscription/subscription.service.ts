@@ -1,11 +1,3 @@
-import {
-  Injectable,
-  BadRequestException,
-  Inject,
-  Scope,
-  NotFoundException,
-  InternalServerErrorException
-} from '@nestjs/common'
 import { getPlanByName, getPlanBySlug, getPlans, Plan } from './types/plan.types'
 import { Role } from '../../common/constants/role.constants'
 import { AppUrlService } from '../app-url/app-url.service'
@@ -15,14 +7,22 @@ import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
 import { REQUEST } from '@nestjs/core'
 import { Request } from 'express'
+import {
+  Injectable,
+  BadRequestException,
+  Inject,
+  Scope,
+  NotFoundException,
+  InternalServerErrorException
+} from '@nestjs/common'
 
 @Injectable({ scope: Scope.REQUEST })
 export class SubscriptionService {
   constructor(
-    private readonly adminService: AdminService,
-    private readonly configService: ConfigService,
     private readonly userService: UserService,
+    private readonly adminService: AdminService,
     private readonly appUrlService: AppUrlService,
+    private readonly configService: ConfigService,
     @Inject(REQUEST) private req: Request & { user: User }
   ) {}
 
