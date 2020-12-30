@@ -1,7 +1,7 @@
-import { Controller, Get, Query, BadRequestException, Res, Req } from '@nestjs/common'
+import { Controller, Get, Query, BadRequestException, Res, Req, UseGuards, HttpService } from '@nestjs/common'
+import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { ScriptTagService } from '../script-tag/script-tag.service'
-import { InstallationService } from './installation.service'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { AppUrlService } from '../app-url/app-url.service'
@@ -13,21 +13,23 @@ import { generate } from 'nonce-next'
 import { Types } from 'mongoose'
 import qs from 'qs'
 
+type RequestWithUser = Request & { user: User }
+
 @Controller('installation')
 export class InstallationController {
   constructor(
+    private readonly httpService: HttpService,
     private readonly cartService: CartService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly appUrlService: AppUrlService,
     private readonly webhookService: WebhookService,
     private readonly scriptTagService: ScriptTagService,
-    private readonly installationService: InstallationService,
     private readonly subscriptionService: SubscriptionService
   ) {}
 
-  @Get('install')
-  install(@Res() res: Response, @Query('shop') shopOrigin: string) {
+  @Get('start')
+  start(@Res() res: Response, @Query('shop') shopOrigin: string) {
     if (!shopOrigin) throw new BadRequestException('Missing shop query param.')
     const nonce = generate()
     const scope = this.configService.get('SHOPIFY_SCOPE')
@@ -39,28 +41,20 @@ export class InstallationController {
     res.redirect(authorizationUrl)
   }
 
-  @Get('install/confirm')
-  async installConfirm(
+  @Get('finalise')
+  @UseGuards(ShopifyInstallationGuard)
+  async finalise(
     @Res() res: Response,
-    @Req() req: Request & { user: User },
-    @Query('hmac') hmac: string,
-    @Query('state') state: string,
+    @Req() req: RequestWithUser,
     @Query('shop') shopOrigin: string,
     @Query('code') authCode: string
   ) {
-    // verify request authenticity
-    this.installationService.verifyHmac(hmac, req.query)
-    this.installationService.verifyOrigin(req.cookies.state, state)
-    // get access token
-    const accessToken = await this.installationService.getAccessToken(shopOrigin, authCode)
-    // update/create user
+    const accessToken = await this.fetchAccessToken(shopOrigin, authCode)
     const user = (await this.userService.findOne({ shopOrigin })) || (await this.userService.create({ shopOrigin }))
     user.accessToken = accessToken
     user.uninstalled = false
     await user.save()
-    // attach user to request
     req.user = user
-    // run installation tasks
     await Promise.all([
       this.subscriptionService.sync(),
       this.webhookService.create('ORDERS_CREATE', '/webhook/order-created'),
@@ -69,8 +63,22 @@ export class InstallationController {
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
-    // redirect to app url
     const redirectUrl = await this.appUrlService.find()
     res.redirect(redirectUrl)
+  }
+
+  async fetchAccessToken(shopOrigin: string, authCode: string) {
+    const response = await this.httpService
+      .request({
+        method: 'post',
+        url: `https://${shopOrigin}/admin/oauth/access_token`,
+        data: {
+          code: authCode,
+          client_id: this.configService.get('SHOPIFY_API_KEY'),
+          client_secret: this.configService.get('SHOPIFY_API_SECRET_KEY')
+        }
+      })
+      .toPromise()
+    return response.data.access_token
   }
 }
