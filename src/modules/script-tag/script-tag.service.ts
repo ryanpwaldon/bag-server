@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { AdminService } from '../admin/admin.service'
-import { Logger } from 'nestjs-pino'
 
 @Injectable()
 export class ScriptTagService {
-  constructor(private readonly adminService: AdminService, private readonly logger: Logger) {}
+  constructor(private readonly adminService: AdminService) {}
 
   async create(src: string) {
     const exists = await this.checkExistence()
@@ -26,7 +25,6 @@ export class ScriptTagService {
         }
       `
     })
-    this.logger.log(`Script tag created: ${src}`)
   }
 
   async checkExistence() {

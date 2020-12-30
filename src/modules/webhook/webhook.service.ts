@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AdminService } from '../admin/admin.service'
-import { Logger } from 'nestjs-pino'
 
 @Injectable()
 export class WebhookService {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly adminService: AdminService,
-    private readonly logger: Logger
-  ) {}
+  constructor(private readonly configService: ConfigService, private readonly adminService: AdminService) {}
 
   async create(topic: string, url: string) {
     const exists = await this.checkExistence(topic)
@@ -29,7 +24,6 @@ export class WebhookService {
         }
       `
     })
-    this.logger.log(`Webhook created: ${topic}`)
   }
 
   async checkExistence(topic: string) {

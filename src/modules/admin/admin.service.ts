@@ -4,7 +4,7 @@ import { REQUEST } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Error } from '../../common/constants/error.constants'
-import { Injectable, HttpService, Scope, Inject, UnauthorizedException } from '@nestjs/common'
+import { Injectable, HttpService, Scope, Inject, InternalServerErrorException } from '@nestjs/common'
 
 @Injectable({ scope: Scope.REQUEST })
 export class AdminService {
@@ -23,7 +23,7 @@ export class AdminService {
     const response = await this.httpService.request({ method, headers, url, data }).toPromise()
     if (response.data.errors) {
       this.logger.error(JSON.stringify(response.data.errors))
-      throw new UnauthorizedException(Error.ShopifyAuthorizationError)
+      throw new InternalServerErrorException(Error.ShopifyAuthorizationError)
     }
     return response.data
   }
