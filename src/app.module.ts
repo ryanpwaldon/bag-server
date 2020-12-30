@@ -11,7 +11,6 @@ import { MailModule } from './modules/mail/mail.module'
 import { UserModule } from './modules/user/user.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
-import { OfferModule } from './modules/offer/offer.module'
 import { OrderModule } from './modules/order/order.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppUrlModule } from './modules/app-url/app-url.module'
@@ -58,7 +57,6 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
     }),
     UserModule,
     AdminModule,
-    OfferModule,
     SubscriptionModule,
     InstallationModule,
     GdprModule,
