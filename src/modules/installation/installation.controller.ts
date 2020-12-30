@@ -1,4 +1,5 @@
 import { Controller, Get, Query, BadRequestException, Res, Req, UseGuards, HttpService } from '@nestjs/common'
+import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
 import { SubscriptionService } from '../subscription/subscription.service'
@@ -38,7 +39,7 @@ export class InstallationController {
   start(@Res() res: Response, @Query('shop') shopOrigin: string) {
     if (!shopOrigin) throw new BadRequestException('Missing shop query param.')
     const nonce = generate()
-    const scope = this.configService.get('SHOPIFY_SCOPE')
+    const scope = REQUIRED_ACCESS_SCOPES.join(',')
     const apiKey = this.configService.get('SHOPIFY_API_KEY')
     const redirectUrl = `${this.configService.get('SERVER_URL')}/installation/${REDIRECT_PATH}`
     const querystring = qs.stringify({ client_id: apiKey, scope, redirect_uri: redirectUrl, state: nonce })

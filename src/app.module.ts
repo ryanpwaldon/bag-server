@@ -23,6 +23,7 @@ import { ConversionModule } from './modules/conversion/conversion.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
+import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 
 @Module({
   imports: [
@@ -72,7 +73,8 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
     CartModule,
     LeadModule,
     MailModule,
-    ConversionModule
+    ConversionModule,
+    AccessScopeModule
   ]
 })
 export class AppModule {}
