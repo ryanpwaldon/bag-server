@@ -16,14 +16,14 @@ import qs from 'qs'
 @Controller('installation')
 export class InstallationController {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly cartService: CartService,
     private readonly userService: UserService,
-    private readonly installationService: InstallationService,
+    private readonly configService: ConfigService,
     private readonly appUrlService: AppUrlService,
     private readonly webhookService: WebhookService,
     private readonly scriptTagService: ScriptTagService,
-    private readonly subscriptionService: SubscriptionService,
-    private readonly cartService: CartService
+    private readonly installationService: InstallationService,
+    private readonly subscriptionService: SubscriptionService
   ) {}
 
   @Get('install')
