@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
-import { SubscriptionController } from './subscription.controller'
-import { AdminModule } from '../admin/admin.module'
-import { SubscriptionService } from './subscription.service'
 import { UserModule } from '../user/user.module'
+import { AdminModule } from '../admin/admin.module'
 import { AppUrlModule } from '../app-url/app-url.module'
+import { SubscriptionService } from './subscription.service'
+import { SubscriptionController } from './subscription.controller'
 
 @Module({
   controllers: [SubscriptionController],

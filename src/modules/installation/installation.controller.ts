@@ -1,18 +1,17 @@
-import { Controller, Get, Query, BadRequestException, Res, Req, Post, Body } from '@nestjs/common'
+import { Controller, Get, Query, BadRequestException, Res, Req } from '@nestjs/common'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { ScriptTagService } from '../script-tag/script-tag.service'
 import { InstallationService } from './installation.service'
+import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { AppUrlService } from '../app-url/app-url.service'
+import { User } from 'src/modules/user/schema/user.schema'
 import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
-import { generate } from 'nonce-next'
-import { Logger } from 'nestjs-pino'
 import { Request, Response } from 'express'
-import { User } from 'src/modules/user/schema/user.schema'
-import { CartService } from 'src/modules/cart/cart.service'
-import qs from 'qs'
+import { generate } from 'nonce-next'
 import { Types } from 'mongoose'
+import qs from 'qs'
 
 @Controller('installation')
 export class InstallationController {
@@ -24,8 +23,7 @@ export class InstallationController {
     private readonly webhookService: WebhookService,
     private readonly scriptTagService: ScriptTagService,
     private readonly subscriptionService: SubscriptionService,
-    private readonly cartService: CartService,
-    private readonly logger: Logger
+    private readonly cartService: CartService
   ) {}
 
   @Get('install')
@@ -65,26 +63,14 @@ export class InstallationController {
     // run installation tasks
     await Promise.all([
       this.subscriptionService.sync(),
-      this.webhookService.create('ORDERS_CREATE', '/order/created'),
-      this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/subscription/sync'),
-      this.webhookService.create('APP_UNINSTALLED', '/installation/uninstalled'),
+      this.webhookService.create('ORDERS_CREATE', '/webhook/order-created'),
+      this.webhookService.create('APP_UNINSTALLED', '/webhook/uninstalled'),
+      this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', '/webhook/subscription-updated'),
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
     // redirect to app url
     const redirectUrl = await this.appUrlService.find()
     res.redirect(redirectUrl)
-  }
-
-  // webhook
-  @Post('uninstalled')
-  async onUninstalled(@Body() body: { myshopify_domain: string }) {
-    this.logger.log('Webhook triggered: APP_UNINSTALLED')
-    const shopOrigin = body.myshopify_domain
-    const user = await this.userService.findOne({ shopOrigin })
-    if (!user) return
-    user.uninstalled = true
-    user.onboarded = false
-    return user.save()
   }
 }
