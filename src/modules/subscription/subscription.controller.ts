@@ -1,38 +1,32 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common'
-import { Roles } from '../../common/decorators/role.decorator'
+import { User } from 'src/common/decorators/user.decorator'
 import { SubscriptionService } from './subscription.service'
-import { Role } from '../../common/constants/role.constants'
-import { RoleGuard } from '../../common/guards/role.guard'
+import { User as UserType } from 'src/modules/user/schema/user.schema'
+import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common'
 
 @Controller('subscription')
+@UseGuards(EmbeddedAppGuard)
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
   @Post('create')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
-  create(@Body('name') name: string) {
-    return this.subscriptionService.create(name)
+  create(@User() user: UserType, @Body('subscriptionName') subscriptionName: string) {
+    return this.subscriptionService.create(user, subscriptionName)
   }
 
   @Get('sync')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
-  sync() {
-    return this.subscriptionService.sync()
+  sync(@User() user: UserType) {
+    return this.subscriptionService.sync(user)
   }
 
   @Get('cancel')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
-  cancel() {
-    return this.subscriptionService.cancel()
+  async cancel(@User() user: UserType) {
+    await this.subscriptionService.cancel()
+    await this.subscriptionService.sync(user)
   }
 
-  @Get('plans')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
-  findAllPlans() {
-    return this.subscriptionService.findAllPlans()
+  @Get()
+  findAll() {
+    return this.subscriptionService.findAll()
   }
 }

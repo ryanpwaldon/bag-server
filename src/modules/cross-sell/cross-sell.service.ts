@@ -1,18 +1,12 @@
-import { FilterQuery, PaginateModel } from 'mongoose'
-import { User } from 'src/modules/user/schema/user.schema'
-import { Injectable, Scope, Inject } from '@nestjs/common'
-import { CrossSell } from './schema/cross-sell.schema'
-import { InjectModel } from '@nestjs/mongoose'
-import { REQUEST } from '@nestjs/core'
-import { Request } from 'express'
 import assign from 'lodash/assign'
+import { InjectModel } from '@nestjs/mongoose'
+import { FilterQuery, PaginateModel } from 'mongoose'
+import { CrossSell } from './schema/cross-sell.schema'
+import { Injectable } from '@nestjs/common'
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class CrossSellService {
-  constructor(
-    @Inject(REQUEST) private req: Request & { user: User },
-    @InjectModel(CrossSell.name) private readonly crossSellModel: PaginateModel<CrossSell>
-  ) {}
+  constructor(@InjectModel(CrossSell.name) private readonly crossSellModel: PaginateModel<CrossSell>) {}
 
   async create(data: Partial<CrossSell>) {
     const crossSell = new this.crossSellModel(data)

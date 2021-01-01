@@ -1,14 +1,10 @@
-import { Document } from 'mongoose'
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { getPlans } from '../../subscription/types/plan.types'
-import { Role } from '../../../common/constants/role.constants'
 import Cryptr from 'cryptr'
 import moment from 'moment'
+import { Document } from 'mongoose'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class User extends Document {
-  declare roles: Role[]
-
   declare _previousPlan: string
 
   @Prop({ unique: true })
@@ -41,6 +37,9 @@ export class User extends Document {
   })
   plan!: string
 
+  @Prop()
+  subscription!: string
+
   @Prop({
     default: 0,
     get(value: number) {
@@ -48,7 +47,7 @@ export class User extends Document {
       return Math.round(moment.duration(duration).asDays())
     }
   })
-  totalTimeSubscribed!: number
+  timeSubscribed!: number
 
   @Prop()
   super!: boolean
@@ -56,24 +55,12 @@ export class User extends Document {
 
 export const UserSchema = SchemaFactory.createForClass(User)
 
-UserSchema.virtual('roles').get(function(this: User) {
-  const roles: string[] = []
-  const plans = getPlans()
-    .filter(plan => plan.active)
-    .map(plan => plan.slug)
-  roles.push(Role.Installed)
-  if (!this.onboarded) roles.push(Role.Unsubscribed)
-  else roles.push(...plans.slice(0, plans.indexOf(this.plan as Role) + 1))
-  if (this.super) roles.push(...plans)
-  return [...new Set(roles)]
-})
-
 export async function beforeSave(this: User) {
   if (this.isModified('plan')) {
     if (this._previousPlan) {
-      const previousTotalTimeSubscribed = this.get('totalTimeSubscribed', undefined, { getters: false })
+      const previoustimeSubscribed = this.get('timeSubscribed', undefined, { getters: false })
       const additionalTimeSubscribed = moment().diff(this.planUpdatedAt)
-      this.totalTimeSubscribed = previousTotalTimeSubscribed + additionalTimeSubscribed
+      this.timeSubscribed = previoustimeSubscribed + additionalTimeSubscribed
     }
     this.planUpdatedAt = new Date()
   }

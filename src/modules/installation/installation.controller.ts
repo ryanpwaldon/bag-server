@@ -63,7 +63,7 @@ export class InstallationController {
     await user.save()
     req.user = user
     await Promise.all([
-      this.subscriptionService.sync(),
+      this.subscriptionService.sync(user),
       this.webhookService.create('ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),
       this.webhookService.create('APP_UNINSTALLED', `/webhook/${WEBHOOK_PATH_UNINSTALLED}`),
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),

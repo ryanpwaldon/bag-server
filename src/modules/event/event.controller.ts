@@ -1,6 +1,4 @@
-import { RoleGuard } from 'src/common/guards/role.guard'
-import { Role } from 'src/common/constants/role.constants'
-import { Roles } from 'src/common/decorators/role.decorator'
+import { PluginGuard } from 'src/common/guards/plugin.guard'
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { CrossSellImpression } from 'src/modules/event/modules/cross-sell-impression/schema/cross-sell-impression.schema'
 import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell-impression/cross-sell-impression.service'
@@ -10,8 +8,7 @@ export class EventController {
   constructor(private readonly crossSellImpressionService: CrossSellImpressionService) {}
 
   @Post('cross-sell-impression')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Plugin)
+  @UseGuards(PluginGuard)
   async create(@Body() data: Partial<CrossSellImpression>) {
     this.crossSellImpressionService.create(data)
   }

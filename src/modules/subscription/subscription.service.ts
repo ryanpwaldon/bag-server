@@ -1,70 +1,53 @@
-import { getPlanByName, getPlanBySlug, getPlans, Plan } from './types/plan.types'
-import { Role } from '../../common/constants/role.constants'
+import { ConfigService } from '@nestjs/config'
+import { Subscription } from './subscription.types'
+import { AdminService } from '../admin/admin.service'
 import { AppUrlService } from '../app-url/app-url.service'
 import { User } from 'src/modules/user/schema/user.schema'
-import { AdminService } from '../admin/admin.service'
-import { UserService } from '../user/user.service'
-import { ConfigService } from '@nestjs/config'
-import { REQUEST } from '@nestjs/core'
-import { Request } from 'express'
-import {
-  Injectable,
-  BadRequestException,
-  Inject,
-  Scope,
-  NotFoundException,
-  InternalServerErrorException
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class SubscriptionService {
   constructor(
-    private readonly userService: UserService,
     private readonly adminService: AdminService,
     private readonly appUrlService: AppUrlService,
-    private readonly configService: ConfigService,
-    @Inject(REQUEST) private req: Request & { user: User }
+    private readonly configService: ConfigService
   ) {}
 
-  async sync() {
-    const user = await this.userService.findById(this.req.user.id)
-    if (!user) throw new NotFoundException('User not found.')
-    const plan = await this.findMyActivePlan()
-    user.plan = plan.slug
+  async sync(user: User) {
+    const subscription = await this.findActiveSubscription()
+    user.subscription = subscription.name
     user.save()
   }
 
-  async findAllPlans(): Promise<Plan[]> {
-    const activePlan = await this.findMyActivePlan()
-    const plans: Plan[] = getPlans().filter(plan => plan.active && plan.name !== activePlan.name)
-    plans.push(activePlan)
-    plans.sort((a, b) => a.price - b.price)
-    return plans
+  getSubscriptionByName(name: string) {
+    const subscription = getSubscriptions().find(item => name === item.name)
+    if (!subscription) throw new NotFoundException(`Subscription with name ${name} does not exist.`)
+    return { ...subscription }
   }
 
-  convertToShopifyInterval(interval: 'monthly' | 'annually') {
-    if (interval === 'monthly') return 'EVERY_30_DAYS'
-    if (interval === 'annually') return 'ANNUAL'
-    throw new BadRequestException('Interval is not valid.')
+  async findAll(): Promise<Subscription[]> {
+    const activeSubscription = await this.findActiveSubscription()
+    const subscriptions: Subscription[] = getSubscriptions().filter(
+      subscription => subscription.active && subscription.name !== activeSubscription.name
+    )
+    subscriptions.push(activeSubscription)
+    subscriptions.sort((a, b) => a.price - b.price)
+    return subscriptions
   }
 
-  async create(name: string) {
-    const plan = getPlanByName(name)
-    if (!plan) throw new NotFoundException('Plan not found.')
-    const user = await this.userService.findById(this.req.user.id)
-    if (!user) throw new NotFoundException('User not found.')
-    user.onboarded = true
-    await user.save()
-    if (plan.price === 0) return this.cancel()
-    const isProduction = this.configService.get('APP_ENV') === 'production'
+  // test for price === 0
+  async create(user: User, subscriptionName: string) {
+    const subscription = this.getSubscriptionByName(subscriptionName)
+    const isTestMode = this.configService.get('APP_ENV') !== 'production'
     const redirectUrl = `${await this.appUrlService.find()}/actions/sync`
-    const trialDays = plan.trialDays > user.totalTimeSubscribed ? plan.trialDays - user.totalTimeSubscribed : 0
+    const trialDays = subscription.trialDays > user.timeSubscribed ? subscription.trialDays - user.timeSubscribed : 0
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         mutation {
           appSubscriptionCreate(
-            name: "${plan.name}",
-            test: ${!isProduction},
+            name: "${subscription.name}",
+            test: ${isTestMode},
             returnUrl: "${redirectUrl}",
             trialDays: ${trialDays},
             lineItems: [
@@ -72,10 +55,10 @@ export class SubscriptionService {
                 plan: {
                   appRecurringPricingDetails: {
                     price: {
-                      amount: ${plan.price},
+                      amount: ${subscription.price},
                       currencyCode: USD
                     },
-                    interval: ${this.convertToShopifyInterval(plan.interval as 'monthly' | 'annually')}
+                    interval: ${subscription.interval}
                   }
                 }
               }
@@ -89,7 +72,7 @@ export class SubscriptionService {
     return data.appSubscriptionCreate.confirmationUrl
   }
 
-  async findMyActivePlan(): Promise<Plan> {
+  async findActiveSubscription(): Promise<Subscription> {
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         {
@@ -102,21 +85,19 @@ export class SubscriptionService {
         }
       `
     })
-    const [subscription] = data.appInstallation.activeSubscriptions
-    const plan = getPlanByName(subscription?.name) || getPlanBySlug(Role.Starter)
-    if (!plan) throw new InternalServerErrorException()
-    plan.id = subscription && subscription.id
-    plan.subscribed = this.req.user.onboarded && true
-    return plan
+    const { name, id } = data.appInstallation.activeSubscriptions[0]
+    const subscription = this.getSubscriptionByName(name)
+    subscription.id = id
+    subscription.subscribed = true
+    return subscription
   }
 
   async cancel() {
-    const plan = await this.findMyActivePlan()
-    if (!plan.id) return
+    const subscription = await this.findActiveSubscription()
     await this.adminService.createRequest({
       query: /* GraphQL */ `
         mutation {
-          appSubscriptionCancel(id: "${plan.id}") {
+          appSubscriptionCancel(id: "${subscription.id}") {
             appSubscription {
               id
             }
@@ -124,6 +105,5 @@ export class SubscriptionService {
         }
       `
     })
-    await this.sync()
   }
 }

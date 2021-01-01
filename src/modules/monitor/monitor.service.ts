@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import Honeybadger from 'honeybadger'
 
 @Injectable()
 export class MonitorService {

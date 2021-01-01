@@ -20,8 +20,8 @@ export class WebhookController {
 
   @Post(WEBHOOK_PATH_SUBSCRIPTION_UPDATED)
   @UseGuards(ShopifyWebhookGuard)
-  subscriptionUpdated() {
-    this.subscriptionService.sync()
+  subscriptionUpdated(@User() user: UserType) {
+    this.subscriptionService.sync(user)
   }
 
   @Post(WEBHOOK_PATH_ORDER_CREATED)

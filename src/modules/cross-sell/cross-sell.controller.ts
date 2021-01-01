@@ -1,14 +1,13 @@
-import { Controller, Post, Body, Get, Param, Put, Query, Delete, UseGuards } from '@nestjs/common'
+import { FilterQuery, Types } from 'mongoose'
 import { CrossSellService } from './cross-sell.service'
-import { RoleGuard } from '../../common/guards/role.guard'
-import { Roles } from '../../common/decorators/role.decorator'
-import { Role } from '../../common/constants/role.constants'
+import { User } from 'src/common/decorators/user.decorator'
 import { CreateCrossSellDto } from './dto/create-cross-sell.dto'
 import { UpdateCrossSellDto } from './dto/update-cross-sell.dto'
-import { User } from 'src/common/decorators/user.decorator'
-import { FilterQuery, Types } from 'mongoose'
-import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { ProductService } from 'src/modules/product/product.service'
+import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
+import { Controller, Post, Body, Get, Param, Put, Query, Delete, UseGuards } from '@nestjs/common'
+import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
+import { EmbeddedAppOrPluginGuard } from 'src/common/guards/embedded-app-or-plugin.guard'
 
 @Controller('cross-sell')
 export class CrossSellController {
@@ -31,31 +30,27 @@ export class CrossSellController {
   }
 
   @Post()
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
+  @UseGuards(EmbeddedAppGuard)
   async create(@Body() createCrossSellDto: CreateCrossSellDto, @User('id') userId: Types.ObjectId) {
     return this.crossSellService.create({ ...createCrossSellDto, user: userId })
   }
 
   @Put(':id')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
+  @UseGuards(EmbeddedAppGuard)
   async update(@Param('id') id: string, @Body() updateCrossSellDto: UpdateCrossSellDto) {
     const item = await this.crossSellService.updateOneById(id, updateCrossSellDto)
     return this.populateProduct(item)
   }
 
   @Get(':id')
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed)
+  @UseGuards(EmbeddedAppGuard)
   async findOneById(@Param('id') id: string) {
     const item = await this.crossSellService.findOneById(id)
     return this.populateProduct(item)
   }
 
   @Get()
-  @UseGuards(RoleGuard)
-  @Roles(Role.Installed, Role.Plugin)
+  @UseGuards(EmbeddedAppOrPluginGuard)
   async findAll(
     @User('id') userId: Types.ObjectId,
     @Query('sort') sort: string,
@@ -72,7 +67,7 @@ export class CrossSellController {
   }
 
   @Delete(':id')
-  @UseGuards(RoleGuard)
+  @UseGuards(EmbeddedAppGuard)
   deleteOneById(@Param('id') id: string) {
     return this.crossSellService.deleteOneById(id)
   }
