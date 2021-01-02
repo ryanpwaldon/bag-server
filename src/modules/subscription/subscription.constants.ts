@@ -1,6 +1,6 @@
-import { Subscription } from 'src/modules/subscription/subscription.types'
-import { Interval } from './subscription.types'
 import { cloneDeep } from 'lodash'
+import { Interval } from './subscription.types'
+import { Subscription } from 'src/modules/subscription/subscription.types'
 
 const SUBSCRIPTIONS: Subscription[] = [
   {
