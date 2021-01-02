@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common'
-import { CrossSellController } from './cross-sell.controller'
-import { CrossSellService } from './cross-sell.service'
-import { MongooseModule } from '@nestjs/mongoose'
-import { CrossSellSchema, CrossSell } from './schema/cross-sell.schema'
 import { UserModule } from '../user/user.module'
+import { MongooseModule } from '@nestjs/mongoose'
+import { CrossSellService } from './cross-sell.service'
+import { PluginGuard } from 'src/common/guards/plugin.guard'
+import { CrossSellController } from './cross-sell.controller'
 import { ProductModule } from 'src/modules/product/product.module'
+import { CrossSellSchema, CrossSell } from './schema/cross-sell.schema'
+import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { ProductModule } from 'src/modules/product/product.module'
     ])
   ],
   controllers: [CrossSellController],
-  providers: [CrossSellService],
+  providers: [CrossSellService, EmbeddedAppGuard, PluginGuard],
   exports: [CrossSellService]
 })
 export class CrossSellModule {}
