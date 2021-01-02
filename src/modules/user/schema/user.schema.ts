@@ -5,8 +5,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class User extends Document {
-  _previousPlan!: string
-
   @Prop({ unique: true })
   shopOrigin!: string
 
@@ -51,6 +49,8 @@ export class User extends Document {
 
   @Prop()
   super!: boolean
+
+  _previousPlan!: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
