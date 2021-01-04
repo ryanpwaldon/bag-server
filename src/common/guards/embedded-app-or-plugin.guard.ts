@@ -7,6 +7,6 @@ export class EmbeddedAppOrPluginGuard implements CanActivate {
   constructor(private readonly embeddedAppGuard: EmbeddedAppGuard, private readonly pluginGuard: PluginGuard) {}
 
   async canActivate(context: ExecutionContext) {
-    return (await this.embeddedAppGuard.canActivate(context)) || (await this.pluginGuard.canActivate(context))
+    return (await this.pluginGuard.canActivate(context)) || (await this.embeddedAppGuard.canActivate(context))
   }
 }
