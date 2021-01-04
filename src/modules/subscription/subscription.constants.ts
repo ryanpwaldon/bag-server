@@ -15,7 +15,7 @@ const SUBSCRIPTIONS: Subscription[] = [
     featuresIncluded: ['Cart'],
     featuresExcluded: ['Sales growth features'],
     ctaText: 'Get started',
-    ctaTheme: 'blueSecondary',
+    ctaTheme: 'lightBlue',
     legacy: false
   },
   {
