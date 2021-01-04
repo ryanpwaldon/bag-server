@@ -1,18 +1,13 @@
 import { ConfigService } from '@nestjs/config'
 import { AdminService } from '../admin/admin.service'
 import { ActiveSubscription } from './subscription.types'
-import { AppUrlService } from '../app-url/app-url.service'
 import { User } from 'src/modules/user/schema/user.schema'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { getSubscriptions, PAID_SUBSCRIPTION_CREATED_PATH } from 'src/modules/subscription/subscription.constants'
 
 @Injectable()
 export class SubscriptionService {
-  constructor(
-    private readonly adminService: AdminService,
-    private readonly appUrlService: AppUrlService,
-    private readonly configService: ConfigService
-  ) {}
+  constructor(private readonly adminService: AdminService, private readonly configService: ConfigService) {}
 
   findAll() {
     return getSubscriptions()
@@ -56,7 +51,7 @@ export class SubscriptionService {
     const isTestMode = this.configService.get('APP_ENV') !== 'production'
     // prettier-ignore
     const redirectUrl = `${this.configService.get('SERVER_URL')}/subscription/${PAID_SUBSCRIPTION_CREATED_PATH}?shopOrigin=${user.shopOrigin}`
-    const trialDays = user.trialedSubscriptions.includes(subscription.name) ? 0 : subscription.trialDays
+    const trialDays = user.prevSubscriptions.includes(subscription.name) ? 0 : subscription.trialDays
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         mutation {

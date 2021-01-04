@@ -20,7 +20,6 @@ export type Subscription = {
   description: string
   featuresIncluded: string[]
   featuresExcluded: string[]
-  ctaText: string
   ctaTheme: string
   legacy: boolean
 }

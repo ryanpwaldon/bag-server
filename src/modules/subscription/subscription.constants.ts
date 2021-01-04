@@ -14,7 +14,6 @@ const SUBSCRIPTIONS: Subscription[] = [
     description: 'For merchants looking to improve their checkout experience.',
     featuresIncluded: ['Cart'],
     featuresExcluded: ['Sales growth features'],
-    ctaText: 'Get started',
     ctaTheme: 'lightBlue',
     legacy: false
   },
@@ -27,7 +26,6 @@ const SUBSCRIPTIONS: Subscription[] = [
     description: 'For merchants looking to grow their sales.',
     featuresIncluded: ['Cart', 'Sales growth features'],
     featuresExcluded: [],
-    ctaText: 'Try it free',
     ctaTheme: 'blue',
     legacy: false
   }

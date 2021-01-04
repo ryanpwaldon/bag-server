@@ -10,11 +10,16 @@ export class User extends Document {
   @Prop()
   uninstalled!: boolean
 
-  @Prop()
-  subscription?: string
-
   @Prop([String])
-  trialedSubscriptions!: string[]
+  prevSubscriptions!: string[]
+
+  @Prop({
+    set(this: User, subscription: string) {
+      if (subscription) this.prevSubscriptions = [...new Set([...this.prevSubscriptions, subscription])]
+      return subscription
+    }
+  })
+  subscription?: string
 
   @Prop({
     get: (value: string) => value && new Cryptr(process.env.CRYPTO_SECRET as string).decrypt(value),
