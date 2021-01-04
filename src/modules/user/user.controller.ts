@@ -14,10 +14,9 @@ export class UserController {
     return this.userService.findById(userId)
   }
 
-  @Get('plan')
+  @Get('subscription')
   @UseGuards(PluginGuard)
-  async findPlan(@User('id') userId: string) {
-    const user = await this.userService.findById(userId)
-    return user ? user.plan : null
+  async findPlan(@User('subscription') subscription: string) {
+    return subscription
   }
 }

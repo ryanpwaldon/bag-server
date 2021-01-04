@@ -17,50 +17,40 @@ export class User extends Document {
   @Prop()
   planUpdatedAt!: Date
 
-  @Prop({
-    get(value: string) {
-      return value && new Cryptr(process.env.CRYPTO_SECRET as string).decrypt(value)
-    },
-    set(value: string) {
-      return value && new Cryptr(process.env.CRYPTO_SECRET as string).encrypt(value)
-    }
-  })
-  accessToken!: string
+  prevSubscription?: string
 
   @Prop({
-    set(this: User, plan: string) {
-      this._previousPlan = this.plan
-      return plan
+    set(this: User, subscription: string) {
+      this.prevSubscription = this.subscription
+      return subscription
     }
   })
-  plan!: string
-
-  @Prop()
   subscription?: string
 
   @Prop({
     default: 0,
     get(value: number) {
-      const duration = this.plan ? value + moment().diff(this.planUpdatedAt) : value
+      const duration = this.subscription ? value + moment().diff(this.planUpdatedAt) : value
       return Math.round(moment.duration(duration).asDays())
     }
   })
   timeSubscribed!: number
 
-  @Prop()
-  super!: boolean
-
-  _previousPlan!: string
+  @Prop({
+    get: (value: string) => value && new Cryptr(process.env.CRYPTO_SECRET as string).decrypt(value),
+    set: (value: string) => value && new Cryptr(process.env.CRYPTO_SECRET as string).encrypt(value)
+  })
+  accessToken!: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
 
 export async function beforeSave(this: User) {
-  if (this.isModified('plan')) {
-    if (this._previousPlan) {
-      const previoustimeSubscribed = this.get('timeSubscribed', undefined, { getters: false })
+  if (this.isModified('subscription')) {
+    if (this.prevSubscription) {
+      const previousTimeSubscribed = this.get('timeSubscribed', undefined, { getters: false })
       const additionalTimeSubscribed = moment().diff(this.planUpdatedAt)
-      this.timeSubscribed = previoustimeSubscribed + additionalTimeSubscribed
+      this.timeSubscribed = previousTimeSubscribed + additionalTimeSubscribed
     }
     this.planUpdatedAt = new Date()
   }
