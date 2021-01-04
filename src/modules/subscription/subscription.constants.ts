@@ -6,7 +6,7 @@ export const PAID_SUBSCRIPTION_CREATED_PATH = 'paid-subscription-created'
 
 const SUBSCRIPTIONS: Subscription[] = [
   {
-    name: 'Starter V1',
+    name: 'Starter (1)',
     price: 0,
     trialDays: 0,
     interval: Interval.Monthly,
@@ -19,7 +19,7 @@ const SUBSCRIPTIONS: Subscription[] = [
     legacy: false
   },
   {
-    name: 'Growth V1',
+    name: 'Growth (1)',
     price: 98,
     trialDays: 30,
     interval: Interval.Monthly,
