@@ -44,7 +44,13 @@ export class SubscriptionController {
   @Get('cancel')
   @UseGuards(EmbeddedAppGuard)
   cancel(@User() user: UserType) {
-    this.subscriptionService.cancel(user)
+    return this.subscriptionService.cancel(user)
+  }
+
+  @Get('active')
+  @UseGuards(EmbeddedAppGuard)
+  findActiveSubscription() {
+    return this.subscriptionService.findActiveSubscription()
   }
 
   @Get()

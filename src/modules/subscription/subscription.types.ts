@@ -4,8 +4,11 @@ export enum Interval {
 }
 
 export type ActiveSubscription = {
-  name: string
   id: string
+  name: string
+  createdAt: Date
+  trialDays: number
+  currentPeriodEnd: Date
 }
 
 export type Subscription = {

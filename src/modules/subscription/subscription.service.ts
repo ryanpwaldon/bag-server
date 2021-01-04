@@ -30,6 +30,9 @@ export class SubscriptionService {
             activeSubscriptions {
               id
               name
+              createdAt
+              trialDays
+              currentPeriodEnd
             }
           }
         }
