@@ -47,14 +47,13 @@ export class SubscriptionService {
     return user.save()
   }
 
-  async createPaidSubscription(user: User, name: string) {
-    const subscription = this.findByName(name)
+  async createPaidSubscription(user: User, subscriptionName: string) {
+    const subscription = this.findByName(subscriptionName)
     if (!subscription) throw new BadRequestException()
     const isTestMode = this.configService.get('APP_ENV') !== 'production'
-    const redirectUrl = `${this.configService.get(
-      'SERVER_URL'
-    )}/subscription/${PAID_SUBSCRIPTION_CREATED_PATH}?shopOrigin=${user.shopOrigin}`
-    const trialDays = subscription.trialDays > user.timeSubscribed ? subscription.trialDays - user.timeSubscribed : 0
+    // prettier-ignore
+    const redirectUrl = `${this.configService.get('SERVER_URL')}/subscription/${PAID_SUBSCRIPTION_CREATED_PATH}?shopOrigin=${user.shopOrigin}`
+    const trialDays = user.trialedSubscriptions.includes(subscription.name) ? 0 : subscription.trialDays
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         mutation {

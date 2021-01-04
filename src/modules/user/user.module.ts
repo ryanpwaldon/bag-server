@@ -1,21 +1,17 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserService } from './user.service'
-import { User, UserSchema, beforeSave } from './schema/user.schema'
+import { User, UserSchema } from './schema/user.schema'
 import { UserController } from './user.controller'
 import { AdminModule } from '../admin/admin.module'
 
 @Module({
   imports: [
     AdminModule,
-    MongooseModule.forFeatureAsync([
+    MongooseModule.forFeature([
       {
         name: User.name,
-        useFactory: () => {
-          const schema = UserSchema
-          schema.pre('save', beforeSave)
-          return schema
-        }
+        schema: UserSchema
       }
     ])
   ],
