@@ -36,7 +36,7 @@ export class User extends Document {
   plan!: string
 
   @Prop()
-  subscription!: string
+  subscription?: string
 
   @Prop({
     default: 0,

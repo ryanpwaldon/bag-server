@@ -34,7 +34,7 @@ export class WebhookController {
   @UseGuards(ShopifyWebhookGuard)
   async uninstalled(@User() user: UserType) {
     user.uninstalled = true
-    user.onboarded = false
+    user.subscription = undefined
     user.save()
   }
 }

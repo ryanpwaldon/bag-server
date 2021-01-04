@@ -70,8 +70,8 @@ export class InstallationController {
       this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
-    const redirectUrl = await this.appUrlService.find()
-    res.redirect(redirectUrl)
+    const appUrl = await this.appUrlService.find()
+    res.redirect(appUrl)
   }
 
   async fetchAccessToken(shopOrigin: string, authCode: string) {

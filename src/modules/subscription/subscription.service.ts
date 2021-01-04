@@ -1,10 +1,10 @@
 import { ConfigService } from '@nestjs/config'
-import { Subscription } from './subscription.types'
 import { AdminService } from '../admin/admin.service'
+import { ActiveSubscription } from './subscription.types'
 import { AppUrlService } from '../app-url/app-url.service'
 import { User } from 'src/modules/user/schema/user.schema'
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { getSubscriptions, PAID_SUBSCRIPTION_CREATED_PATH } from 'src/modules/subscription/subscription.constants'
 
 @Injectable()
 export class SubscriptionService {
@@ -14,42 +14,55 @@ export class SubscriptionService {
     private readonly configService: ConfigService
   ) {}
 
-  async sync(user: User) {
-    const subscription = await this.findActiveSubscription()
+  findAll() {
+    return getSubscriptions()
+  }
+
+  findByName(name?: string) {
+    return getSubscriptions().find(item => item.name === name)
+  }
+
+  async findActiveSubscription(): Promise<ActiveSubscription | null> {
+    const { data } = await this.adminService.createRequest({
+      query: /* GraphQL */ `
+        {
+          appInstallation {
+            activeSubscriptions {
+              id
+              name
+            }
+          }
+        }
+      `
+    })
+    const subscription = data.appInstallation.activeSubscriptions[0]
+    if (!subscription) return null
+    return subscription
+  }
+
+  async createFreeSubscription(user: User, name: string) {
+    const subscription = this.findByName(name)
+    if (!subscription || subscription.price !== 0) throw new BadRequestException()
     user.subscription = subscription.name
-    user.save()
+    return user.save()
   }
 
-  getSubscriptionByName(name: string) {
-    const subscription = getSubscriptions().find(item => name === item.name)
-    if (!subscription) throw new NotFoundException(`Subscription with name ${name} does not exist.`)
-    return { ...subscription }
-  }
-
-  async findAll(): Promise<Subscription[]> {
-    const activeSubscription = await this.findActiveSubscription()
-    const subscriptions: Subscription[] = getSubscriptions().filter(
-      subscription => subscription.active && subscription.name !== activeSubscription.name
-    )
-    subscriptions.push(activeSubscription)
-    subscriptions.sort((a, b) => a.price - b.price)
-    return subscriptions
-  }
-
-  // test for price === 0
-  async create(user: User, subscriptionName: string) {
-    const subscription = this.getSubscriptionByName(subscriptionName)
+  async createPaidSubscription(user: User, name: string) {
+    const subscription = this.findByName(name)
+    if (!subscription) throw new BadRequestException()
     const isTestMode = this.configService.get('APP_ENV') !== 'production'
-    const redirectUrl = `${await this.appUrlService.find()}/actions/sync`
+    const redirectUrl = `${this.configService.get(
+      'SERVER_URL'
+    )}/subscription/${PAID_SUBSCRIPTION_CREATED_PATH}?shopOrigin=${user.shopOrigin}`
     const trialDays = subscription.trialDays > user.timeSubscribed ? subscription.trialDays - user.timeSubscribed : 0
     const { data } = await this.adminService.createRequest({
       query: /* GraphQL */ `
         mutation {
           appSubscriptionCreate(
-            name: "${subscription.name}",
             test: ${isTestMode},
-            returnUrl: "${redirectUrl}",
             trialDays: ${trialDays},
+            returnUrl: "${redirectUrl}",
+            name: "${subscription.name}",
             lineItems: [
               {
                 plan: {
@@ -72,38 +85,31 @@ export class SubscriptionService {
     return data.appSubscriptionCreate.confirmationUrl
   }
 
-  async findActiveSubscription(): Promise<Subscription> {
-    const { data } = await this.adminService.createRequest({
-      query: /* GraphQL */ `
-        {
-          appInstallation {
-            activeSubscriptions {
-              id
-              name
+  async cancel(user: User) {
+    const activeSubscription = await this.findActiveSubscription()
+    if (activeSubscription) {
+      await this.adminService.createRequest({
+        query: /* GraphQL */ `
+          mutation {
+            appSubscriptionCancel(id: "${activeSubscription.id}") {
+              appSubscription {
+                id
+              }
             }
           }
-        }
-      `
-    })
-    const { name, id } = data.appInstallation.activeSubscriptions[0]
-    const subscription = this.getSubscriptionByName(name)
-    subscription.id = id
-    subscription.subscribed = true
-    return subscription
+        `
+      })
+    }
+    user.subscription = undefined
+    return user.save()
   }
 
-  async cancel() {
-    const subscription = await this.findActiveSubscription()
-    await this.adminService.createRequest({
-      query: /* GraphQL */ `
-        mutation {
-          appSubscriptionCancel(id: "${subscription.id}") {
-            appSubscription {
-              id
-            }
-          }
-        }
-      `
-    })
+  async sync(user: User) {
+    const userSubscription = this.findByName(user.subscription)
+    const activeSubscription = await this.findActiveSubscription()
+    if (activeSubscription) user.subscription = activeSubscription.name
+    else if (userSubscription && userSubscription.price === 0) return user
+    else user.subscription = undefined
+    return user.save()
   }
 }

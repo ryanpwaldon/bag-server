@@ -3,14 +3,21 @@ export enum Interval {
   Annually = 'ANNUAL'
 }
 
+export type ActiveSubscription = {
+  name: string
+  id: string
+}
+
 export type Subscription = {
   name: string
-  title: string
   price: number
   trialDays: number
   interval: Interval
-  features: string[]
-  active: boolean // is this subscription active or legacy?
-  subscribed: boolean // is the user subscribed to this subscription?
-  id: string | null
+  title: string
+  description: string
+  featuresIncluded: string[]
+  featuresExcluded: string[]
+  ctaText: string
+  ctaTheme: string
+  legacy: boolean
 }
