@@ -17,7 +17,8 @@ export class SubscriptionController {
 
   @Post('free')
   @UseGuards(EmbeddedAppGuard)
-  createFreeSubscription(@User() user: UserType, @Body('subscriptionName') subscriptionName: string) {
+  async createFreeSubscription(@User() user: UserType, @Body('subscriptionName') subscriptionName: string) {
+    await this.subscriptionService.cancel(user)
     return this.subscriptionService.createFreeSubscription(user, subscriptionName)
   }
 
