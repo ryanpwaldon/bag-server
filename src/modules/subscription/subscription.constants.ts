@@ -14,7 +14,7 @@ const SUBSCRIPTIONS: Subscription[] = [
     description: 'For merchants looking to improve their checkout experience.',
     featuresIncluded: ['Cart'],
     featuresExcluded: ['Sales growth features'],
-    ctaTheme: 'lightBlue',
+    emphasize: false,
     legacy: false
   },
   {
@@ -23,10 +23,10 @@ const SUBSCRIPTIONS: Subscription[] = [
     trialDays: 30,
     interval: Interval.Monthly,
     title: 'Growth',
-    description: 'For merchants looking to grow their sales.',
+    description: 'For merchants looking to grow their sales and improve their checkout experience.',
     featuresIncluded: ['Cart', 'Sales growth features'],
     featuresExcluded: [],
-    ctaTheme: 'blue',
+    emphasize: true,
     legacy: false
   }
 ]
