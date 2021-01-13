@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { Interval } from './subscription.types'
+import { Permission } from 'src/modules/user/user.types'
 import { Subscription } from 'src/modules/subscription/subscription.types'
 
 export const PAID_SUBSCRIPTION_CREATED_PATH = 'paid-subscription-created'
@@ -15,7 +16,8 @@ const SUBSCRIPTIONS: Subscription[] = [
     featuresIncluded: ['Cart'],
     featuresExcluded: ['Sales growth features'],
     emphasize: false,
-    legacy: false
+    legacy: false,
+    permissions: []
   },
   {
     name: 'Growth (1)',
@@ -27,7 +29,8 @@ const SUBSCRIPTIONS: Subscription[] = [
     featuresIncluded: ['Cart', 'Sales growth features'],
     featuresExcluded: [],
     emphasize: true,
-    legacy: false
+    legacy: false,
+    permissions: [Permission.CrossSell]
   }
 ]
 

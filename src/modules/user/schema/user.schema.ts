@@ -1,6 +1,8 @@
 import Cryptr from 'cryptr'
 import { Document } from 'mongoose'
+import { Permission } from 'src/modules/user/user.types'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class User extends Document {
@@ -26,6 +28,14 @@ export class User extends Document {
     set: (value: string) => value && new Cryptr(process.env.CRYPTO_SECRET as string).encrypt(value)
   })
   accessToken!: string
+
+  permissions!: Permission[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+UserSchema.virtual('permissions').get(function(this: User) {
+  const subscriptions = getSubscriptions()
+  const permissions = subscriptions.find(subscription => subscription.name === this.subscription)?.permissions || []
+  return permissions
+})
