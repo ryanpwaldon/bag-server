@@ -2,6 +2,7 @@ import { Document, Types, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { User } from '../../user/schema/user.schema'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
+import { OrderCreatedEvent } from 'src/modules/order/interface/order-created-event.interface'
 
 export const CONVERSION_TYPES = [CrossSell.name]
 
@@ -15,17 +16,17 @@ export class Conversion extends Document {
   user!: Types.ObjectId
 
   @Prop({ required: true, enum: CONVERSION_TYPES })
-  offerModel!: string
+  type!: string
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    refPath: 'offerModel',
+    refPath: 'type',
     required: true
   })
-  offer!: Types.ObjectId
+  object!: Types.ObjectId
 
-  @Prop({ required: true })
-  orderId!: string
+  @Prop({ type: MongooseSchema.Types.Mixed, required: true })
+  order!: OrderCreatedEvent
 
   @Prop()
   value?: number

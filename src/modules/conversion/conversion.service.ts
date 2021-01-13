@@ -20,22 +20,26 @@ export class ConversionService {
     return conversion.save()
   }
 
+  findByCrossSellId(userId: string, crossSellId: string) {
+    return this.conversionModel.find({ user: userId, type: CrossSell.name, object: crossSellId })
+  }
+
   async trackConversions(order: OrderCreatedEvent, user: User) {
     const cartToken = order.cart_token
     const lineItems = order.line_items
-    const orderId = composeGid('Order', order.id)
     // track cross-sell conversions
     const crossSellImpressions = await this.crossSellImpressionService.findAll({ cartToken })
     for (const lineItem of lineItems) {
       const productId = composeGid('Product', lineItem.product_id)
       const convertedCrossSell = crossSellImpressions.find(({ crossSell }) => crossSell.productId === productId)
+        ?.crossSell
       if (convertedCrossSell) {
         this.create({
+          order,
+          type: CrossSell.name,
           user: Types.ObjectId(user.id),
-          offerModel: CrossSell.name,
-          offer: Types.ObjectId(convertedCrossSell.id),
           value: parseFloat(lineItem.price),
-          orderId
+          object: Types.ObjectId(convertedCrossSell.id)
         })
       }
     }

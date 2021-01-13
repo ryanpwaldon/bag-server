@@ -29,9 +29,6 @@ export class CrossSell extends Document {
   @Prop([String])
   triggerProductIds!: string[]
 
-  @Prop([String])
-  orders!: string[]
-
   product?: any
 }
 
