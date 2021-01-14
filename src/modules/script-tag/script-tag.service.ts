@@ -19,7 +19,7 @@ export class ScriptTagService {
         mutation {
           scriptTagCreate(input: {
             src: "${src}",
-            displayScope: "${displayScope}"
+            displayScope: ${displayScope}
           }) {
             scriptTag {
               id
