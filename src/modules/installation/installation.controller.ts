@@ -3,7 +3,7 @@ import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.co
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
 import { SubscriptionService } from '../subscription/subscription.service'
-import { ScriptTagService } from '../script-tag/script-tag.service'
+import { DisplayScope, ScriptTagService } from '../script-tag/script-tag.service'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { AppUrlService } from '../app-url/app-url.service'
@@ -67,7 +67,7 @@ export class InstallationController {
       this.webhookService.create('ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),
       this.webhookService.create('APP_UNINSTALLED', `/webhook/${WEBHOOK_PATH_UNINSTALLED}`),
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),
-      this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string),
+      this.scriptTagService.create(this.configService.get('PLUGIN_SCRIPT_URL') as string, DisplayScope.ONLINE_STORE),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
     const appUrl = await this.appUrlService.find()
