@@ -25,9 +25,23 @@ import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
+import { SentryInterceptor } from '@ntegral/nestjs-sentry'
+import { SentryModule } from '@ntegral/nestjs-sentry'
+import { SENTRY_DSN } from 'src/common/constants'
+import { APP_INTERCEPTOR } from '@nestjs/core'
 
 @Module({
   imports: [
+    SentryModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        debug: true,
+        dsn: SENTRY_DSN,
+        tracesSampleRate: 1.0,
+        environment: configService.get('APP_ENV')
+      })
+    }),
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.APP_ENV}`,
       isGlobal: true
@@ -77,6 +91,12 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
     ConversionModule,
     AccessScopeModule,
     PluginModule
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SentryInterceptor
+    }
   ]
 })
 export class AppModule {}
