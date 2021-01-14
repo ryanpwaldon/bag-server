@@ -13,6 +13,7 @@ import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
 import { OrderModule } from './modules/order/order.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { PluginModule } from './modules/plugin/plugin.module'
 import { AppUrlModule } from './modules/app-url/app-url.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
@@ -20,10 +21,10 @@ import { WebhookModule } from './modules/webhook/webhook.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
+import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
-import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 
 @Module({
   imports: [
@@ -74,7 +75,8 @@ import { AccessScopeModule } from './modules/access-scope/access-scope.module'
     LeadModule,
     MailModule,
     ConversionModule,
-    AccessScopeModule
+    AccessScopeModule,
+    PluginModule
   ]
 })
 export class AppModule {}
