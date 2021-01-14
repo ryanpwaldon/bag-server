@@ -662,13 +662,6 @@
     "@types/koa" "*"
     graphql "^15.3.0"
 
-"@types/honeybadger@^1.3.1":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@types/honeybadger/-/honeybadger-1.4.0.tgz#182909901f1d751599074980f3585b700d71751d"
-  integrity sha512-bR7rHpZOO5CHH7624B+IR/9bjKnDCKiuZQkL0CAdtVrVwUjCVNtJcvdQritdEh4DBhnWEn0j1jpTF8LSBKsC7A==
-  dependencies:
-    "@types/express" "*"
-
 "@types/http-assert@*":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@types/http-assert/-/http-assert-1.5.1.tgz#d775e93630c2469c2f980fc27e3143240335db3b"
@@ -3825,14 +3818,6 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-honeybadger@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/honeybadger/-/honeybadger-1.4.0.tgz#3c74518b53c9bcb1c3327659d5ea4ead2d3adb43"
-  integrity sha512-n7i8cTfOvGx2z4kG4YSdzye+y3QOesfsSoGkmhWm2ddLTWlra+NLBPmGoo8CmCaYEQMbo3CpA56m5VOdc7LFqg==
-  dependencies:
-    request "~2.88.0"
-    stack-trace "~0.0.9"
-
 hosted-git-info@^2.1.4:
   version "2.8.8"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
@@ -6066,7 +6051,7 @@ request-promise-native@^1.0.7:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.88.0, request@~2.88.0:
+request@^2.88.0:
   version "2.88.2"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.2.tgz#d73c918731cb5a87da047e207234146f664d12b3"
   integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==
@@ -6600,11 +6585,6 @@ stack-chain@^1.3.7:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/stack-chain/-/stack-chain-1.3.7.tgz#d192c9ff4ea6a22c94c4dd459171e3f00cea1285"
   integrity sha1-0ZLJ/06moiyUxN1FkXHj8AzqEoU=
-
-stack-trace@~0.0.9:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
-  integrity sha1-VHxws0fo0ytOEI6hoqFZ5f3eGcA=
 
 static-extend@^0.1.1:
   version "0.1.2"
