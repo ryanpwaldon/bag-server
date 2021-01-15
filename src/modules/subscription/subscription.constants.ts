@@ -17,7 +17,7 @@ const SUBSCRIPTIONS: Subscription[] = [
     featuresExcluded: ['Sales growth features'],
     emphasize: false,
     legacy: false,
-    permissions: []
+    permissions: [Permission.CrossSell]
   },
   {
     name: 'Growth (1)',
