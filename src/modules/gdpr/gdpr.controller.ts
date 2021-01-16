@@ -2,18 +2,18 @@ import { Controller, All } from '@nestjs/common'
 
 @Controller('gdpr')
 export class GdprController {
-  @All('customers/request')
-  customersRequest() {
+  @All('request-customers')
+  requestCustomers() {
     return { statusCode: 200, message: 'Success' }
   }
 
-  @All('customers/redact')
-  customersRedact() {
+  @All('delete-customers')
+  deleteCustomers() {
     return { statusCode: 200, message: 'Success' }
   }
 
-  @All('shop/redact')
-  shopRedact() {
+  @All('delete-shop')
+  deleteShop() {
     return { statusCode: 200, message: 'Success' }
   }
 }
