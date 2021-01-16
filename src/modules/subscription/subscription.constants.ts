@@ -7,7 +7,7 @@ export const PAID_SUBSCRIPTION_CREATED_PATH = 'paid-subscription-created'
 
 const SUBSCRIPTIONS: Subscription[] = [
   {
-    name: 'Starter (1)',
+    name: 'Starter (v1)',
     price: 0,
     trialDays: 0,
     interval: Interval.Monthly,
@@ -20,7 +20,7 @@ const SUBSCRIPTIONS: Subscription[] = [
     permissions: [Permission.CrossSell]
   },
   {
-    name: 'Growth (1)',
+    name: 'Growth (v1)',
     price: 98,
     trialDays: 30,
     interval: Interval.Monthly,
