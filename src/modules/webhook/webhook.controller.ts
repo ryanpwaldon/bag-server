@@ -1,4 +1,5 @@
 import { User } from 'src/common/decorators/user.decorator'
+import { CartService } from 'src/modules/cart/cart.service'
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { User as UserType } from 'src/modules/user/schema/user.schema'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
@@ -15,7 +16,8 @@ import {
 export class WebhookController {
   constructor(
     private readonly subscriptionService: SubscriptionService,
-    private readonly conversionService: ConversionService
+    private readonly conversionService: ConversionService,
+    private readonly cartService: CartService
   ) {}
 
   @Post(WEBHOOK_PATH_SUBSCRIPTION_UPDATED)
@@ -36,5 +38,9 @@ export class WebhookController {
     user.uninstalled = true
     user.subscription = undefined
     user.save()
+    const cart = await this.cartService.findOneByUserId(user.id)
+    if (!cart) return
+    cart.active = false
+    cart.save()
   }
 }

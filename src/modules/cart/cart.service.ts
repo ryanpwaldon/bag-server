@@ -20,7 +20,7 @@ export class CartService {
     return cart || new this.cartModel(createCartDto).save()
   }
 
-  findOneByUserId(userId: string) {
+  findOneByUserId(userId?: string) {
     return this.cartModel.findOne({ user: userId })
   }
 
