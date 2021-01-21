@@ -12,7 +12,7 @@ export class ScriptTagService {
   }
 
   async create(src: string) {
-    await this.adminService.createRequest({
+    await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         mutation {
           scriptTagCreate(input: {
@@ -28,7 +28,7 @@ export class ScriptTagService {
   }
 
   async update(id: string, src: string) {
-    await this.adminService.createRequest({
+    await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         mutation {
           scriptTagUpdate(
@@ -47,7 +47,7 @@ export class ScriptTagService {
   async delete() {
     const scriptTagId = await this.findScriptTag()
     if (!scriptTagId) return
-    await this.adminService.createRequest({
+    await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         mutation {
           scriptTagDelete(id: "${scriptTagId}") {
@@ -59,7 +59,7 @@ export class ScriptTagService {
   }
 
   async findScriptTag(): Promise<string | undefined> {
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         {
           scriptTags(first: 1) {

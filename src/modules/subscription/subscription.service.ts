@@ -18,7 +18,7 @@ export class SubscriptionService {
   }
 
   async findActiveSubscription(): Promise<ActiveSubscription | null> {
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         {
           appInstallation {
@@ -52,7 +52,7 @@ export class SubscriptionService {
     // prettier-ignore
     const redirectUrl = `${this.configService.get('SERVER_URL')}/subscription/${PAID_SUBSCRIPTION_CREATED_PATH}?shopOrigin=${user.shopOrigin}`
     const trialDays = user.prevSubscriptions.includes(subscription.name) ? 0 : subscription.trialDays
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         mutation {
           appSubscriptionCreate(
@@ -85,7 +85,7 @@ export class SubscriptionService {
   async cancel(user: User) {
     const activeSubscription = await this.findActiveSubscription()
     if (activeSubscription) {
-      await this.adminService.createRequest({
+      await this.adminService.createGraphQLRequest({
         query: /* GraphQL */ `
           mutation {
             appSubscriptionCancel(id: "${activeSubscription.id}") {

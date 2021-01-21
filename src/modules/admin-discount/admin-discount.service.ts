@@ -6,7 +6,7 @@ export class AdminDiscountService {
   constructor(private readonly adminService: AdminService) {}
 
   async findOne(id: string) {
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         {
           codeDiscountNode(id: "${id}") {

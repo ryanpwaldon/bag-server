@@ -10,7 +10,7 @@ export class WebhookService {
     const exists = await this.checkExistence(topic)
     if (exists) return
     url = `${this.configService.get('SERVER_URL')}${url}`
-    this.adminService.createRequest({
+    this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         mutation {
           webhookSubscriptionCreate (topic: ${topic}, webhookSubscription: {
@@ -27,7 +27,7 @@ export class WebhookService {
   }
 
   async checkExistence(topic: string) {
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         {
           webhookSubscriptions (first: 1, topics: ${topic}) {

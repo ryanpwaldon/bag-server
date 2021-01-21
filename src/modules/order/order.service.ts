@@ -6,7 +6,7 @@ export class OrderService {
   constructor(private readonly adminService: AdminService) {}
 
   async findByIds(ids: string[]) {
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         {
           nodes(ids: ${JSON.stringify(ids)}) {

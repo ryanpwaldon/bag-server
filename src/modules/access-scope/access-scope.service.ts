@@ -6,7 +6,7 @@ export class AccessScopeService {
   constructor(private readonly adminService: AdminService) {}
 
   async find() {
-    const { data } = await this.adminService.createRequest({
+    const { data } = await this.adminService.createGraphQLRequest({
       query: /* GraphQL */ `
         {
           appInstallation {

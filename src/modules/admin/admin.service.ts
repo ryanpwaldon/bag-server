@@ -14,7 +14,7 @@ export class AdminService {
     @Inject(REQUEST) private request: Request & { user: User }
   ) {}
 
-  async createRequest(data: any) {
+  async createGraphQLRequest(data: any) {
     const method = 'post'
     const { shopOrigin, accessToken } = this.request.user
     const url = `https://${shopOrigin}/admin/api/${this.configService.get('SHOPIFY_API_VERSION')}/graphql.json`
@@ -22,7 +22,19 @@ export class AdminService {
     const response = await this.httpService.request({ method, headers, url, data }).toPromise()
     if (response.data.errors) {
       this.logger.error(JSON.stringify(response.data.errors))
-      throw new InternalServerErrorException('Admin API error.')
+      throw new InternalServerErrorException('Admin GraphQL API error.')
+    }
+    return response.data
+  }
+
+  async createRestRequest(method: 'post' | 'get' | 'put', endpoint: string, data?: any) {
+    const { shopOrigin, accessToken } = this.request.user
+    const url = `https://${shopOrigin}/admin/api/${this.configService.get('SHOPIFY_API_VERSION')}/${endpoint}`
+    const headers = { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': accessToken }
+    const response = await this.httpService.request({ method, headers, url, data }).toPromise()
+    if (response.data.errors) {
+      this.logger.error(JSON.stringify(response.data.errors))
+      throw new InternalServerErrorException('Admin Rest API error.')
     }
     return response.data
   }
