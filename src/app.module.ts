@@ -2,8 +2,11 @@ import prettifier from 'pino-colada'
 import { Module } from '@nestjs/common'
 import paginate from 'mongoose-paginate'
 import { LoggerModule } from 'nestjs-pino'
+import { APP_INTERCEPTOR } from '@nestjs/core'
 import autopopulate from 'mongoose-autopopulate'
 import { MongooseModule } from '@nestjs/mongoose'
+import { SENTRY_DSN } from 'src/common/constants'
+import { SentryModule } from '@ntegral/nestjs-sentry'
 import { CartModule } from './modules/cart/cart.module'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { LeadModule } from './modules/lead/lead.module'
@@ -12,6 +15,9 @@ import { UserModule } from './modules/user/user.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
 import { OrderModule } from './modules/order/order.module'
+import { SentryInterceptor } from '@ntegral/nestjs-sentry'
+import { ThemeModule } from './modules/theme/theme.module'
+import { AssetModule } from './modules/asset/asset.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PluginModule } from './modules/plugin/plugin.module'
 import { AppUrlModule } from './modules/app-url/app-url.module'
@@ -25,10 +31,6 @@ import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
-import { SentryInterceptor } from '@ntegral/nestjs-sentry'
-import { SentryModule } from '@ntegral/nestjs-sentry'
-import { SENTRY_DSN } from 'src/common/constants'
-import { APP_INTERCEPTOR } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -90,7 +92,9 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
     MailModule,
     ConversionModule,
     AccessScopeModule,
-    PluginModule
+    PluginModule,
+    ThemeModule,
+    AssetModule
   ],
   providers: [
     {
