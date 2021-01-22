@@ -2,6 +2,7 @@ import prettifier from 'pino-colada'
 import { Module } from '@nestjs/common'
 import paginate from 'mongoose-paginate'
 import { LoggerModule } from 'nestjs-pino'
+import config from 'src/modules/config/config'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import autopopulate from 'mongoose-autopopulate'
 import { MongooseModule } from '@nestjs/mongoose'
@@ -46,6 +47,7 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
     }),
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.APP_ENV}`,
+      load: [config],
       isGlobal: true
     }),
     LoggerModule.forRootAsync({

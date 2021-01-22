@@ -27,9 +27,9 @@ export class AdminService {
     return response.data
   }
 
-  async createRestRequest(method: 'post' | 'get' | 'put', endpoint: string, data?: any) {
+  async createRestRequest(method: 'post' | 'get' | 'put', path: string, data?: any) {
     const { shopOrigin, accessToken } = this.request.user
-    const url = `https://${shopOrigin}/admin/api/${this.configService.get('SHOPIFY_API_VERSION')}/${endpoint}`
+    const url = `https://${shopOrigin}/admin/api/${this.configService.get('SHOPIFY_API_VERSION')}/${path}`
     const headers = { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': accessToken }
     const response = await this.httpService.request({ method, headers, url, data }).toPromise()
     if (response.data.errors) {

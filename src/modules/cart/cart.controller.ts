@@ -1,6 +1,7 @@
+import { LeanDocument } from 'mongoose'
+import { Cart } from 'src/modules/cart/schema/cart.schema'
 import { CartService } from 'src/modules/cart/cart.service'
 import { User } from 'src/common/decorators/user.decorator'
-import { Cart } from 'src/modules/cart/schema/cart.schema'
 import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 
@@ -16,7 +17,7 @@ export class CartController {
 
   @Put()
   @UseGuards(EmbeddedAppGuard)
-  async updateOneByUserId(@User('id') userId: string, @Body() body: Partial<Cart>) {
+  async updateOneByUserId(@User('id') userId: string, @Body() body: LeanDocument<Cart>) {
     return this.cartService.updateOneByUserId(userId, body)
   }
 }
