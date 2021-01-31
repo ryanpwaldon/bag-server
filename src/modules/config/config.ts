@@ -12,7 +12,7 @@ export default () => ({
     return `layout/theme.liquid`
   },
   get THEME_LIQUID_TRIGGER() {
-    return `  {% if content_for_header contains '${process.env.PLUGIN_HOST}' %}{% render '${this.APP_LIQUID_FILENAME}' %}{% endif %}\n\n`
+    return `\n  {% if content_for_header contains '${process.env.PLUGIN_HOST}' %}{% render '${this.APP_LIQUID_FILENAME}' %}{% endif %}\n\n`
   },
   get APP_LIQUID_KEY() {
     return `snippets/${this.APP_LIQUID_FILENAME}.liquid`
