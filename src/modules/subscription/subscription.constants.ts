@@ -7,24 +7,11 @@ export const PAID_SUBSCRIPTION_CREATED_PATH = 'paid-subscription-created'
 
 const SUBSCRIPTIONS: Subscription[] = [
   {
-    name: 'Starter (v1)',
+    name: 'Early Access (v1)',
     price: 0,
     trialDays: 0,
     interval: Interval.Monthly,
-    title: 'Starter',
-    description: 'For merchants looking to improve their checkout experience.',
-    featuresIncluded: ['Cart'],
-    featuresExcluded: ['Sales growth features'],
-    emphasize: false,
-    legacy: false,
-    permissions: [Permission.CrossSell]
-  },
-  {
-    name: 'Growth (v1)',
-    price: 98,
-    trialDays: 30,
-    interval: Interval.Monthly,
-    title: 'Growth',
+    title: 'Early Access',
     description: 'For merchants looking to grow their sales and improve their checkout experience.',
     featuresIncluded: ['Cart', 'Sales growth features'],
     featuresExcluded: [],
