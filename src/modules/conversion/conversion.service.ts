@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose'
+import { FilterQuery, Model, Types } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Order } from 'src/common/types/order'
@@ -20,14 +20,17 @@ export class ConversionService {
     return conversion.save()
   }
 
+  findAll(query: FilterQuery<Conversion>) {
+    return this.conversionModel.find(query)
+  }
+
   findByCrossSellId(userId: string, crossSellId: string) {
     return this.conversionModel.find({ user: userId, type: CrossSell.name, object: crossSellId })
   }
 
-  async trackConversions(order: Order, user: User) {
+  async trackCrossSellConversions(order: Order, user: User) {
     const cartToken = order.cart_token
     const lineItems = order.line_items
-    // track cross-sell conversions
     const crossSellImpressions = await this.crossSellImpressionService.findAll({ cartToken })
     for (const lineItem of lineItems) {
       const productId = composeGid('Product', lineItem.product_id)

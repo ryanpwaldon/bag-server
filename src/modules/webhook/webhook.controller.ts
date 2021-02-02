@@ -29,7 +29,7 @@ export class WebhookController {
   @Post(WEBHOOK_PATH_ORDER_CREATED)
   @UseGuards(ShopifyWebhookGuard)
   async orderCreated(@Body() order: Order, @User() user: UserType) {
-    this.conversionService.trackConversions(order, user)
+    this.conversionService.trackCrossSellConversions(order, user)
   }
 
   @Post(WEBHOOK_PATH_UNINSTALLED)
