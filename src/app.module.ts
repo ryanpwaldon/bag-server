@@ -7,6 +7,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
 import autopopulate from 'mongoose-autopopulate'
 import { MongooseModule } from '@nestjs/mongoose'
 import { SENTRY_DSN } from 'src/common/constants'
+import { ScheduleModule } from '@nestjs/schedule'
 import { SentryModule } from '@ntegral/nestjs-sentry'
 import { CartModule } from './modules/cart/cart.module'
 import { GdprModule } from './modules/gdpr/gdpr.module'
@@ -28,9 +29,11 @@ import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
 import { AccessScopeModule } from './modules/access-scope/access-scope.module'
+import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
+import { ShopEmailModule } from './modules/shop-email/shop-email.module'
 
 @Module({
   imports: [
@@ -74,6 +77,7 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
         }
       })
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     AdminModule,
     SubscriptionModule,
@@ -94,7 +98,9 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
     AccessScopeModule,
     PluginModule,
     ThemeModule,
-    AssetModule
+    AssetModule,
+    NotificationModule,
+    ShopEmailModule
   ],
   providers: [
     {

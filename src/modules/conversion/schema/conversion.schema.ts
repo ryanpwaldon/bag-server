@@ -29,7 +29,7 @@ export class Conversion extends Document {
   order!: Order
 
   @Prop()
-  value?: number
+  value!: number
 }
 
 export const ConversionSchema = SchemaFactory.createForClass(Conversion)
