@@ -1,4 +1,4 @@
-export interface OrderCreatedEvent {
+export interface Order {
   id: number
   email: string
   closed_at: null

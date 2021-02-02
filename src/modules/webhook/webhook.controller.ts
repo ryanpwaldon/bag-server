@@ -1,3 +1,4 @@
+import { Order } from 'src/common/types/order'
 import { User } from 'src/common/decorators/user.decorator'
 import { CartService } from 'src/modules/cart/cart.service'
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
@@ -5,7 +6,6 @@ import { User as UserType } from 'src/modules/user/schema/user.schema'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
 import { ShopifyWebhookGuard } from 'src/common/guards/shopify-webhook.guard'
 import { SubscriptionService } from 'src/modules/subscription/subscription.service'
-import { OrderCreatedEvent } from 'src/modules/order/interface/order-created-event.interface'
 import {
   WEBHOOK_PATH_ORDER_CREATED,
   WEBHOOK_PATH_SUBSCRIPTION_UPDATED,
@@ -28,7 +28,7 @@ export class WebhookController {
 
   @Post(WEBHOOK_PATH_ORDER_CREATED)
   @UseGuards(ShopifyWebhookGuard)
-  async orderCreated(@Body() order: OrderCreatedEvent, @User() user: UserType) {
+  async orderCreated(@Body() order: Order, @User() user: UserType) {
     this.conversionService.trackConversions(order, user)
   }
 

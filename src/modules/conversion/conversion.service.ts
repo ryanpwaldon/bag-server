@@ -1,11 +1,11 @@
 import { Model, Types } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { Order } from 'src/common/types/order'
 import { User } from 'src/modules/user/schema/user.schema'
 import { composeGid } from '@shopify/admin-graphql-api-utilities'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { Conversion } from 'src/modules/conversion/schema/conversion.schema'
-import { OrderCreatedEvent } from 'src/modules/order/interface/order-created-event.interface'
 import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell-impression/cross-sell-impression.service'
 
 @Injectable()
@@ -24,7 +24,7 @@ export class ConversionService {
     return this.conversionModel.find({ user: userId, type: CrossSell.name, object: crossSellId })
   }
 
-  async trackConversions(order: OrderCreatedEvent, user: User) {
+  async trackConversions(order: Order, user: User) {
     const cartToken = order.cart_token
     const lineItems = order.line_items
     // track cross-sell conversions

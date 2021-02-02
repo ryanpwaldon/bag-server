@@ -15,7 +15,6 @@ import { MailModule } from './modules/mail/mail.module'
 import { UserModule } from './modules/user/user.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
-import { OrderModule } from './modules/order/order.module'
 import { SentryInterceptor } from '@ntegral/nestjs-sentry'
 import { ThemeModule } from './modules/theme/theme.module'
 import { AssetModule } from './modules/asset/asset.module'
@@ -88,7 +87,6 @@ import { AdminDiscountModule } from './modules/admin-discount/admin-discount.mod
     ProductModule,
     CrossSellModule,
     EventModule,
-    OrderModule,
     CartModule,
     LeadModule,
     MailModule,
