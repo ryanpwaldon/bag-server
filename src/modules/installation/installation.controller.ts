@@ -2,6 +2,7 @@ import { Controller, Get, Query, BadRequestException, Res, Req, UseGuards, HttpS
 import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
+import { ShopEmailService } from 'src/modules/shop-email/shop-email.service'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
@@ -30,7 +31,8 @@ export class InstallationController {
     private readonly configService: ConfigService,
     private readonly appUrlService: AppUrlService,
     private readonly webhookService: WebhookService,
-    private readonly subscriptionService: SubscriptionService
+    private readonly subscriptionService: SubscriptionService,
+    private readonly shopEmailService: ShopEmailService
   ) {}
 
   @Get('start')
@@ -60,6 +62,8 @@ export class InstallationController {
     user.uninstalled = false
     await user.save()
     req.user = user
+    user.email = await this.shopEmailService.find()
+    await user.save()
     await Promise.all([
       this.subscriptionService.sync(user),
       this.webhookService.create('ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),

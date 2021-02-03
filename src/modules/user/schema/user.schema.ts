@@ -12,6 +12,9 @@ export class User extends Document {
   @Prop()
   uninstalled!: boolean
 
+  @Prop()
+  email?: string
+
   @Prop([String])
   prevSubscriptions!: string[]
 
