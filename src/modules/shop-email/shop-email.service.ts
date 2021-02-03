@@ -15,7 +15,6 @@ export class ShopEmailService {
         }
       `
     })
-    console.log(data)
     return data.shop.email
   }
 }
