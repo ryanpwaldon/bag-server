@@ -20,7 +20,7 @@ export class User extends Document {
   currencyCode!: string
 
   @Prop([String])
-  unsubscribedNotifications!: Notification[]
+  unsubscribedNotifications?: Notification[]
 
   @Prop([String])
   prevSubscriptions!: string[]

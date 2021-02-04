@@ -25,7 +25,7 @@ export class NotificationService {
     const users = conversions.map(item => item.user)
     const uniqueUsers = uniqBy(users, 'id')
     for (const user of uniqueUsers) {
-      if (user.unsubscribedNotifications.includes(Notification.ConversionReportDaily)) continue
+      if (user.unsubscribedNotifications?.includes(Notification.ConversionReportDaily)) continue
       const conversionsForUser = conversions.filter(conversion => conversion.user.id === user.id)
       const conversionRevenueAsDecimal = conversionsForUser.reduce(
         (total, conversion) => (total += conversion.value),
