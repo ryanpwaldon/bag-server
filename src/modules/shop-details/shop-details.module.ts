@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
-import { ShopEmailService } from './shop-email.service'
+import { ShopDetailsService } from './shop-details.service'
 import { UserModule } from 'src/modules/user/user.module'
 import { AdminModule } from 'src/modules/admin/admin.module'
 
 @Module({
-  providers: [ShopEmailService],
+  providers: [ShopDetailsService],
   imports: [AdminModule, UserModule],
-  exports: [ShopEmailService]
+  exports: [ShopDetailsService]
 })
-export class ShopEmailModule {}
+export class ShopDetailsModule {}

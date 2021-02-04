@@ -6,7 +6,7 @@ import { WebhookModule } from '../webhook/webhook.module'
 import { CartModule } from 'src/modules/cart/cart.module'
 import { InstallationController } from './installation.controller'
 import { SubscriptionModule } from '../subscription/subscription.module'
-import { ShopEmailModule } from 'src/modules/shop-email/shop-email.module'
+import { ShopDetailsModule } from 'src/modules/shop-details/shop-details.module'
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { ShopEmailModule } from 'src/modules/shop-email/shop-email.module'
     AppUrlModule,
     WebhookModule,
     SubscriptionModule,
-    ShopEmailModule
+    ShopDetailsModule
   ],
   controllers: [InstallationController]
 })

@@ -2,7 +2,7 @@ import { Controller, Get, Query, BadRequestException, Res, Req, UseGuards, HttpS
 import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
-import { ShopEmailService } from 'src/modules/shop-email/shop-email.service'
+import { ShopDetailsService } from 'src/modules/shop-details/shop-details.service'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
@@ -32,7 +32,7 @@ export class InstallationController {
     private readonly appUrlService: AppUrlService,
     private readonly webhookService: WebhookService,
     private readonly subscriptionService: SubscriptionService,
-    private readonly shopEmailService: ShopEmailService
+    private readonly shopDetailsService: ShopDetailsService
   ) {}
 
   @Get('start')
@@ -62,7 +62,9 @@ export class InstallationController {
     user.uninstalled = false
     await user.save()
     req.user = user
-    user.email = await this.shopEmailService.find()
+    const shopDetails = await this.shopDetailsService.find()
+    user.email = shopDetails.email
+    user.currencyCode = shopDetails.currencyCode
     await user.save()
     await Promise.all([
       this.subscriptionService.sync(user),

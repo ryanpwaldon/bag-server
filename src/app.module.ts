@@ -33,7 +33,7 @@ import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
-import { ShopEmailModule } from './modules/shop-email/shop-email.module'
+import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
 
 @Module({
   imports: [
@@ -100,7 +100,7 @@ import { ShopEmailModule } from './modules/shop-email/shop-email.module'
     ThemeModule,
     AssetModule,
     NotificationModule,
-    ShopEmailModule
+    ShopDetailsModule
   ],
   providers: [
     {

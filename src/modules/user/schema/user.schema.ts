@@ -2,6 +2,7 @@ import Cryptr from 'cryptr'
 import { Document } from 'mongoose'
 import { Permission } from 'src/modules/user/user.types'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Notification } from 'src/modules/notification/notification.constants'
 import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
@@ -13,7 +14,13 @@ export class User extends Document {
   uninstalled!: boolean
 
   @Prop()
-  email?: string
+  email!: string
+
+  @Prop()
+  currencyCode!: string
+
+  @Prop([String])
+  unsubscribedNotifications!: Notification[]
 
   @Prop([String])
   prevSubscriptions!: string[]
