@@ -3,29 +3,35 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Template } from './types/template'
 
-type Message = {
-  to: string
+export enum Persona {
+  Ryan = 'Ryan from Bag <ryan@bag.supply>',
+  Notifications = 'Bag <notifications@bag.supply>'
+}
+
+type MessageData = {
+  to?: string
+  from: Persona
   template: Template
-  model?: Record<string, any>
+  templateModel?: Record<string, any>
 }
 
 @Injectable()
 export class MailService {
   private client: Client
-  private fromAddress = 'ryan@bag.supply'
-  private fromName = 'Ryan from Bag'
+  private replyTo = 'ryan@bag.supply'
 
   constructor(private readonly configService: ConfigService) {
     this.client = new Client(this.configService.get('POSTMARK_AUTH_TOKEN') as string)
   }
 
-  sendWithTemplate({ to, template, model = {} }: Message) {
+  sendWithTemplate(messageData: MessageData) {
     this.client.sendEmailWithTemplate({
-      To: to,
-      From: `${this.fromName} <${this.fromAddress}>`,
-      TemplateAlias: template,
-      TemplateModel: model,
-      Tag: template
+      To: messageData.to,
+      From: messageData.from,
+      TemplateAlias: messageData.template,
+      TemplateModel: messageData.templateModel || {},
+      Tag: messageData.template,
+      ReplyTo: this.replyTo
     })
   }
 }

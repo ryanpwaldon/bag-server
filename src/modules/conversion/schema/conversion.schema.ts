@@ -13,7 +13,7 @@ export class Conversion extends Document {
     ref: User.name,
     required: true
   })
-  user!: Types.ObjectId
+  user!: Types.ObjectId | User
 
   @Prop({ required: true, enum: CONVERSION_TYPES })
   type!: string
