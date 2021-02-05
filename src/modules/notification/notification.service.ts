@@ -49,7 +49,7 @@ export class NotificationService {
     })
   }
 
-  @Cron('0 10 * * MON', { timeZone: CRON_TIMEZONE })
+  @Cron('57 16 * * FRI', { timeZone: 'Australia/Sydney' })
   async sendWeeklyConversionReport() {
     const now = moment()
     const filter = { createdAt: { $gte: moment(now).subtract(7, 'days'), $lte: now } }
