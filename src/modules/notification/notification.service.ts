@@ -22,6 +22,7 @@ export class NotificationService {
   ) {}
 
   async sendConversionNotification(user: User, conversions: LeanDocument<Conversion>[]) {
+    if (!conversions.length) return
     if (user.unsubscribedNotifications?.includes(Notification.Conversion)) return
     const now = moment()
     const conversionRevenueAsDecimal = conversions.reduce((total, conversion) => (total += conversion.value), 0)
