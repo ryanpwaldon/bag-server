@@ -1,5 +1,5 @@
 import { CreateUserDto } from './dto/create-user.dto'
-import { Model, FilterQuery } from 'mongoose'
+import { Model, FilterQuery, LeanDocument } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { Injectable } from '@nestjs/common'
 import { User } from './schema/user.schema'
@@ -21,7 +21,7 @@ export class UserService {
     return this.userModel.findOne(query).exec()
   }
 
-  async updateOneById(id: string, body: Partial<User>): Promise<User> {
+  async updateOneById(id: string, body: LeanDocument<User>): Promise<User> {
     const user = await this.userModel.findById(id)
     return assign(user, body).save()
   }
