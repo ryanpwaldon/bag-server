@@ -25,6 +25,7 @@ export class MailService {
   }
 
   sendWithTemplate(messageData: MessageData) {
+    if (!messageData.to) return
     this.client.sendEmailWithTemplate({
       To: messageData.to,
       From: messageData.from,

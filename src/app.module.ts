@@ -21,7 +21,6 @@ import { ThemeModule } from './modules/theme/theme.module'
 import { AssetModule } from './modules/asset/asset.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PluginModule } from './modules/plugin/plugin.module'
-import { AppUrlModule } from './modules/app-url/app-url.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
@@ -86,7 +85,6 @@ import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
     MonitorModule,
     AdminDiscountModule,
     WebhookModule,
-    AppUrlModule,
     ScriptTagModule,
     ProductModule,
     CrossSellModule,

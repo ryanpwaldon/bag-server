@@ -3,7 +3,9 @@ import { AdminService } from 'src/modules/admin/admin.service'
 
 type ShopDetails = {
   email: string
+  timezone: string
   currencyCode: string
+  appUrl: string
 }
 
 @Injectable()
@@ -17,13 +19,19 @@ export class ShopDetailsService {
           shop {
             email
             currencyCode
+            ianaTimezone
+          }
+          appInstallation {
+            launchUrl
           }
         }
       `
     })
     return {
       email: data.shop.email,
-      currencyCode: data.shop.currencyCode
+      timezone: data.shop.ianaTimezone,
+      currencyCode: data.shop.currencyCode,
+      appUrl: data.appInstallation.launchUrl
     }
   }
 }

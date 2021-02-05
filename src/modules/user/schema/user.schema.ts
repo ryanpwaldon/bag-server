@@ -17,7 +17,13 @@ export class User extends Document {
   email!: string
 
   @Prop()
+  appUrl!: string
+
+  @Prop({ default: 'USD' })
   currencyCode!: string
+
+  @Prop({ default: 'America/New_York' })
+  timezone!: string
 
   @Prop([String])
   unsubscribedNotifications?: Notification[]

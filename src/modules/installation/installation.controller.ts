@@ -6,7 +6,6 @@ import { ShopDetailsService } from 'src/modules/shop-details/shop-details.servic
 import { SubscriptionService } from '../subscription/subscription.service'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
-import { AppUrlService } from '../app-url/app-url.service'
 import { User } from 'src/modules/user/schema/user.schema'
 import { UserService } from '../user/user.service'
 import { ConfigService } from '@nestjs/config'
@@ -29,7 +28,6 @@ export class InstallationController {
     private readonly cartService: CartService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
-    private readonly appUrlService: AppUrlService,
     private readonly webhookService: WebhookService,
     private readonly subscriptionService: SubscriptionService,
     private readonly shopDetailsService: ShopDetailsService
@@ -64,6 +62,8 @@ export class InstallationController {
     req.user = user
     const shopDetails = await this.shopDetailsService.find()
     user.email = shopDetails.email
+    user.appUrl = shopDetails.appUrl
+    user.timezone = shopDetails.timezone
     user.currencyCode = shopDetails.currencyCode
     await user.save()
     await Promise.all([
@@ -73,8 +73,7 @@ export class InstallationController {
       this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
-    const appUrl = await this.appUrlService.find()
-    res.redirect(appUrl)
+    res.redirect(user.appUrl)
   }
 
   async fetchAccessToken(shopOrigin: string, authCode: string) {

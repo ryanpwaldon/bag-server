@@ -2,9 +2,10 @@ import { Order } from 'src/common/types/order'
 import { User } from '../../user/schema/user.schema'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types, Schema as MongooseSchema } from 'mongoose'
-import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 
-export const CONVERSION_TYPES = [CrossSell.name]
+export enum ConversionType {
+  CrossSell = 'CrossSell'
+}
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class Conversion extends Document {
@@ -15,8 +16,8 @@ export class Conversion extends Document {
   })
   user!: Types.ObjectId | User
 
-  @Prop({ required: true, enum: CONVERSION_TYPES })
-  type!: string
+  @Prop({ required: true, enum: Object.values(ConversionType) })
+  type!: ConversionType
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,

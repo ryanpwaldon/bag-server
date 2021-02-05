@@ -5,6 +5,6 @@ export default (amount: number, currencyCode: string = defaultCurrency) => {
   return new Intl.NumberFormat(defaultLocale, {
     style: 'currency',
     currency: currencyCode,
-    currencyDisplay: 'symbol'
+    currencyDisplay: 'narrowSymbol'
   }).format(amount)
 }

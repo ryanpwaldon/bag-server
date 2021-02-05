@@ -1,4 +1,5 @@
 export enum Template {
   Welcome = 'welcome',
-  ConversionReportDaily = 'conversion-report-daily'
+  Conversion = 'conversion',
+  ConversionReportWeekly = 'conversion-report-weekly'
 }
