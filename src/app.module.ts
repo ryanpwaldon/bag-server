@@ -31,7 +31,7 @@ import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
-import { AdminDiscountModule } from './modules/admin-discount/admin-discount.module'
+import { DiscountModule } from './modules/discount/discount.module'
 import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
 
 @Module({
@@ -83,7 +83,7 @@ import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
     InstallationModule,
     GdprModule,
     MonitorModule,
-    AdminDiscountModule,
+    DiscountModule,
     WebhookModule,
     ScriptTagModule,
     ProductModule,

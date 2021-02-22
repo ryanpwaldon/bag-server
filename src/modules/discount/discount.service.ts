@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { AdminService } from '../admin/admin.service'
 
 @Injectable()
-export class AdminDiscountService {
+export class DiscountService {
   constructor(private readonly adminService: AdminService) {}
 
   async findOne(id: string) {
