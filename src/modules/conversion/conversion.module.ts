@@ -4,6 +4,7 @@ import { ConversionService } from './conversion.service'
 import { UserModule } from 'src/modules/user/user.module'
 import { EventModule } from 'src/modules/event/event.module'
 import { ConversionController } from './conversion.controller'
+import { ProgressBarModule } from 'src/modules/progress-bar/progress-bar.module'
 import { NotificationModule } from 'src/modules/notification/notification.module'
 import { Conversion, ConversionSchema } from 'src/modules/conversion/schema/conversion.schema'
 
@@ -11,6 +12,7 @@ import { Conversion, ConversionSchema } from 'src/modules/conversion/schema/conv
   imports: [
     UserModule,
     EventModule,
+    ProgressBarModule,
     forwardRef(() => NotificationModule),
     MongooseModule.forFeature([
       {

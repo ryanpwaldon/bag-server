@@ -60,7 +60,8 @@ export class CrossSellController {
     @Query('populateProducts') populateProducts = true
   ) {
     query.user = userId
-    const result = await this.crossSellService.findAll(query, sort, page, limit)
+    const options = { sort, page, limit }
+    const result = await this.crossSellService.findAll(query, options)
     if (!populateProducts) return result
     const docs = await this.populateProducts(result.docs)
     return { ...result, docs }

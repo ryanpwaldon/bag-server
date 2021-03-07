@@ -24,6 +24,7 @@ import { PluginModule } from './modules/plugin/plugin.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
+import { DiscountModule } from './modules/discount/discount.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
@@ -31,8 +32,8 @@ import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
-import { DiscountModule } from './modules/discount/discount.module'
 import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
+import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
 
 @Module({
   imports: [
@@ -98,7 +99,8 @@ import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
     ThemeModule,
     AssetModule,
     NotificationModule,
-    ShopDetailsModule
+    ShopDetailsModule,
+    ProgressBarModule
   ],
   providers: [
     {

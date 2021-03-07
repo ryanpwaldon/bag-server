@@ -1,6 +1,6 @@
 import assign from 'lodash/assign'
 import { InjectModel } from '@nestjs/mongoose'
-import { FilterQuery, PaginateModel } from 'mongoose'
+import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose'
 import { CrossSell } from './schema/cross-sell.schema'
 import { Injectable } from '@nestjs/common'
 
@@ -13,8 +13,8 @@ export class CrossSellService {
     return crossSell.save()
   }
 
-  findAll(query: FilterQuery<CrossSell>, sort: string, page = 1, limit = 20) {
-    return this.crossSellModel.paginate(query, { sort, page, limit })
+  findAll(query: FilterQuery<CrossSell>, options: PaginateOptions = { page: 1, limit: 20 }) {
+    return this.crossSellModel.paginate(query, options)
   }
 
   findOneById(id: string) {

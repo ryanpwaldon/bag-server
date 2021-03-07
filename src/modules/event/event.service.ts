@@ -7,7 +7,7 @@ import { Model, FilterQuery } from 'mongoose'
 export class EventService {
   constructor(@InjectModel(Event.name) private readonly eventModel: Model<Event>) {}
 
-  findAll(query: FilterQuery<Event>) {
-    return this.eventModel.find(query)
+  count(query: FilterQuery<Event>) {
+    return this.eventModel.countDocuments(query)
   }
 }

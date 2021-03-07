@@ -1,3 +1,4 @@
 export enum Permission {
-  CrossSell = 'crossSell'
+  CrossSell = 'crossSell',
+  ProgressBar = 'progressBar'
 }

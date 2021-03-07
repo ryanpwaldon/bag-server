@@ -17,7 +17,7 @@ const SUBSCRIPTIONS: Subscription[] = [
     featuresExcluded: [],
     emphasize: true,
     legacy: false,
-    permissions: [Permission.CrossSell]
+    permissions: [Permission.CrossSell, Permission.ProgressBar]
   }
 ]
 

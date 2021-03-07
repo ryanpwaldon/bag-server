@@ -12,4 +12,10 @@ export class ConversionController {
   async findByCrossSellId(@User('id') userId: string, @Param('id') id: string) {
     return this.conversionService.findByCrossSellId(userId, id)
   }
+
+  @Get('progress-bar/:id')
+  @UseGuards(EmbeddedAppGuard)
+  async findByProgressBarId(@User('id') userId: string, @Param('id') id: string) {
+    return this.conversionService.findByProgressBarId(userId, id)
+  }
 }
