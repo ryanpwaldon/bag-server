@@ -2,8 +2,7 @@ import { Document } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 enum EventType {
-  CrossSellImpression = 'CrossSellImpression',
-  ProgressBarImpression = 'ProgressBarImpression'
+  CrossSellImpression = 'CrossSellImpression'
 }
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true, discriminatorKey: 'type' })
