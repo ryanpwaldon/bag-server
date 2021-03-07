@@ -1,11 +1,7 @@
-import { Document, Types, Schema as MongooseSchema } from 'mongoose'
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { User } from '../../user/schema/user.schema'
-
-interface DateRange {
-  start: Date
-  end?: Date
-}
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, Types, Schema as MongooseSchema } from 'mongoose'
+import { DateRange } from 'src/modules/progress-bar/progress-bar.types'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class ProgressBar extends Document {
