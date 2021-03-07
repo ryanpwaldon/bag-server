@@ -5,15 +5,19 @@ import { ProgressBarService } from './progress-bar.service'
 import { PluginGuard } from 'src/common/guards/plugin.guard'
 import { ProgressBarController } from './progress-bar.controller'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
-import { ProgressBar, ProgressBarSchema } from './schema/progress-bar.schema'
+import { ProgressBar, ProgressBarSchema, updateActivePeriods } from './schema/progress-bar.schema'
 
 @Module({
   imports: [
     UserModule,
-    MongooseModule.forFeature([
+    MongooseModule.forFeatureAsync([
       {
         name: ProgressBar.name,
-        schema: ProgressBarSchema
+        useFactory: () => {
+          const schema = ProgressBarSchema
+          schema.pre('save', updateActivePeriods)
+          return schema
+        }
       }
     ])
   ],
