@@ -1,6 +1,6 @@
-import { InjectModel } from '@nestjs/mongoose'
 import { Injectable } from '@nestjs/common'
 import { Model, FilterQuery } from 'mongoose'
+import { InjectModel } from '@nestjs/mongoose'
 import { CrossSellImpression } from './schema/cross-sell-impression.schema'
 
 @Injectable()
