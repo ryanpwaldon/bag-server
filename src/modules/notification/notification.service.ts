@@ -63,7 +63,7 @@ export class NotificationService {
     const templateModel = {
       orderNumber,
       conversionCount,
-      plurality: conversionCount > 1,
+      plurality: conversionCount !== 1,
       conversions: formattedConversions,
       date: now.tz(user.timezone).format('hh:MMa, DD MMMM YYYY')
     }
@@ -79,10 +79,11 @@ export class NotificationService {
   async sendWeeklyConversionReport() {
     const now = moment()
     const filter = { createdAt: { $gte: moment(now).subtract(7, 'days'), $lte: now } }
-    const conversions = (await this.conversionService
+    let conversions = (await this.conversionService
       .findAll(filter)
       .populate('user')
       .populate('object')) as ConversionWithPopulatedUser[]
+    conversions = conversions.filter(item => !!item.object) // exclude deleted offers
     const users = conversions.map(item => item.user)
     const uniqueUsers = uniqBy(users, 'id')
     for (const user of uniqueUsers) {
@@ -106,8 +107,8 @@ export class NotificationService {
         orders,
         orderCount,
         conversionCount,
-        orderPlurality: orderCount > 1,
-        conversionPlurality: conversionCount > 1,
+        orderPlurality: orderCount !== 1,
+        conversionPlurality: conversionCount !== 1,
         date: now.tz(user.timezone).format('DD MMMM YYYY')
       }
       this.mailService.sendWithTemplate({
