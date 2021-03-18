@@ -25,7 +25,7 @@ export class CrossSellController {
     const leanItems = items.map(item => item.toObject())
     const products = await this.productService.findByIds(leanItems.map(leanItem => leanItem.productId))
     for (const leanItem of leanItems)
-      leanItem.product = products.find((product: any) => leanItem.productId === product.id)
+      leanItem.product = products.find((product: any) => leanItem.productId === product?.id)
     return leanItems
   }
 
