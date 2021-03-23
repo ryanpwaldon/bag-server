@@ -1,7 +1,8 @@
 import Cryptr from 'cryptr'
-import { Document } from 'mongoose'
 import { Permission } from 'src/modules/user/user.types'
+import { Document, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { OrderAnalysis } from '../../shop-details/shop-details.service'
 import { Notification } from 'src/modules/notification/notification.constants'
 import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
 
@@ -46,6 +47,9 @@ export class User extends Document {
   accessToken!: string
 
   permissions!: Permission[]
+
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  orderAnalysis?: OrderAnalysis
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

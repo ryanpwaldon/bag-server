@@ -65,6 +65,8 @@ export class InstallationController {
     user.appUrl = shopDetails.appUrl
     user.timezone = shopDetails.timezone
     user.currencyCode = shopDetails.currencyCode
+    const orderAnalysis = await this.shopDetailsService.findOrderAnalysis()
+    user.orderAnalysis = orderAnalysis
     await user.save()
     await Promise.all([
       this.subscriptionService.sync(user),
