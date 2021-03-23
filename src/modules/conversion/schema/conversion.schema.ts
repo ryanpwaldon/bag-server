@@ -1,5 +1,5 @@
-import { Order } from 'src/common/types/order'
 import { User } from '../../user/schema/user.schema'
+import { Order } from 'src/modules/order/schema/order.schema'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types, Schema as MongooseSchema } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
@@ -29,8 +29,13 @@ export class Conversion extends Document {
   })
   object!: Types.ObjectId | CrossSell | ProgressBar
 
-  @Prop({ type: MongooseSchema.Types.Mixed, required: true })
-  order!: Order
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: Order.name,
+    required: true,
+    autopopulate: true
+  })
+  order!: Types.ObjectId | Order
 
   @Prop()
   value?: number

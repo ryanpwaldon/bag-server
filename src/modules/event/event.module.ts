@@ -4,9 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { EventController } from './event.controller'
 import { UserModule } from 'src/modules/user/user.module'
 import { Event, EventSchema } from './schema/event.schema'
-import { OrderCreatedService } from 'src/modules/event/modules/order-created/order-created.service'
 import { CrossSellImpressionService } from './modules/cross-sell-impression/cross-sell-impression.service'
-import { OrderCreated, OrderCreatedSchema } from 'src/modules/event/modules/order-created/schema/order-created.schema'
 import {
   CrossSellImpression,
   CrossSellImpressionSchema
@@ -19,15 +17,12 @@ import {
       {
         name: Event.name,
         useFactory: () => EventSchema,
-        discriminators: [
-          { name: CrossSellImpression.name, schema: CrossSellImpressionSchema },
-          { name: OrderCreated.name, schema: OrderCreatedSchema }
-        ]
+        discriminators: [{ name: CrossSellImpression.name, schema: CrossSellImpressionSchema }]
       }
     ])
   ],
   controllers: [EventController],
-  providers: [EventService, CrossSellImpressionService, OrderCreatedService],
-  exports: [EventService, CrossSellImpressionService, OrderCreatedService]
+  providers: [EventService, CrossSellImpressionService],
+  exports: [EventService, CrossSellImpressionService]
 })
 export class EventModule {}

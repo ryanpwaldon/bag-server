@@ -1,6 +1,7 @@
+import { flatten } from 'lodash'
 import { InjectModel } from '@nestjs/mongoose'
-import { Order } from 'src/common/types/order'
 import { User } from 'src/modules/user/schema/user.schema'
+import { Order } from 'src/modules/order/schema/order.schema'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { composeGid } from '@shopify/admin-graphql-api-utilities'
 import { FilterQuery, LeanDocument, Model, Types } from 'mongoose'
@@ -8,7 +9,6 @@ import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.servic
 import { NotificationService } from 'src/modules/notification/notification.service'
 import { Conversion, ConversionType } from 'src/modules/conversion/schema/conversion.schema'
 import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell-impression/cross-sell-impression.service'
-import { flatten } from 'lodash'
 
 @Injectable()
 export class ConversionService {
@@ -24,7 +24,7 @@ export class ConversionService {
     return conversion.save()
   }
 
-  findAll(query: FilterQuery<Conversion>) {
+  findAll(query: FilterQuery<Conversion> = {}) {
     return this.conversionModel.find(query)
   }
 
@@ -37,7 +37,7 @@ export class ConversionService {
   }
 
   async trackConversions(order: Order, user: User) {
-    const orderNumber = order.order_number
+    const orderNumber = order.details.order_number
     const conversions = flatten(
       await Promise.all([this.trackCrossSellConversions(order, user), this.trackProgressBarConversions(order, user)])
     )
@@ -45,8 +45,8 @@ export class ConversionService {
   }
 
   async trackCrossSellConversions(order: Order, user: User) {
-    const cartToken = order.cart_token
-    const lineItems = order.line_items
+    const cartToken = order.details.cart_token
+    const lineItems = order.details.line_items
     const conversions: LeanDocument<Conversion>[] = []
     const crossSellImpressions = await this.crossSellImpressionService.findAll({ cartToken })
     for (const lineItem of lineItems) {
@@ -55,7 +55,7 @@ export class ConversionService {
         ?.crossSell
       if (!convertedCrossSell) continue
       conversions.push({
-        order,
+        order: Types.ObjectId(order.id),
         type: ConversionType.CrossSell,
         user: Types.ObjectId(user.id),
         value: parseFloat(lineItem.price) * lineItem.quantity,
@@ -66,7 +66,7 @@ export class ConversionService {
   }
 
   async trackProgressBarConversions(order: Order, user: User) {
-    const subtotal = parseFloat(order.subtotal_price)
+    const subtotal = parseFloat(order.details.subtotal_price)
     const conversions: LeanDocument<Conversion>[] = []
     const activeProgressBars = (
       await this.progressBarService.findAll({ active: true, user: user.id }, { limit: Number.MAX_SAFE_INTEGER })
@@ -74,7 +74,7 @@ export class ConversionService {
     const convertedProgressBars = activeProgressBars.filter(progressBar => subtotal >= progressBar.goal)
     for (const convertedProgressBar of convertedProgressBars) {
       conversions.push({
-        order,
+        order: Types.ObjectId(order.id),
         type: ConversionType.ProgressBar,
         user: Types.ObjectId(user.id),
         object: Types.ObjectId(convertedProgressBar.id)

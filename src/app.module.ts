@@ -19,6 +19,7 @@ import { EventModule } from './modules/event/event.module'
 import { SentryInterceptor } from '@ntegral/nestjs-sentry'
 import { ThemeModule } from './modules/theme/theme.module'
 import { AssetModule } from './modules/asset/asset.module'
+import { OrderModule } from './modules/order/order.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PluginModule } from './modules/plugin/plugin.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
@@ -34,6 +35,7 @@ import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
 import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
+import { MigrationModule } from './modules/migration/migration.module'
 
 @Module({
   imports: [
@@ -100,7 +102,9 @@ import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
     AssetModule,
     NotificationModule,
     ShopDetailsModule,
-    ProgressBarModule
+    ProgressBarModule,
+    OrderModule,
+    MigrationModule
   ],
   providers: [
     {

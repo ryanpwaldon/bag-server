@@ -4,6 +4,7 @@ import { Cron } from '@nestjs/schedule'
 import { CRON_TIMEZONE } from 'src/common/constants'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Template } from 'src/modules/mail/types/template'
+import { Order } from 'src/modules/order/schema/order.schema'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
@@ -20,12 +21,13 @@ interface FormattedConversion {
   title: string
 }
 
-interface Order {
-  orderNumber: number
-  conversions: FormattedConversion[]
-}
-
-type ConversionsForUserByOrder = Record<number, Order>
+type ConversionsForUserByOrder = Record<
+  number,
+  {
+    orderNumber: number
+    conversions: FormattedConversion[]
+  }
+>
 
 const formatConversion = (user: User, conversion: Conversion | ConversionWithPopulatedUser): FormattedConversion => {
   switch (conversion.type) {
@@ -90,11 +92,11 @@ export class NotificationService {
       if (user.unsubscribedNotifications?.includes(Notification.ConversionReportWeekly)) continue
       const conversionsForUser = conversions.filter(conversion => conversion.user.id === user.id)
       const ordersForUser = conversionsForUser.reduce((orders, conversion) => {
-        if (conversion.order.order_number in orders) {
-          orders[conversion.order.order_number].conversions.push(formatConversion(user, conversion))
+        if ((conversion.order as Order).details.order_number in orders) {
+          orders[(conversion.order as Order).details.order_number].conversions.push(formatConversion(user, conversion))
         } else {
-          orders[conversion.order.order_number] = {
-            orderNumber: conversion.order.order_number,
+          orders[(conversion.order as Order).details.order_number] = {
+            orderNumber: (conversion.order as Order).details.order_number,
             conversions: [formatConversion(user, conversion)]
           }
         }
