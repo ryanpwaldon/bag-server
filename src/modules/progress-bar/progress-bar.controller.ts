@@ -39,9 +39,12 @@ export class ProgressBarController {
     @Query('limit') limit: number,
     @Query('query') query: FilterQuery<ProgressBar> = {}
   ) {
+    console.time('Progress bar query:')
     query.user = userId
     const options = { sort, page, limit }
-    return this.progressBarService.findAll(query, options)
+    const progressBars = await this.progressBarService.findAll(query, options)
+    console.timeEnd('Progress bar query:')
+    return progressBars
   }
 
   @Delete(':id')
