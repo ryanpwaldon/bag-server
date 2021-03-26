@@ -33,6 +33,8 @@ export class WebhookController {
   @UseGuards(ShopifyWebhookGuard)
   async orderCreated(@Body() adminOrder: AdminOrder, @User() user: UserType) {
     const order = await this.orderService.create({ user: Types.ObjectId(user.id), details: adminOrder })
+    const cart = await this.cartService.findOneByUserId(user.id)
+    if (!cart?.active) return
     this.conversionService.trackConversions(order, user)
   }
 
