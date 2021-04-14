@@ -1,4 +1,5 @@
-import { IsOptional, IsString } from 'class-validator'
+import { TriggerGroup } from 'src/common/types/trigger-group'
+import { IsOptional, IsString, ValidateNested } from 'class-validator'
 
 export class UpdateCrossSellDto {
   @IsOptional()
@@ -14,6 +15,6 @@ export class UpdateCrossSellDto {
   productId?: string
 
   @IsOptional()
-  @IsString({ each: true })
-  triggerProductIds?: string[]
+  @ValidateNested()
+  triggerGroup?: TriggerGroup
 }

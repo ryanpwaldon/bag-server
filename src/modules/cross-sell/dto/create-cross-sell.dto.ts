@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator'
+import { TriggerGroup } from 'src/common/types/trigger-group'
+import { IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
 
 export class CreateCrossSellDto {
   @IsNotEmpty()
@@ -13,7 +14,7 @@ export class CreateCrossSellDto {
   @IsString()
   productId!: string
 
-  @IsNotEmpty()
-  @IsString({ each: true })
-  triggerProductIds!: string[]
+  @IsOptional()
+  @ValidateNested()
+  triggerGroup?: TriggerGroup
 }

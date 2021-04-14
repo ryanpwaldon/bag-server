@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import { TriggerGroup } from 'src/common/types/trigger-group'
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
 
 export class CreateProgressBarDto {
   @IsNotEmpty()
@@ -16,4 +17,8 @@ export class CreateProgressBarDto {
   @IsNotEmpty()
   @IsString()
   image!: string
+
+  @IsOptional()
+  @ValidateNested()
+  triggerGroup?: TriggerGroup
 }
