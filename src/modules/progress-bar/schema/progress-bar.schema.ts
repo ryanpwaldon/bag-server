@@ -41,7 +41,12 @@ export class ProgressBar extends Document {
   @Prop({ required: true })
   image!: string
 
-  @Prop()
+  @Prop({
+    default: {
+      matchAll: true,
+      triggers: []
+    }
+  })
   triggerGroup?: TriggerGroup
 }
 

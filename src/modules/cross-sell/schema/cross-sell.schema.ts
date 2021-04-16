@@ -33,7 +33,12 @@ export class CrossSell extends Document {
   @Prop([String])
   triggerProductIds!: string[]
 
-  @Prop()
+  @Prop({
+    default: {
+      matchAll: true,
+      triggers: []
+    }
+  })
   triggerGroup?: TriggerGroup
 
   product?: any
