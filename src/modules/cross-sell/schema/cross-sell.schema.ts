@@ -30,9 +30,6 @@ export class CrossSell extends Document {
   @Prop({ required: true })
   subtitle!: string
 
-  @Prop([String])
-  triggerProductIds!: string[]
-
   @Prop({
     default: {
       matchAll: true,
