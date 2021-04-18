@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import { TriggerGroup } from 'src/common/types/trigger-group'
 import { IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
 
@@ -16,5 +17,6 @@ export class CreateCrossSellDto {
 
   @IsOptional()
   @ValidateNested()
+  @Type(() => TriggerGroup)
   triggerGroup?: TriggerGroup
 }

@@ -1,7 +1,8 @@
-import { IsBoolean, IsEnum, IsNotEmpty, ValidateNested } from 'class-validator'
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty } from 'class-validator'
 
 export enum TriggerProperty {
   Product = 'product',
+  ProductTag = 'productTag',
   ProductType = 'productType',
   ProductVendor = 'productVendor',
   Subtotal = 'subtotal'
@@ -34,6 +35,6 @@ export class TriggerGroup {
   matchAll!: boolean
 
   @IsNotEmpty()
-  @ValidateNested()
+  @IsArray()
   triggers!: Array<TriggerGroup | Trigger>
 }
