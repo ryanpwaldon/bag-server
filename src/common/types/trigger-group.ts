@@ -2,6 +2,7 @@ import { IsArray, IsBoolean, IsEnum, IsNotEmpty } from 'class-validator'
 
 export enum TriggerProperty {
   Product = 'product',
+  Variant = 'variant',
   ProductTag = 'productTag',
   ProductType = 'productType',
   ProductVendor = 'productVendor',
@@ -25,8 +26,7 @@ class Trigger {
   condition!: TriggerCondition
 
   @IsNotEmpty()
-  @IsEnum(TriggerProperty)
-  value!: string | string[] | number
+  value!: unknown
 }
 
 export class TriggerGroup {
