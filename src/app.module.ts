@@ -36,6 +36,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
 import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
 import { MigrationModule } from './modules/migration/migration.module'
+import { VariantModule } from './modules/variant/variant.module'
 
 @Module({
   imports: [
@@ -104,7 +105,8 @@ import { MigrationModule } from './modules/migration/migration.module'
     ShopDetailsModule,
     ProgressBarModule,
     OrderModule,
-    MigrationModule
+    MigrationModule,
+    VariantModule
   ],
   providers: [
     {
