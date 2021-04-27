@@ -14,6 +14,7 @@ import { GdprModule } from './modules/gdpr/gdpr.module'
 import { LeadModule } from './modules/lead/lead.module'
 import { MailModule } from './modules/mail/mail.module'
 import { UserModule } from './modules/user/user.module'
+import { TestModule } from './modules/test/test.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
 import { SentryInterceptor } from '@ntegral/nestjs-sentry'
@@ -82,6 +83,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module'
     GdprModule,
     CartModule,
     LeadModule,
+    TestModule,
     MailModule,
     AdminModule,
     EventModule,
