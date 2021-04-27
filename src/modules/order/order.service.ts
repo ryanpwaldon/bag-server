@@ -12,7 +12,7 @@ export class OrderService {
     return new this.orderModel(data).save()
   }
 
-  countByDateRanges(dateRanges: DateRange[], userId: string) {
+  countByDateRanges(userId: string, dateRanges: DateRange[]) {
     const query = {
       user: userId,
       $or: dateRanges.map(({ start, end }) => ({ createdAt: { $gte: start, $lt: end } }))

@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { Injectable } from '@nestjs/common'
+import { User } from 'src/modules/user/schema/user.schema'
 import { AdminService } from 'src/modules/admin/admin.service'
 
 type ShopDetails = {
@@ -22,8 +23,8 @@ export type OrderAnalysis = {
 export class ShopDetailsService {
   constructor(private readonly adminService: AdminService) {}
 
-  async find(): Promise<ShopDetails> {
-    const { data } = await this.adminService.createGraphQLRequest({
+  async find(user: User): Promise<ShopDetails> {
+    const { data } = await this.adminService.createGraphQLRequest(user, {
       query: /* GraphQL */ `
         {
           shop {
@@ -45,7 +46,7 @@ export class ShopDetailsService {
     }
   }
 
-  async findOrderAnalysis() {
+  async findOrderAnalysis(user: User) {
     const orderAnalysis: OrderAnalysis = {
       periodInDays: null,
       ordersForPeriod: null,
@@ -55,7 +56,7 @@ export class ShopDetailsService {
       averageOrderValue: null
     }
     try {
-      const { data } = await this.adminService.createGraphQLRequest({
+      const { data } = await this.adminService.createGraphQLRequest(user, {
         query: /* GraphQL */ `
           {
             orders(first: 250, sortKey: PROCESSED_AT, reverse: true) {

@@ -1,4 +1,4 @@
-import { User } from 'src/common/decorators/user.decorator'
+import { GetUser } from 'src/common/decorators/user.decorator'
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
@@ -9,13 +9,13 @@ export class ConversionController {
 
   @Get('cross-sell/:id')
   @UseGuards(EmbeddedAppGuard)
-  async findByCrossSellId(@User('id') userId: string, @Param('id') id: string) {
+  async findByCrossSellId(@GetUser('id') userId: string, @Param('id') id: string) {
     return this.conversionService.findByCrossSellId(userId, id)
   }
 
   @Get('progress-bar/:id')
   @UseGuards(EmbeddedAppGuard)
-  async findByProgressBarId(@User('id') userId: string, @Param('id') id: string) {
+  async findByProgressBarId(@GetUser('id') userId: string, @Param('id') id: string) {
     return this.conversionService.findByProgressBarId(userId, id)
   }
 }

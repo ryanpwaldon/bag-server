@@ -58,21 +58,19 @@ export class InstallationController {
     const user = (await this.userService.findOne({ shopOrigin })) || (await this.userService.create({ shopOrigin }))
     user.accessToken = accessToken
     user.uninstalled = false
-    await user.save()
-    req.user = user
-    const shopDetails = await this.shopDetailsService.find()
+    const shopDetails = await this.shopDetailsService.find(user)
     user.email = shopDetails.email
     user.appUrl = shopDetails.appUrl
     user.timezone = shopDetails.timezone
     user.currencyCode = shopDetails.currencyCode
-    const orderAnalysis = await this.shopDetailsService.findOrderAnalysis()
+    const orderAnalysis = await this.shopDetailsService.findOrderAnalysis(user)
     user.orderAnalysis = orderAnalysis
     await user.save()
     await Promise.all([
       this.subscriptionService.sync(user),
-      this.webhookService.create('ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),
-      this.webhookService.create('APP_UNINSTALLED', `/webhook/${WEBHOOK_PATH_UNINSTALLED}`),
-      this.webhookService.create('APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),
+      this.webhookService.create(user, 'ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),
+      this.webhookService.create(user, 'APP_UNINSTALLED', `/webhook/${WEBHOOK_PATH_UNINSTALLED}`),
+      this.webhookService.create(user, 'APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
     res.redirect(user.appUrl)

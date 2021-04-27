@@ -1,7 +1,7 @@
 import { Response } from 'express'
-import { User } from 'src/common/decorators/user.decorator'
+import { GetUser } from 'src/common/decorators/user.decorator'
 import { SubscriptionService } from './subscription.service'
-import { User as UserType } from 'src/modules/user/schema/user.schema'
+import { User } from 'src/modules/user/schema/user.schema'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { PAID_SUBSCRIPTION_CREATED_PATH } from './subscription.constants'
 import { Controller, Post, Body, Get, UseGuards, Res } from '@nestjs/common'
@@ -13,40 +13,40 @@ export class SubscriptionController {
 
   @Post('free')
   @UseGuards(EmbeddedAppGuard)
-  async createFreeSubscription(@User() user: UserType, @Body('subscriptionName') subscriptionName: string) {
+  async createFreeSubscription(@GetUser() user: User, @Body('subscriptionName') subscriptionName: string) {
     await this.subscriptionService.cancel(user)
     return this.subscriptionService.createFreeSubscription(user, subscriptionName)
   }
 
   @Post('paid')
   @UseGuards(EmbeddedAppGuard)
-  createPaidSubscription(@User() user: UserType, @Body('subscriptionName') subscriptionName: string) {
+  createPaidSubscription(@GetUser() user: User, @Body('subscriptionName') subscriptionName: string) {
     return this.subscriptionService.createPaidSubscription(user, subscriptionName)
   }
 
   @Get(PAID_SUBSCRIPTION_CREATED_PATH)
   @UseGuards(ShopifyRedirectGuard)
-  async paidSubscriptionCreated(@User() user: UserType, @Res() res: Response) {
+  async paidSubscriptionCreated(@GetUser() user: User, @Res() res: Response) {
     await this.subscriptionService.sync(user)
     res.redirect(user.appUrl)
   }
 
   @Get('sync')
   @UseGuards(EmbeddedAppGuard)
-  sync(@User() user: UserType) {
+  sync(@GetUser() user: User) {
     return this.subscriptionService.sync(user)
   }
 
   @Get('cancel')
   @UseGuards(EmbeddedAppGuard)
-  cancel(@User() user: UserType) {
+  cancel(@GetUser() user: User) {
     return this.subscriptionService.cancel(user)
   }
 
   @Get('active')
   @UseGuards(EmbeddedAppGuard)
-  findActiveSubscription() {
-    return this.subscriptionService.findActiveSubscription()
+  findActiveSubscription(@GetUser() user: User) {
+    return this.subscriptionService.findActiveSubscription(user)
   }
 
   @Get()

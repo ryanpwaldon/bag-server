@@ -1,7 +1,7 @@
 import { Permission } from 'src/modules/user/user.types'
-import { User } from 'src/common/decorators/user.decorator'
+import { User } from 'src/modules/user/schema/user.schema'
 import { PluginGuard } from 'src/common/guards/plugin.guard'
-import { User as UserType } from 'src/modules/user/schema/user.schema'
+import { GetUser } from 'src/common/decorators/user.decorator'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { CrossSellService } from 'src/modules/cross-sell/cross-sell.service'
 import { BadRequestException, Controller, Get, UseGuards } from '@nestjs/common'
@@ -22,7 +22,7 @@ export class PluginController {
 
   @Get('offers')
   @UseGuards(PluginGuard)
-  async findSettings(@User() user: UserType): Promise<Offers> {
+  async findSettings(@GetUser() user: User): Promise<Offers> {
     if (!user) throw new BadRequestException()
     const query = { active: true, user: user.id }
     const options = { limit: Number.MAX_SAFE_INTEGER }

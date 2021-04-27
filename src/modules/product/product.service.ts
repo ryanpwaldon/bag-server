@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { AdminService } from '../admin/admin.service'
+import { User } from 'src/modules/user/schema/user.schema'
 
 @Injectable()
 export class ProductService {
   constructor(private readonly adminService: AdminService) {}
 
-  async findOneById(id: string) {
-    const { data } = await this.adminService.createGraphQLRequest({
+  async findOneById(user: User, id: string) {
+    const { data } = await this.adminService.createGraphQLRequest(user, {
       query: /* GraphQL */ `
         {
           product(id: "${id}") {
@@ -42,8 +43,8 @@ export class ProductService {
     return data.product
   }
 
-  async findByIds(ids: string[]) {
-    const { data } = await this.adminService.createGraphQLRequest({
+  async findByIds(user: User, ids: string[]) {
+    const { data } = await this.adminService.createGraphQLRequest(user, {
       query: /* GraphQL */ `
         {
           nodes(ids: ${JSON.stringify(ids)}) {

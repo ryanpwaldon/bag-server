@@ -1,8 +1,8 @@
 import { OrderService } from 'src/modules/order/order.service'
+import { GetUser } from 'src/common/decorators/user.decorator'
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { DateRange } from 'src/modules/progress-bar/progress-bar.types'
-import { User } from 'src/common/decorators/user.decorator'
 
 @Controller('order')
 export class OrderController {
@@ -10,7 +10,7 @@ export class OrderController {
 
   @Get('count-by-date-ranges')
   @UseGuards(EmbeddedAppGuard)
-  async countByDateRanges(@Query('dateRanges') dateRanges: DateRange[], @User('id') userId: string) {
-    return this.orderService.countByDateRanges(dateRanges, userId)
+  async countByDateRanges(@GetUser('id') userId: string, @Query('dateRanges') dateRanges: DateRange[]) {
+    return this.orderService.countByDateRanges(userId, dateRanges)
   }
 }

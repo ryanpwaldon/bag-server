@@ -25,7 +25,6 @@ import { PluginModule } from './modules/plugin/plugin.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
-import { DiscountModule } from './modules/discount/discount.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
@@ -87,7 +86,6 @@ import { VariantModule } from './modules/variant/variant.module'
     InstallationModule,
     GdprModule,
     MonitorModule,
-    DiscountModule,
     WebhookModule,
     ScriptTagModule,
     ProductModule,

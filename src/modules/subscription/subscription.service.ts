@@ -17,8 +17,8 @@ export class SubscriptionService {
     return getSubscriptions().find(item => item.name === name)
   }
 
-  async findActiveSubscription(): Promise<ActiveSubscription | null> {
-    const { data } = await this.adminService.createGraphQLRequest({
+  async findActiveSubscription(user: User): Promise<ActiveSubscription | null> {
+    const { data } = await this.adminService.createGraphQLRequest(user, {
       query: /* GraphQL */ `
         {
           appInstallation {
@@ -52,7 +52,7 @@ export class SubscriptionService {
     // prettier-ignore
     const redirectUrl = `${this.configService.get('SERVER_URL')}/subscription/${PAID_SUBSCRIPTION_CREATED_PATH}?shopOrigin=${user.shopOrigin}`
     const trialDays = user.prevSubscriptions.includes(subscription.name) ? 0 : subscription.trialDays
-    const { data } = await this.adminService.createGraphQLRequest({
+    const { data } = await this.adminService.createGraphQLRequest(user, {
       query: /* GraphQL */ `
         mutation {
           appSubscriptionCreate(
@@ -83,9 +83,9 @@ export class SubscriptionService {
   }
 
   async cancel(user: User) {
-    const activeSubscription = await this.findActiveSubscription()
+    const activeSubscription = await this.findActiveSubscription(user)
     if (activeSubscription) {
-      await this.adminService.createGraphQLRequest({
+      await this.adminService.createGraphQLRequest(user, {
         query: /* GraphQL */ `
           mutation {
             appSubscriptionCancel(id: "${activeSubscription.id}") {
@@ -103,7 +103,7 @@ export class SubscriptionService {
 
   async sync(user: User) {
     const userSubscription = this.findByName(user.subscription)
-    const activeSubscription = await this.findActiveSubscription()
+    const activeSubscription = await this.findActiveSubscription(user)
     if (activeSubscription) user.subscription = activeSubscription.name
     else if (userSubscription && userSubscription.price === 0) return user
     else user.subscription = undefined

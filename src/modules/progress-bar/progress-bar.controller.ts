@@ -1,5 +1,5 @@
 import { FilterQuery, Types } from 'mongoose'
-import { User } from 'src/common/decorators/user.decorator'
+import { GetUser } from 'src/common/decorators/user.decorator'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { ProgressBar } from 'src/modules/progress-bar/schema/progress-bar.schema'
 import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.service'
@@ -14,7 +14,7 @@ export class ProgressBarController {
 
   @Post()
   @UseGuards(EmbeddedAppGuard)
-  create(@Body() createProgressBarDto: CreateProgressBarDto, @User('id') userId: Types.ObjectId) {
+  create(@Body() createProgressBarDto: CreateProgressBarDto, @GetUser('id') userId: Types.ObjectId) {
     return this.progressBarService.create({ ...createProgressBarDto, user: userId })
   }
 
@@ -33,7 +33,7 @@ export class ProgressBarController {
   @Get()
   @UseGuards(EmbeddedAppOrPluginGuard)
   async findAll(
-    @User('id') userId: Types.ObjectId,
+    @GetUser('id') userId: Types.ObjectId,
     @Query('sort') sort: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
