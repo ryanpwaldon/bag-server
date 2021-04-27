@@ -25,17 +25,16 @@ import { PluginModule } from './modules/plugin/plugin.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
+import { VariantModule } from './modules/variant/variant.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
 import { AccessScopeModule } from './modules/access-scope/access-scope.module'
+import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
+import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
 import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
-import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
-import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
-import { MigrationModule } from './modules/migration/migration.module'
-import { VariantModule } from './modules/variant/variant.module'
 
 @Module({
   imports: [
@@ -79,32 +78,31 @@ import { VariantModule } from './modules/variant/variant.module'
         }
       })
     }),
-    ScheduleModule.forRoot(),
     UserModule,
-    AdminModule,
-    SubscriptionModule,
-    InstallationModule,
     GdprModule,
-    MonitorModule,
-    WebhookModule,
-    ScriptTagModule,
-    ProductModule,
-    CrossSellModule,
-    EventModule,
     CartModule,
     LeadModule,
     MailModule,
-    ConversionModule,
-    AccessScopeModule,
-    PluginModule,
+    AdminModule,
+    EventModule,
     ThemeModule,
     AssetModule,
-    NotificationModule,
+    OrderModule,
+    PluginModule,
+    VariantModule,
+    MonitorModule,
+    WebhookModule,
+    ProductModule,
+    ScriptTagModule,
+    CrossSellModule,
+    ConversionModule,
+    AccessScopeModule,
     ShopDetailsModule,
     ProgressBarModule,
-    OrderModule,
-    MigrationModule,
-    VariantModule
+    SubscriptionModule,
+    InstallationModule,
+    NotificationModule,
+    ScheduleModule.forRoot()
   ],
   providers: [
     {
