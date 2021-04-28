@@ -2,9 +2,16 @@ import Cryptr from 'cryptr'
 import { Permission } from 'src/modules/user/user.types'
 import { Document, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { OrderAnalysis } from '../../shop-details/shop-details.service'
 import { Notification } from 'src/modules/notification/notification.constants'
 import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
+
+export interface MonthlySalesRecord {
+  aov: number
+  netSales: number
+  orderCount: number
+  startTime: Date
+  endTime: Date
+}
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class User extends Document {
@@ -22,6 +29,21 @@ export class User extends Document {
 
   @Prop({ default: 'USD' })
   currencyCode!: string
+
+  @Prop()
+  storeName!: string
+
+  @Prop()
+  shopifyPlan!: string
+
+  @Prop()
+  shopifyPlus!: boolean
+
+  @Prop()
+  primaryDomain!: string
+
+  @Prop()
+  developmentStore!: boolean
 
   @Prop({ default: 'America/New_York' })
   timezone!: string
@@ -48,8 +70,8 @@ export class User extends Document {
 
   permissions!: Permission[]
 
-  @Prop({ type: MongooseSchema.Types.Mixed })
-  orderAnalysis?: OrderAnalysis
+  @Prop({ type: MongooseSchema.Types.Mixed, default: {} })
+  monthlySalesRecords!: Record<string, MonthlySalesRecord>
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

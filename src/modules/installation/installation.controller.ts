@@ -1,25 +1,23 @@
-import { Controller, Get, Query, BadRequestException, Res, Req, UseGuards, HttpService } from '@nestjs/common'
-import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
-import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
-import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
-import { ShopDetailsService } from 'src/modules/shop-details/shop-details.service'
-import { SubscriptionService } from '../subscription/subscription.service'
+import qs from 'qs'
+import { Types } from 'mongoose'
+import { Response } from 'express'
+import { generate } from 'nonce-next'
+import { ConfigService } from '@nestjs/config'
+import { UserService } from '../user/user.service'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
-import { User } from 'src/modules/user/schema/user.schema'
-import { UserService } from '../user/user.service'
-import { ConfigService } from '@nestjs/config'
-import { Request, Response } from 'express'
-import { generate } from 'nonce-next'
-import { Types } from 'mongoose'
-import qs from 'qs'
+import { SalesService } from 'src/modules/sales/sales.service'
+import { SubscriptionService } from '../subscription/subscription.service'
+import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
+import { ShopDetailsService } from 'src/modules/shop-details/shop-details.service'
+import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
+import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
+import { Controller, Get, Query, BadRequestException, Res, UseGuards, HttpService } from '@nestjs/common'
 import {
   WEBHOOK_PATH_ORDER_CREATED,
   WEBHOOK_PATH_SUBSCRIPTION_UPDATED,
   WEBHOOK_PATH_UNINSTALLED
 } from 'src/modules/webhook/webhook.constants'
-
-type RequestWithUser = Request & { user: User }
 
 @Controller('installation')
 export class InstallationController {
@@ -27,10 +25,11 @@ export class InstallationController {
     private readonly httpService: HttpService,
     private readonly cartService: CartService,
     private readonly userService: UserService,
+    private readonly salesService: SalesService,
     private readonly configService: ConfigService,
     private readonly webhookService: WebhookService,
-    private readonly subscriptionService: SubscriptionService,
-    private readonly shopDetailsService: ShopDetailsService
+    private readonly shopDetailsService: ShopDetailsService,
+    private readonly subscriptionService: SubscriptionService
   ) {}
 
   @Get('start')
@@ -48,23 +47,24 @@ export class InstallationController {
 
   @Get(REDIRECT_PATH)
   @UseGuards(ShopifyInstallationGuard)
-  async finalise(
-    @Res() res: Response,
-    @Req() req: RequestWithUser,
-    @Query('shop') shopOrigin: string,
-    @Query('code') authCode: string
-  ) {
+  async finalise(@Res() res: Response, @Query('shop') shopOrigin: string, @Query('code') authCode: string) {
     const accessToken = await this.fetchAccessToken(shopOrigin, authCode)
     const user = (await this.userService.findOne({ shopOrigin })) || (await this.userService.create({ shopOrigin }))
-    user.accessToken = accessToken
     user.uninstalled = false
+    user.accessToken = accessToken
     const shopDetails = await this.shopDetailsService.find(user)
     user.email = shopDetails.email
     user.appUrl = shopDetails.appUrl
     user.timezone = shopDetails.timezone
+    user.storeName = shopDetails.storeName
+    user.shopifyPlan = shopDetails.shopifyPlan
+    user.shopifyPlus = shopDetails.shopifyPlus
     user.currencyCode = shopDetails.currencyCode
-    const orderAnalysis = await this.shopDetailsService.findOrderAnalysis(user)
-    user.orderAnalysis = orderAnalysis
+    user.primaryDomain = shopDetails.primaryDomain
+    user.developmentStore = shopDetails.developmentStore
+    const monthlySalesRecord = await this.salesService.fetchMonthlySalesRecord(user)
+    user.monthlySalesRecords[monthlySalesRecord.startTime.toISOString()] = monthlySalesRecord
+    user.markModified('monthlySalesRecords')
     await user.save()
     await Promise.all([
       this.subscriptionService.sync(user),

@@ -21,6 +21,7 @@ import { SentryInterceptor } from '@ntegral/nestjs-sentry'
 import { ThemeModule } from './modules/theme/theme.module'
 import { AssetModule } from './modules/asset/asset.module'
 import { OrderModule } from './modules/order/order.module'
+import { SalesModule } from 'src/modules/sales/sales.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PluginModule } from './modules/plugin/plugin.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
@@ -36,6 +37,7 @@ import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
 import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
+import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.module'
 
 @Module({
   imports: [
@@ -89,6 +91,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module'
     EventModule,
     ThemeModule,
     AssetModule,
+    SalesModule,
     OrderModule,
     PluginModule,
     VariantModule,
@@ -104,6 +107,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module'
     SubscriptionModule,
     InstallationModule,
     NotificationModule,
+    BulkOperationModule,
     ScheduleModule.forRoot()
   ],
   providers: [
