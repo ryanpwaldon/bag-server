@@ -1,13 +1,33 @@
 import { ConfigService } from '@nestjs/config'
 import { AdminService } from '../admin/admin.service'
-import { ActiveSubscription } from './subscription.types'
 import { User } from 'src/modules/user/schema/user.schema'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
+import { ActiveSubscription, Interval, TieredSubscription } from './subscription.types'
 import { getSubscriptions, PAID_SUBSCRIPTION_CREATED_PATH } from 'src/modules/subscription/subscription.constants'
+
+const getRecentNetSales = (user: User) => {
+  const monthlySalesRecords = Object.values(user.monthlySalesRecords)
+  const [recentMonthlySalesRecord] = monthlySalesRecords.sort((a, b) => b.startTime.getTime() - a.startTime.getTime())
+  return recentMonthlySalesRecord.netSales
+}
 
 @Injectable()
 export class SubscriptionService {
   constructor(private readonly adminService: AdminService, private readonly configService: ConfigService) {}
+
+  async findAvailableSubscriptionPair(user: User) {
+    const recentNetSales = getRecentNetSales(user)
+    const tieredSubscriptions = getSubscriptions().filter(({ type, legacy }) => {
+      return type === 'tiered' && !legacy
+    }) as TieredSubscription[]
+    const matchedSubscriptions = tieredSubscriptions.filter(({ salesTierLowerThreshold, salesTierUpperThreshold }) => {
+      return recentNetSales >= salesTierLowerThreshold && recentNetSales < salesTierUpperThreshold
+    })
+    if (matchedSubscriptions.length !== 2) throw new InternalServerErrorException('Matched subscriptions exceeds 2.')
+    const monthlySubscription = matchedSubscriptions.find(({ interval }) => interval === Interval.Monthly)
+    const yearlySubscription = matchedSubscriptions.find(({ interval }) => interval === Interval.Annually)
+    return [monthlySubscription, yearlySubscription]
+  }
 
   findAll() {
     return getSubscriptions()

@@ -11,6 +11,12 @@ import { ShopifyRedirectGuard } from 'src/common/guards/shopify-redirect.guard'
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
+  @Get('available')
+  @UseGuards(EmbeddedAppGuard)
+  async findAvailableSubscriptionPair(@GetUser() user: User) {
+    return this.subscriptionService.findAvailableSubscriptionPair(user)
+  }
+
   @Post('free')
   @UseGuards(EmbeddedAppGuard)
   async createFreeSubscription(@GetUser() user: User, @Body('subscriptionName') subscriptionName: string) {

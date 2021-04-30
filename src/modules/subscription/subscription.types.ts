@@ -13,16 +13,24 @@ export type ActiveSubscription = {
   currentPeriodEnd: Date
 }
 
-export type Subscription = {
+type Subscription = {
   name: string
+  type: string
   price: number
+  title: string
+  legacy: boolean
   trialDays: number
   interval: Interval
-  title: string
   description: string
-  featuresIncluded: string[]
-  featuresExcluded: string[]
-  emphasize: boolean
-  legacy: boolean
   permissions: Permission[]
+}
+
+export type EarlyAccessSubscription = Subscription & {
+  type: 'earlyAccess'
+}
+
+export type TieredSubscription = Subscription & {
+  type: 'tiered'
+  salesTierLowerThreshold: number
+  salesTierUpperThreshold: number
 }
