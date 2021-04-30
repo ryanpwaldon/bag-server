@@ -4,9 +4,12 @@ import { Response } from 'express'
 import { generate } from 'nonce-next'
 import { ConfigService } from '@nestjs/config'
 import { UserService } from '../user/user.service'
+import { User } from 'src/modules/user/schema/user.schema'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
+import { GetUser } from 'src/common/decorators/user.decorator'
 import { SalesService } from 'src/modules/sales/sales.service'
+import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
 import { ShopDetailsService } from 'src/modules/shop-details/shop-details.service'
@@ -62,10 +65,14 @@ export class InstallationController {
     user.currencyCode = shopDetails.currencyCode
     user.primaryDomain = shopDetails.primaryDomain
     user.developmentStore = shopDetails.developmentStore
-    const monthlySalesRecord = await this.salesService.fetchMonthlySalesRecord(user)
-    user.monthlySalesRecords[monthlySalesRecord.startTime.toISOString()] = monthlySalesRecord
-    user.markModified('monthlySalesRecords')
     await user.save()
+    res.redirect(`${user.appUrl}/setup`)
+  }
+
+  @Get('setup')
+  @UseGuards(EmbeddedAppGuard)
+  async setup(@GetUser() user: User) {
+    user = await this.userService.updateMonthlySalesRecords(user)
     await Promise.all([
       this.subscriptionService.sync(user),
       this.webhookService.create(user, 'ORDERS_CREATE', `/webhook/${WEBHOOK_PATH_ORDER_CREATED}`),
@@ -73,7 +80,7 @@ export class InstallationController {
       this.webhookService.create(user, 'APP_SUBSCRIPTIONS_UPDATE', `/webhook/${WEBHOOK_PATH_SUBSCRIPTION_UPDATED}`),
       this.cartService.create({ user: Types.ObjectId(user.id as string) })
     ])
-    res.redirect(user.appUrl)
+    return user
   }
 
   async fetchAccessToken(shopOrigin: string, authCode: string) {
