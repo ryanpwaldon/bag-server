@@ -54,6 +54,9 @@ export class User extends Document {
   @Prop([String])
   prevSubscriptions!: string[]
 
+  @Prop({ default: false })
+  seenReviewPrompt!: boolean
+
   @Prop({
     set(this: User, subscription: string) {
       if (subscription) this.prevSubscriptions = [...new Set([...this.prevSubscriptions, subscription])]
