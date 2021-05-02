@@ -13,8 +13,14 @@ export class SubscriptionController {
 
   @Get('available')
   @UseGuards(EmbeddedAppGuard)
-  async findAvailableSubscriptionPair(@GetUser() user: User) {
-    return this.subscriptionService.findAvailableSubscriptionPair(user)
+  findAllNonLegacy() {
+    return this.subscriptionService.findAllNonLegacy()
+  }
+
+  @Get('suitable')
+  @UseGuards(EmbeddedAppGuard)
+  async findSuitableSubscriptionPair(@GetUser() user: User) {
+    return this.subscriptionService.findSuitableSubscriptionPair(user)
   }
 
   @Post('free')
@@ -53,11 +59,5 @@ export class SubscriptionController {
   @UseGuards(EmbeddedAppGuard)
   findActiveSubscription(@GetUser() user: User) {
     return this.subscriptionService.findActiveSubscription(user)
-  }
-
-  @Get()
-  @UseGuards(EmbeddedAppGuard)
-  findAll() {
-    return this.subscriptionService.findAll()
   }
 }

@@ -29,7 +29,7 @@ export class TestService {
     try {
       const user = (await this.userService.findOne({ shopOrigin: 'bag-dev.myshopify.com' })) as User
       // const monthlySalesRecord = await this.salesService.fetchMonthlySalesRecord(user)
-      console.log(this.subscriptionService.findAvailableSubscriptionPair(user))
+      console.log(this.subscriptionService.findSuitableSubscriptionPair(user))
       // console.log(monthlySalesRecord)
     } catch (err) {
       console.log(err)

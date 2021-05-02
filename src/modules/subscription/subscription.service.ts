@@ -15,7 +15,11 @@ const getRecentNetSales = (user: User) => {
 export class SubscriptionService {
   constructor(private readonly adminService: AdminService, private readonly configService: ConfigService) {}
 
-  async findAvailableSubscriptionPair(user: User) {
+  findAllNonLegacy() {
+    return getSubscriptions().filter(item => !item.legacy)
+  }
+
+  async findSuitableSubscriptionPair(user: User) {
     const recentNetSales = getRecentNetSales(user)
     const tieredSubscriptions = getSubscriptions().filter(({ type, legacy }) => {
       return type === 'tiered' && !legacy
@@ -27,10 +31,6 @@ export class SubscriptionService {
     const monthlySubscription = matchedSubscriptions.find(({ interval }) => interval === Interval.Monthly)
     const yearlySubscription = matchedSubscriptions.find(({ interval }) => interval === Interval.Annually)
     return [monthlySubscription, yearlySubscription]
-  }
-
-  findAll() {
-    return getSubscriptions()
   }
 
   findByName(name?: string) {
