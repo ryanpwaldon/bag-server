@@ -48,14 +48,35 @@ export class SubscriptionService {
               createdAt
               trialDays
               currentPeriodEnd
+              lineItems {
+                plan {
+                  pricingDetails {
+                    ... on AppRecurringPricing {
+                      interval
+                      price {
+                        amount
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
       `
     })
-    const subscription = data.appInstallation.activeSubscriptions[0]
+    const [subscription] = data.appInstallation.activeSubscriptions
     if (!subscription) return null
-    return subscription
+    return {
+      id: subscription.id,
+      name: subscription.name,
+      createdAt: subscription.createdAt,
+      trialDays: subscription.trialDays,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      title: this.findByName(subscription.name)?.title,
+      price: subscription.lineItems[0].plan.pricingDetails.price.amount,
+      interval: subscription.lineItems[0].plan.pricingDetails.interval
+    }
   }
 
   async createFreeSubscription(user: User, name: string) {

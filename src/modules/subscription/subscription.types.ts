@@ -11,6 +11,9 @@ export type ActiveSubscription = {
   createdAt: Date
   trialDays: number
   currentPeriodEnd: Date
+  price: number
+  interval: Interval
+  title?: string
 }
 
 type Subscription = {
