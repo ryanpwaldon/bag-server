@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Cryptr from 'cryptr'
 import { Permission } from 'src/modules/user/user.types'
 import { Document, Schema as MongooseSchema } from 'mongoose'
@@ -75,9 +76,22 @@ export class User extends Document {
 
   @Prop({ type: MongooseSchema.Types.Mixed, default: {} })
   monthlySalesRecords!: Record<string, MonthlySalesRecord>
+
+  createdAt!: Date
+
+  daysOld!: number
+
+  @Prop({ default: 0 })
+  appOpens!: number
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+UserSchema.virtual('daysOld').get(function(this: User) {
+  const now = moment()
+  const createdAt = moment(this.createdAt)
+  return now.diff(createdAt, 'days')
+})
 
 UserSchema.virtual('permissions').get(function(this: User) {
   const subscriptions = getSubscriptions()
