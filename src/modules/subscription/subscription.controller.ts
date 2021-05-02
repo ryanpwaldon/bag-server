@@ -34,7 +34,7 @@ export class SubscriptionController {
   @UseGuards(ShopifyRedirectGuard)
   async paidSubscriptionCreated(@GetUser() user: User, @Res() res: Response) {
     await this.subscriptionService.sync(user)
-    res.redirect(`${user.appUrl}/review`)
+    res.redirect(user.appUrl)
   }
 
   @Get('sync')
