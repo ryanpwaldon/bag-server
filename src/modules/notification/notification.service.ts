@@ -76,17 +76,27 @@ export class NotificationService {
     })
   }
 
-  @Cron('0 10 * * MON', { timeZone: CRON_TIMEZONE })
-  async sendWeeklyConversionReport() {
+  @Cron('0 10 * * *', { timeZone: CRON_TIMEZONE })
+  sendDailyConversionReport() {
+    this.sendConversionReport(Notification.ConversionReportDaily, Template.ConversionReportDaily)
+  }
+
+  @Cron('10 10 * * MON', { timeZone: CRON_TIMEZONE })
+  sendWeeklyConversionReport() {
+    this.sendConversionReport(Notification.ConversionReportWeekly, Template.ConversionReportWeekly)
+  }
+
+  async sendConversionReport(notification: Notification, template: Template) {
     const now = moment()
-    const filter = { createdAt: { $gte: moment(now).subtract(7, 'days'), $lte: now } }
+    const daysToSubtract = notification === Notification.ConversionReportDaily ? 1 : 7
+    const filter = { createdAt: { $gte: moment(now).subtract(daysToSubtract, 'days'), $lte: now } }
     const conversions = (await this.conversionService.findAll(filter)).filter(
       ({ object }) => !!object // filter out deleted offers
     ) as PopulatedConversion[]
     const users: User[] = conversions.map(item => item.user)
     const uniqueUsers = uniqBy(users, 'id')
     for (const user of uniqueUsers) {
-      if (user.unsubscribedNotifications?.includes(Notification.ConversionReportWeekly)) continue
+      if (user.unsubscribedNotifications?.includes(notification)) continue
       const conversionsForUser = conversions.filter(conversion => conversion.user.id === user.id)
       const uniqueOrdersForUser = [...new Set(conversions.map(conversion => conversion.order.details.order_number))]
       const offersForUser = conversionsForUser.reduce((offers, conversion) => {
@@ -111,10 +121,10 @@ export class NotificationService {
         date: now.tz(user.timezone).format('DD MMMM YYYY')
       }
       this.mailService.sendWithTemplate({
+        template,
+        templateModel,
         to: user.email,
-        from: Persona.Notifications,
-        template: Template.ConversionReportWeekly,
-        templateModel
+        from: Persona.Notifications
       })
     }
   }

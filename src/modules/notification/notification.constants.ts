@@ -1,4 +1,5 @@
 export enum Notification {
   Conversion = 'conversion',
-  ConversionReportWeekly = 'conversionReportWeekly'
+  ConversionReportWeekly = 'conversionReportWeekly',
+  ConversionReportDaily = 'conversionReportDaily'
 }
