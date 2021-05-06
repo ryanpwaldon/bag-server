@@ -4,44 +4,43 @@ import { Cron } from '@nestjs/schedule'
 import { CRON_TIMEZONE } from 'src/common/constants'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Template } from 'src/modules/mail/types/template'
-import { Order } from 'src/modules/order/schema/order.schema'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
-import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
 import { Notification } from 'src/modules/notification/notification.constants'
-import { ProgressBar } from 'src/modules/progress-bar/schema/progress-bar.schema'
-import { Conversion, ConversionType } from 'src/modules/conversion/schema/conversion.schema'
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common'
+import { ConversionType, PopulatedConversion } from 'src/modules/conversion/schema/conversion.schema'
 
-type ConversionWithPopulatedUser = Conversion & { user: User }
+type OfferTemplatesById = Record<string, OfferTemplate>
 
-interface FormattedConversion {
+interface OfferTemplate {
   type: string
-  href: string
   title: string
+  offerId: string
+  offerUrl: string
+  conversionCount: number
+  conversionPlurality: boolean
 }
 
-type ConversionsForUserByOrder = Record<
-  number,
-  {
-    orderNumber: number
-    conversions: FormattedConversion[]
-  }
->
-
-const formatConversion = (user: User, conversion: Conversion | ConversionWithPopulatedUser): FormattedConversion => {
+const getOfferTemplate = (conversion: PopulatedConversion): OfferTemplate => {
+  const offerId = conversion.object.id as string
   switch (conversion.type) {
     case ConversionType.CrossSell:
       return {
+        offerId,
+        conversionCount: 0,
         type: 'Cross sell',
-        href: `${user.appUrl}/offers/cross-sells/${(conversion.object as CrossSell).id}`,
-        title: (conversion.object as CrossSell).title
+        conversionPlurality: true,
+        title: conversion.object.title,
+        offerUrl: `${conversion.user.appUrl}/offers/cross-sells/${offerId}`
       }
     case ConversionType.ProgressBar:
       return {
+        offerId,
+        conversionCount: 0,
         type: 'Progress bar',
-        href: `${user.appUrl}/offers/progress-bars/${(conversion.object as ProgressBar).id}`,
-        title: (conversion.object as ProgressBar).title
+        conversionPlurality: true,
+        title: conversion.object.title,
+        offerUrl: `${conversion.user.appUrl}/offers/progress-bars/${offerId}`
       }
     default:
       throw new InternalServerErrorException('Unknown conversion type.')
@@ -55,18 +54,18 @@ export class NotificationService {
     private readonly mailService: MailService
   ) {}
 
-  async sendConversionNotification(user: User, conversions: Conversion[], orderNumber: number) {
+  async sendConversionNotification(conversions: PopulatedConversion[], orderNumber: number) {
+    const user = conversions[0].user
     if (!conversions.length) return
     if (user.unsubscribedNotifications?.includes(Notification.Conversion)) return
-    conversions = await Promise.all(conversions.map(conversion => conversion.populate('object').execPopulate()))
     const now = moment()
-    const conversionCount = conversions.length
-    const formattedConversions = conversions.map(conversion => formatConversion(user, conversion))
+    const offerTemplates = conversions.map(conversion => getOfferTemplate(conversion))
     const templateModel = {
       orderNumber,
-      conversionCount,
-      plurality: conversionCount !== 1,
-      conversions: formattedConversions,
+      appUrl: user.appUrl,
+      offers: offerTemplates,
+      conversionCount: conversions.length,
+      conversionPlurality: conversions.length !== 1,
       date: now.tz(user.timezone).format('hh:MMa, DD MMMM YYYY')
     }
     this.mailService.sendWithTemplate({
@@ -81,36 +80,34 @@ export class NotificationService {
   async sendWeeklyConversionReport() {
     const now = moment()
     const filter = { createdAt: { $gte: moment(now).subtract(7, 'days'), $lte: now } }
-    let conversions = (await this.conversionService
-      .findAll(filter)
-      .populate('user')
-      .populate('object')) as ConversionWithPopulatedUser[]
-    conversions = conversions.filter(item => !!item.object) // exclude deleted offers
-    const users = conversions.map(item => item.user)
+    const conversions = (await this.conversionService.findAll(filter)).filter(
+      ({ object }) => !!object // filter out deleted offers
+    ) as PopulatedConversion[]
+    const users: User[] = conversions.map(item => item.user)
     const uniqueUsers = uniqBy(users, 'id')
     for (const user of uniqueUsers) {
       if (user.unsubscribedNotifications?.includes(Notification.ConversionReportWeekly)) continue
       const conversionsForUser = conversions.filter(conversion => conversion.user.id === user.id)
-      const ordersForUser = conversionsForUser.reduce((orders, conversion) => {
-        if ((conversion.order as Order).details.order_number in orders) {
-          orders[(conversion.order as Order).details.order_number].conversions.push(formatConversion(user, conversion))
-        } else {
-          orders[(conversion.order as Order).details.order_number] = {
-            orderNumber: (conversion.order as Order).details.order_number,
-            conversions: [formatConversion(user, conversion)]
-          }
-        }
-        return orders
-      }, {} as ConversionsForUserByOrder)
-      const orders = Object.values(ordersForUser)
-      const conversionCount = conversionsForUser.length
-      const orderCount = orders.length
+      const uniqueOrdersForUser = [...new Set(conversions.map(conversion => conversion.order.details.order_number))]
+      const offersForUser = conversionsForUser.reduce((offers, conversion) => {
+        const offerId = conversion.object.id as string
+        if (!(offerId in offers)) offers[offerId] = getOfferTemplate(conversion)
+        offers[offerId].conversionCount++
+        return offers
+      }, {} as OfferTemplatesById)
+      const offerTemplates = Object.values(offersForUser).map(template => {
+        template.conversionPlurality = template.conversionCount !== 1
+        return template
+      })
       const templateModel = {
-        orders,
-        orderCount,
-        conversionCount,
-        orderPlurality: orderCount !== 1,
-        conversionPlurality: conversionCount !== 1,
+        appUrl: user.appUrl,
+        offers: offerTemplates,
+        offerCount: offerTemplates.length,
+        offerPlurality: offerTemplates.length !== 1,
+        orderCount: uniqueOrdersForUser.length,
+        orderPlurality: uniqueOrdersForUser.length !== 1,
+        conversionCount: conversionsForUser.length,
+        conversionPlurality: conversionsForUser.length !== 1,
         date: now.tz(user.timezone).format('DD MMMM YYYY')
       }
       this.mailService.sendWithTemplate({

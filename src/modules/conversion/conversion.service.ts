@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Order } from 'src/modules/order/schema/order.schema'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { PopulatedConversion } from './schema/conversion.schema'
 import { composeGid } from '@shopify/admin-graphql-api-utilities'
 import { FilterQuery, LeanDocument, Model, Types } from 'mongoose'
 import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.service'
@@ -41,7 +42,7 @@ export class ConversionService {
     const conversions = flatten(
       await Promise.all([this.trackCrossSellConversions(order, user), this.trackProgressBarConversions(order, user)])
     )
-    this.notificationService.sendConversionNotification(user, conversions, orderNumber)
+    this.notificationService.sendConversionNotification(conversions as PopulatedConversion[], orderNumber)
   }
 
   async trackCrossSellConversions(order: Order, user: User) {

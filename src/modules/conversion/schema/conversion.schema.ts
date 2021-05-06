@@ -5,6 +5,8 @@ import { Document, Types, Schema as MongooseSchema } from 'mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 import { ProgressBar } from 'src/modules/progress-bar/schema/progress-bar.schema'
 
+export type PopulatedConversion = Conversion & { user: User; object: CrossSell | ProgressBar; order: Order }
+
 export enum ConversionType {
   CrossSell = 'CrossSell',
   ProgressBar = 'ProgressBar'
@@ -15,7 +17,8 @@ export class Conversion extends Document {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: User.name,
-    required: true
+    required: true,
+    autopopulate: true
   })
   user!: Types.ObjectId | User
 
@@ -25,7 +28,8 @@ export class Conversion extends Document {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     refPath: 'type',
-    required: true
+    required: true,
+    autopopulate: true
   })
   object!: Types.ObjectId | CrossSell | ProgressBar
 
