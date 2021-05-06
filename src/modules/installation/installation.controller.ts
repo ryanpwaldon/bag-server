@@ -69,7 +69,13 @@ export class InstallationController {
     user.primaryDomain = shopDetails.primaryDomain
     user.developmentStore = shopDetails.developmentStore
     await user.save()
-    if (newSignup) this.mailService.sendWithTemplate({ to: user.email, from: Persona.Ryan, template: Template.Welcome })
+    if (newSignup)
+      this.mailService.sendWithTemplate({
+        to: user.email,
+        from: Persona.Ryan,
+        template: Template.Welcome,
+        templateModel: { appUrl: user.appUrl }
+      })
     res.redirect(`${user.appUrl}/setup`)
   }
 
