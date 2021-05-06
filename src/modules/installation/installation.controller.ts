@@ -5,9 +5,11 @@ import { generate } from 'nonce-next'
 import { ConfigService } from '@nestjs/config'
 import { UserService } from '../user/user.service'
 import { User } from 'src/modules/user/schema/user.schema'
+import { Template } from 'src/modules/mail/types/template'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { GetUser } from 'src/common/decorators/user.decorator'
+import { MailService, Persona } from 'src/modules/mail/mail.service'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
@@ -27,6 +29,7 @@ export class InstallationController {
     private readonly httpService: HttpService,
     private readonly cartService: CartService,
     private readonly userService: UserService,
+    private readonly mailService: MailService,
     private readonly configService: ConfigService,
     private readonly webhookService: WebhookService,
     private readonly shopDetailsService: ShopDetailsService,
@@ -49,8 +52,10 @@ export class InstallationController {
   @Get(REDIRECT_PATH)
   @UseGuards(ShopifyInstallationGuard)
   async finalise(@Res() res: Response, @Query('shop') shopOrigin: string, @Query('code') authCode: string) {
+    let user = await this.userService.findOne({ shopOrigin })
+    const newSignup = user ? false : true
+    user = user || (await this.userService.create({ shopOrigin }))
     const accessToken = await this.fetchAccessToken(shopOrigin, authCode)
-    const user = (await this.userService.findOne({ shopOrigin })) || (await this.userService.create({ shopOrigin }))
     user.uninstalled = false
     user.accessToken = accessToken
     const shopDetails = await this.shopDetailsService.find(user)
@@ -64,6 +69,7 @@ export class InstallationController {
     user.primaryDomain = shopDetails.primaryDomain
     user.developmentStore = shopDetails.developmentStore
     await user.save()
+    if (newSignup) this.mailService.sendWithTemplate({ to: user.email, from: Persona.Ryan, template: Template.Welcome })
     res.redirect(`${user.appUrl}/setup`)
   }
 
