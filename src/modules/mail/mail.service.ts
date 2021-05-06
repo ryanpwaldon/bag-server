@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import { Template } from './types/template'
 
 export enum Persona {
-  Ryan = 'Ryan from Bag <ryan@bag.supply>',
+  Ryan = 'Ryan Waldon <ryan@bag.supply>',
   Notifications = 'Bag <notifications@bag.supply>'
 }
 
