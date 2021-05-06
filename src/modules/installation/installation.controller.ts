@@ -8,7 +8,6 @@ import { User } from 'src/modules/user/schema/user.schema'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { GetUser } from 'src/common/decorators/user.decorator'
-import { SalesService } from 'src/modules/sales/sales.service'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
@@ -28,7 +27,6 @@ export class InstallationController {
     private readonly httpService: HttpService,
     private readonly cartService: CartService,
     private readonly userService: UserService,
-    private readonly salesService: SalesService,
     private readonly configService: ConfigService,
     private readonly webhookService: WebhookService,
     private readonly shopDetailsService: ShopDetailsService,
