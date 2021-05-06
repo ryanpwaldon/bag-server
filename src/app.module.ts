@@ -11,7 +11,6 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { SentryModule } from '@ntegral/nestjs-sentry'
 import { CartModule } from './modules/cart/cart.module'
 import { GdprModule } from './modules/gdpr/gdpr.module'
-import { LeadModule } from './modules/lead/lead.module'
 import { MailModule } from './modules/mail/mail.module'
 import { UserModule } from './modules/user/user.module'
 import { TestModule } from './modules/test/test.module'
@@ -84,7 +83,6 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
     UserModule,
     GdprModule,
     CartModule,
-    LeadModule,
     TestModule,
     MailModule,
     AdminModule,
