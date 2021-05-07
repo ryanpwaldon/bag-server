@@ -17,6 +17,10 @@ export class UserService {
     return new this.userModel(createUserDto).save()
   }
 
+  findAll() {
+    return this.userModel.find()
+  }
+
   findById(id?: string) {
     return this.userModel.findById(id).exec()
   }

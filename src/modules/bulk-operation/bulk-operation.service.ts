@@ -7,7 +7,7 @@ import { HttpService, Injectable, InternalServerErrorException } from '@nestjs/c
 export class BulkOperationService {
   constructor(private readonly httpService: HttpService, private readonly adminService: AdminService) {}
 
-  async performBulkOperation(user: User, query: string): Promise<NodeJS.ReadableStream> {
+  async performBulkOperation(user: User, query: string): Promise<NodeJS.ReadableStream | null> {
     let url = null
     let status = 'RUNNING'
     let createdAt = null
@@ -15,10 +15,11 @@ export class BulkOperationService {
     let fileSize = null
     const bulkOperationId = await this.createBulkOperation(user, query)
     while (status === 'RUNNING') {
-      await new Promise(resolve => setTimeout(resolve, 5000))
+      await new Promise(resolve => setTimeout(resolve, 2000))
       ;({ status, url, createdAt, completedAt, fileSize } = await this.pollBulkOperation(user, bulkOperationId))
     }
     if (status !== 'COMPLETED') throw new InternalServerErrorException('Bulk operation faled.')
+    if (!url) return null // bulk operation successfully completed, however, the query returned no results
     console.log(`Bulk operation file size: ${fileSize}`)
     console.log(`Bulk operation duration: ${moment(completedAt).diff(moment(createdAt))}`)
     const bulkOperationResponse = await this.httpService

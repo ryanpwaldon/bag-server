@@ -34,8 +34,23 @@ export class SalesService {
         }
       }
     `
-    const roundToTwo = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100
-    const stream = await this.bulkOperationService.performBulkOperation(user, query)
+    const emptySalesRecord = {
+      aov: 0,
+      netSales: 0,
+      orderCount: 0,
+      startTime: startTime.toDate(),
+      endTime: endTime.toDate()
+    }
+    let stream
+    try {
+      stream = await this.bulkOperationService.performBulkOperation(user, query)
+    } catch (err) {
+      console.log(err)
+      console.log('An error occurred fetching sales data for store: ' + user.shopOrigin)
+      return emptySalesRecord
+    }
+    // if no stream, return empty sales record -> store did not complete any sales for the given time period
+    if (!stream) return emptySalesRecord
     const lines = readline.createInterface({ input: stream, crlfDelay: Infinity })
     let orderCount = 0
     let aovInShopCurrency = null
@@ -51,6 +66,7 @@ export class SalesService {
       .base(user.currencyCode)
       .symbols('USD')
       .fetch()) as number
+    const roundToTwo = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100
     const aovInUsd = roundToTwo(aovInShopCurrency * exchangeRate)
     const netSalesInUsd = roundToTwo(netSalesInShopCurrency * exchangeRate)
     return {
