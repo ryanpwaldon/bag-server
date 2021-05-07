@@ -17,8 +17,8 @@ export class UserService {
     return new this.userModel(createUserDto).save()
   }
 
-  findAll() {
-    return this.userModel.find()
+  findAll(query: FilterQuery<User> = {}) {
+    return this.userModel.find(query)
   }
 
   findById(id?: string) {
