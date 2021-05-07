@@ -49,7 +49,10 @@ export class User extends Document {
   @Prop({ default: 'America/New_York' })
   timezone!: string
 
-  @Prop([String])
+  @Prop({
+    type: [String],
+    default: [Notification.Conversion, Notification.ConversionReportWeekly]
+  })
   unsubscribedNotifications?: Notification[]
 
   @Prop([String])
