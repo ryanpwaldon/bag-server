@@ -39,6 +39,19 @@ export class ConversionService {
     return this.conversionModel.paginate(query, options)
   }
 
+  async getCrossSellIncome(userId: string, offerId: string) {
+    return (
+      await this.conversionModel.aggregate([
+        { $match: { user: Types.ObjectId(userId), object: Types.ObjectId(offerId), type: ConversionType.CrossSell } },
+        { $group: { _id: null, value: { $sum: '$value' } } }
+      ])
+    )[0]?.value
+  }
+
+  async getTotalCountByOffer(userId: string, offerId: string, conversionType: ConversionType) {
+    return this.conversionModel.countDocuments({ user: userId, object: offerId, type: conversionType })
+  }
+
   async trackConversions(order: Order, user: User) {
     const orderNumber = order.details.order_number
     const conversions = flatten(

@@ -8,6 +8,22 @@ import { ConversionType } from 'src/modules/conversion/schema/conversion.schema'
 export class ConversionController {
   constructor(private readonly conversionService: ConversionService) {}
 
+  @Get('cross-sell/:offerId/income')
+  @UseGuards(EmbeddedAppGuard)
+  async getCrossSellIncome(@GetUser('id') userId: string, @Param('offerId') offerId: string) {
+    return this.conversionService.getCrossSellIncome(userId, offerId)
+  }
+
+  @Get(':conversionType/:offerId/count')
+  @UseGuards(EmbeddedAppGuard)
+  async getTotalCountByOffer(
+    @GetUser('id') userId: string,
+    @Param('offerId') offerId: string,
+    @Param('conversionType') conversionType: ConversionType
+  ) {
+    return this.conversionService.getTotalCountByOffer(userId, offerId, conversionType)
+  }
+
   @Get(':conversionType/:offerId')
   @UseGuards(EmbeddedAppGuard)
   async findByOffer(
