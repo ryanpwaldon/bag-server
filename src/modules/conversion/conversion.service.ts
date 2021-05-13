@@ -5,9 +5,9 @@ import { Order } from 'src/modules/order/schema/order.schema'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { PopulatedConversion } from './schema/conversion.schema'
 import { composeGid } from '@shopify/admin-graphql-api-utilities'
-import { FilterQuery, LeanDocument, Model, Types } from 'mongoose'
 import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.service'
 import { NotificationService } from 'src/modules/notification/notification.service'
+import { FilterQuery, LeanDocument, PaginateModel, PaginateOptions, Types } from 'mongoose'
 import { Conversion, ConversionType } from 'src/modules/conversion/schema/conversion.schema'
 import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell-impression/cross-sell-impression.service'
 
@@ -15,7 +15,7 @@ import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell
 export class ConversionService {
   constructor(
     @Inject(forwardRef(() => NotificationService)) private readonly notificationService: NotificationService,
-    @InjectModel(Conversion.name) private readonly conversionModel: Model<Conversion>,
+    @InjectModel(Conversion.name) private readonly conversionModel: PaginateModel<Conversion>,
     private readonly crossSellImpressionService: CrossSellImpressionService,
     private readonly progressBarService: ProgressBarService
   ) {}
@@ -29,12 +29,14 @@ export class ConversionService {
     return this.conversionModel.find(query)
   }
 
-  findByCrossSellId(userId: string, crossSellId: string) {
-    return this.conversionModel.find({ user: userId, type: ConversionType.CrossSell, object: crossSellId })
-  }
-
-  findByProgressBarId(userId: string, progressBarId: string) {
-    return this.conversionModel.find({ user: userId, type: ConversionType.ProgressBar, object: progressBarId })
+  findByOffer(
+    userId: string,
+    offerId: string,
+    conversionType: ConversionType,
+    options: PaginateOptions = { page: 1, limit: 20 }
+  ) {
+    const query = { user: userId, type: conversionType, object: offerId }
+    return this.conversionModel.paginate(query, options)
   }
 
   async trackConversions(order: Order, user: User) {
