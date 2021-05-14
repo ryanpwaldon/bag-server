@@ -8,6 +8,7 @@
     "build": "rimraf dist && nest build"
   },
   "dependencies": {
+    "@honeybadger-io/js": "^3.2.0",
     "@nestjs/common": "^7.4.2",
     "@nestjs/config": "^0.6.1",
     "@nestjs/core": "^7.4.2",

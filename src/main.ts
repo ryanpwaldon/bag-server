@@ -1,7 +1,8 @@
+import { HoneybadgerExceptionsFilter } from 'src/common/filters/honeybadger-exceptions.filter'
 import { NestExpressApplication } from '@nestjs/platform-express'
+import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import cookieParser from 'cookie-parser'
 import { connect } from 'ngrok'
@@ -9,6 +10,8 @@ import helmet from 'helmet'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
+  const { httpAdapter } = app.get(HttpAdapterHost)
+  app.useGlobalFilters(new HoneybadgerExceptionsFilter(httpAdapter))
   const configService = app.get(ConfigService)
   const port = process.env.PORT || 3000
   const appEnv = process.env.APP_ENV

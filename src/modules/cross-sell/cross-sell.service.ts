@@ -1,8 +1,8 @@
 import assign from 'lodash/assign'
-import { InjectModel } from '@nestjs/mongoose'
-import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose'
-import { CrossSell } from './schema/cross-sell.schema'
 import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { CrossSell } from './schema/cross-sell.schema'
+import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose'
 
 @Injectable()
 export class CrossSellService {
