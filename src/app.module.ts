@@ -3,12 +3,9 @@ import { Module } from '@nestjs/common'
 import paginate from 'mongoose-paginate'
 import { LoggerModule } from 'nestjs-pino'
 import config from 'src/modules/config/config'
-import { APP_INTERCEPTOR } from '@nestjs/core'
 import autopopulate from 'mongoose-autopopulate'
 import { MongooseModule } from '@nestjs/mongoose'
-import { SENTRY_DSN } from 'src/common/constants'
 import { ScheduleModule } from '@nestjs/schedule'
-import { SentryModule } from '@ntegral/nestjs-sentry'
 import { CartModule } from './modules/cart/cart.module'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MailModule } from './modules/mail/mail.module'
@@ -16,7 +13,6 @@ import { UserModule } from './modules/user/user.module'
 import { TestModule } from './modules/test/test.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
-import { SentryInterceptor } from '@ntegral/nestjs-sentry'
 import { ThemeModule } from './modules/theme/theme.module'
 import { AssetModule } from './modules/asset/asset.module'
 import { OrderModule } from './modules/order/order.module'
@@ -40,16 +36,6 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
 
 @Module({
   imports: [
-    SentryModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        debug: true,
-        dsn: SENTRY_DSN,
-        tracesSampleRate: 1.0,
-        environment: configService.get('APP_ENV')
-      })
-    }),
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.APP_ENV}`,
       load: [config],
@@ -107,12 +93,6 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
     NotificationModule,
     BulkOperationModule,
     ScheduleModule.forRoot()
-  ],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: SentryInterceptor
-    }
   ]
 })
 export class AppModule {}
