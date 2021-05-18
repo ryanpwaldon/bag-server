@@ -13,8 +13,8 @@ export class SubscriptionController {
 
   @Get('available')
   @UseGuards(EmbeddedAppGuard)
-  findAllNonLegacy() {
-    return this.subscriptionService.findAllNonLegacy()
+  findAllTiered() {
+    return this.subscriptionService.findAllTiered()
   }
 
   @Get('suitable')

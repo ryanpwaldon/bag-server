@@ -1,12 +1,12 @@
 import { cloneDeep } from 'lodash'
 import { Permission } from 'src/modules/user/user.types'
-import { EarlyAccessSubscription, Interval, TieredSubscription } from './subscription.types'
+import { SpecialSubscription, Interval, TieredSubscription } from './subscription.types'
 
 export const PAID_SUBSCRIPTION_CREATED_PATH = 'paid-subscription-created'
 
-const SUBSCRIPTIONS: Array<EarlyAccessSubscription | TieredSubscription> = [
+const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
   {
-    type: 'earlyAccess',
+    type: 'special',
     name: 'Early Access (v1)',
     interval: Interval.Monthly,
     price: 0,
@@ -15,6 +15,17 @@ const SUBSCRIPTIONS: Array<EarlyAccessSubscription | TieredSubscription> = [
     description: 'For merchants looking to grow their sales and improve their checkout experience.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: true
+  },
+  {
+    type: 'special',
+    name: 'Free (v1)',
+    interval: Interval.Monthly,
+    price: 0,
+    trialDays: 0,
+    title: 'Free',
+    description: 'For merchants looking to grow their sales and improve their checkout experience.',
+    permissions: [Permission.CrossSell, Permission.ProgressBar],
+    legacy: false
   },
   {
     type: 'tiered',

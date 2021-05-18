@@ -15,8 +15,8 @@ const getRecentNetSales = (user: User) => {
 export class SubscriptionService {
   constructor(private readonly adminService: AdminService, private readonly configService: ConfigService) {}
 
-  findAllNonLegacy() {
-    return getSubscriptions().filter(item => !item.legacy)
+  findAllTiered() {
+    return getSubscriptions().filter(item => item.type === 'tiered' && !item.legacy)
   }
 
   async findSuitableSubscriptionPair(user: User) {

@@ -28,8 +28,8 @@ type Subscription = {
   permissions: Permission[]
 }
 
-export type EarlyAccessSubscription = Subscription & {
-  type: 'earlyAccess'
+export type SpecialSubscription = Subscription & {
+  type: 'special'
 }
 
 export type TieredSubscription = Subscription & {
