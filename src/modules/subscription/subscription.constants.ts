@@ -36,7 +36,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Small store',
     salesTierLowerThreshold: 0,
     salesTierUpperThreshold: 5000,
-    description: 'For stores processing<br />$0K – $5K sales per month.',
+    description: 'For stores processing<br />$0K – $5K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -49,7 +49,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Small store',
     salesTierLowerThreshold: 0,
     salesTierUpperThreshold: 5000,
-    description: 'For stores processing<br />$0K – $5K sales per month.',
+    description: 'For stores processing<br />$0K – $5K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -62,7 +62,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Medium store',
     salesTierLowerThreshold: 5000,
     salesTierUpperThreshold: 25000,
-    description: 'For stores processing<br />$5K – $25K sales per month.',
+    description: 'For stores processing<br />$5K – $25K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -75,7 +75,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Medium store',
     salesTierLowerThreshold: 5000,
     salesTierUpperThreshold: 25000,
-    description: 'For stores processing<br />$5K – $25K sales per month.',
+    description: 'For stores processing<br />$5K – $25K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -88,7 +88,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Large store',
     salesTierLowerThreshold: 25000,
     salesTierUpperThreshold: 100000,
-    description: 'For stores processing<br />$25K – $100K sales per month.',
+    description: 'For stores processing<br />$25K – $100K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -101,7 +101,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Large store',
     salesTierLowerThreshold: 25000,
     salesTierUpperThreshold: 100000,
-    description: 'For stores processing<br />$25K – $100K sales per month.',
+    description: 'For stores processing<br />$25K – $100K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -114,7 +114,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Extra large store',
     salesTierLowerThreshold: 100000,
     salesTierUpperThreshold: 500000,
-    description: 'For stores processing<br />$100K – $500K sales per month.',
+    description: 'For stores processing<br />$100K – $500K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -127,7 +127,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'Extra large store',
     salesTierLowerThreshold: 100000,
     salesTierUpperThreshold: 500000,
-    description: 'For stores processing<br />$100K – $500K sales per month.',
+    description: 'For stores processing<br />$100K – $500K USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -140,7 +140,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'XXL store',
     salesTierLowerThreshold: 500000,
     salesTierUpperThreshold: Infinity,
-    description: 'For stores processing<br />$500K+ sales per month.',
+    description: 'For stores processing<br />$500K+ USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   },
@@ -153,7 +153,7 @@ const SUBSCRIPTIONS: Array<SpecialSubscription | TieredSubscription> = [
     title: 'XXL store',
     salesTierLowerThreshold: 500000,
     salesTierUpperThreshold: Infinity,
-    description: 'For stores processing<br />$500K+ sales per month.',
+    description: 'For stores processing<br />$500K+ USD sales per month.',
     permissions: [Permission.CrossSell, Permission.ProgressBar],
     legacy: false
   }
