@@ -37,6 +37,7 @@
     "mongoose": "^5.9.24",
     "mongoose-autopopulate": "^0.12.3",
     "mongoose-paginate": "^5.0.3",
+    "nanoid": "^3.1.23",
     "nestjs-pino": "^1.2.0",
     "ngrok": "^3.3.0",
     "nonce-next": "^1.1.0",

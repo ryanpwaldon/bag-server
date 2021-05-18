@@ -19,6 +19,7 @@ import { OrderModule } from './modules/order/order.module'
 import { SalesModule } from 'src/modules/sales/sales.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PluginModule } from './modules/plugin/plugin.module'
+import { CouponModule } from './modules/coupon/coupon.module'
 import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
@@ -78,6 +79,7 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
     SalesModule,
     OrderModule,
     PluginModule,
+    CouponModule,
     VariantModule,
     MonitorModule,
     WebhookModule,
