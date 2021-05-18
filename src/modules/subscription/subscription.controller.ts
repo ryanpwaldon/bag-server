@@ -11,6 +11,14 @@ import { ShopifyRedirectGuard } from 'src/common/guards/shopify-redirect.guard'
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
+  @Get('my')
+  @UseGuards(EmbeddedAppGuard)
+  async findMySubscriptionDetails(@GetUser() user: User) {
+    const internalSubscription = this.subscriptionService.findByName(user.subscription)
+    const activeSubscription = await this.subscriptionService.findActiveSubscription(user)
+    return [internalSubscription, activeSubscription]
+  }
+
   @Get('available')
   @UseGuards(EmbeddedAppGuard)
   findAllAvailable() {
@@ -53,11 +61,5 @@ export class SubscriptionController {
   @UseGuards(EmbeddedAppGuard)
   cancel(@GetUser() user: User) {
     return this.subscriptionService.cancel(user)
-  }
-
-  @Get('active')
-  @UseGuards(EmbeddedAppGuard)
-  findActiveSubscription(@GetUser() user: User) {
-    return this.subscriptionService.findActiveSubscription(user)
   }
 }
