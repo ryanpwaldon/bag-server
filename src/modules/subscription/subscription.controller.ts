@@ -13,8 +13,8 @@ export class SubscriptionController {
 
   @Get('available')
   @UseGuards(EmbeddedAppGuard)
-  findAllTiered() {
-    return this.subscriptionService.findAllTiered()
+  findAllAvailable() {
+    return this.subscriptionService.findAllAvailable()
   }
 
   @Get('suitable')
