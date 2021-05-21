@@ -29,7 +29,6 @@
     "cookie-parser": "^1.4.5",
     "cryptr": "^6.0.2",
     "deep-freeze": "^0.0.1",
-    "exchange-rates-api": "^1.1.0",
     "helmet": "^4.1.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",

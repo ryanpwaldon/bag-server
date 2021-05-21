@@ -1,14 +1,17 @@
 import moment from 'moment'
 import readline from 'readline'
 import { Injectable } from '@nestjs/common'
-import { exchangeRates } from 'exchange-rates-api'
 import { User } from 'src/modules/user/schema/user.schema'
 import { MonthlySalesRecord } from '../user/schema/user.schema'
+import { ExchangeRateService } from 'src/modules/exchange-rate/exchange-rate.service'
 import { BulkOperationService } from 'src/modules/bulk-operation/bulk-operation.service'
 
 @Injectable()
 export class SalesService {
-  constructor(private readonly bulkOperationService: BulkOperationService) {}
+  constructor(
+    private readonly exhangeRateService: ExchangeRateService,
+    private readonly bulkOperationService: BulkOperationService
+  ) {}
 
   async fetchMonthlySalesRecord(user: User): Promise<MonthlySalesRecord> {
     const endTime = moment()
@@ -61,11 +64,7 @@ export class SalesService {
       netSalesInShopCurrency += parseFloat(order.netPaymentSet.shopMoney.amount)
     }
     aovInShopCurrency = netSalesInShopCurrency / orderCount
-    const exchangeRate = (await exchangeRates()
-      .at(endTime.toDate())
-      .base(user.currencyCode)
-      .symbols('USD')
-      .fetch()) as number
+    const exchangeRate = await this.exhangeRateService.getExchangeRate(user.currencyCode, endTime.toDate())
     const roundToTwo = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100
     const aovInUsd = roundToTwo(aovInShopCurrency * exchangeRate)
     const netSalesInUsd = roundToTwo(netSalesInShopCurrency * exchangeRate)

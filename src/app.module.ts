@@ -33,6 +33,7 @@ import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
 import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
+import { ExchangeRateModule } from './modules/exchange-rate/exchange-rate.module'
 import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.module'
 
 @Module({
@@ -90,6 +91,7 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
     AccessScopeModule,
     ShopDetailsModule,
     ProgressBarModule,
+    ExchangeRateModule,
     SubscriptionModule,
     InstallationModule,
     NotificationModule,
