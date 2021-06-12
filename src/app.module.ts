@@ -24,6 +24,8 @@ import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { VariantModule } from './modules/variant/variant.module'
+import { ReferralModule } from './modules/referral/referral.module'
+import { AffiliateModule } from './modules/affiliate/affiliate.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
@@ -34,6 +36,7 @@ import { NotificationModule } from './modules/notification/notification.module'
 import { InstallationModule } from './modules/installation/installation.module'
 import { SubscriptionModule } from './modules/subscription/subscription.module'
 import { ExchangeRateModule } from './modules/exchange-rate/exchange-rate.module'
+import { AffiliateCodeModule } from './modules/affiliate-code/affiliate-code.module'
 import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.module'
 
 @Module({
@@ -85,8 +88,10 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
     MonitorModule,
     WebhookModule,
     ProductModule,
+    ReferralModule,
     ScriptTagModule,
     CrossSellModule,
+    AffiliateModule,
     ConversionModule,
     AccessScopeModule,
     ShopDetailsModule,
@@ -96,6 +101,7 @@ import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.m
     InstallationModule,
     NotificationModule,
     BulkOperationModule,
+    AffiliateCodeModule,
     ScheduleModule.forRoot()
   ]
 })

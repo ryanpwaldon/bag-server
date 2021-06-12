@@ -1,8 +1,9 @@
 import moment from 'moment'
 import Cryptr from 'cryptr'
 import { Permission } from 'src/modules/user/user.types'
-import { Document, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, Schema as MongooseSchema, Types } from 'mongoose'
+import { Affiliate } from 'src/modules/affiliate/schema/affiliate.schema'
 import { Notification } from 'src/modules/notification/notification.constants'
 import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
 
@@ -86,6 +87,16 @@ export class User extends Document {
 
   @Prop({ default: 0 })
   appOpens!: number
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: Affiliate.name,
+    required: false
+  })
+  affiliate?: Types.ObjectId
+
+  @Prop()
+  affiliateCode?: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

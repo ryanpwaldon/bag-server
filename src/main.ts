@@ -17,7 +17,14 @@ async function bootstrap() {
   const appEnv = process.env.APP_ENV
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
   app.set('trust proxy', true)
-  app.enableCors()
+  app.enableCors({
+    credentials: true,
+    origin: [
+      configService.get('ADMIN_URL') as string,
+      configService.get('PLUGIN_URL') as string,
+      configService.get('MARKETING_URL') as string
+    ]
+  })
   app.use(helmet())
   app.use(cookieParser())
   await app.listen(port)

@@ -7,6 +7,7 @@ import { CartModule } from 'src/modules/cart/cart.module'
 import { InstallationController } from './installation.controller'
 import { SubscriptionModule } from '../subscription/subscription.module'
 import { ShopDetailsModule } from 'src/modules/shop-details/shop-details.module'
+import { AffiliateCodeModule } from 'src/modules/affiliate-code/affiliate-code.module'
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ShopDetailsModule } from 'src/modules/shop-details/shop-details.module'
     AdminModule,
     WebhookModule,
     ShopDetailsModule,
-    SubscriptionModule
+    SubscriptionModule,
+    AffiliateCodeModule
   ],
   controllers: [InstallationController]
 })

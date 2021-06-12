@@ -1,7 +1,7 @@
 import qs from 'qs'
 import { Types } from 'mongoose'
-import { Response } from 'express'
 import { generate } from 'nonce-next'
+import { Request, Response } from 'express'
 import { ConfigService } from '@nestjs/config'
 import { UserService } from '../user/user.service'
 import { User } from 'src/modules/user/schema/user.schema'
@@ -16,7 +16,8 @@ import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
 import { ShopDetailsService } from 'src/modules/shop-details/shop-details.service'
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
-import { Controller, Get, Query, BadRequestException, Res, UseGuards, HttpService } from '@nestjs/common'
+import { AffiliateCodeService } from 'src/modules/affiliate-code/affiliate-code.service'
+import { Controller, Get, Query, BadRequestException, Res, UseGuards, HttpService, Req } from '@nestjs/common'
 import {
   WEBHOOK_PATH_ORDER_CREATED,
   WEBHOOK_PATH_SUBSCRIPTION_UPDATED,
@@ -32,6 +33,7 @@ export class InstallationController {
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
     private readonly webhookService: WebhookService,
+    private readonly affiliateCodeService: AffiliateCodeService,
     private readonly shopDetailsService: ShopDetailsService,
     private readonly subscriptionService: SubscriptionService
   ) {}
@@ -51,7 +53,12 @@ export class InstallationController {
 
   @Get(REDIRECT_PATH)
   @UseGuards(ShopifyInstallationGuard)
-  async finalise(@Res() res: Response, @Query('shop') shopOrigin: string, @Query('code') authCode: string) {
+  async finalise(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('code') authCode: string,
+    @Query('shop') shopOrigin: string
+  ) {
     let user = await this.userService.findOne({ shopOrigin })
     const newSignup = user ? false : true
     user = user || (await this.userService.create({ shopOrigin }))
@@ -69,13 +76,7 @@ export class InstallationController {
     user.primaryDomain = shopDetails.primaryDomain
     user.developmentStore = shopDetails.developmentStore
     await user.save()
-    if (newSignup)
-      this.mailService.sendWithTemplate({
-        to: user.email,
-        from: Persona.Ryan,
-        template: Template.Welcome,
-        templateModel: { appUrl: user.appUrl }
-      })
+    if (newSignup) this.runNewUserTasks(user, req.cookies.affiliateCode)
     res.redirect(`${user.appUrl}/setup`)
   }
 
@@ -106,5 +107,22 @@ export class InstallationController {
       })
       .toPromise()
     return response.data.access_token
+  }
+
+  async runNewUserTasks(user: User, affiliateCode: string) {
+    this.mailService.sendWithTemplate({
+      to: user.email,
+      from: Persona.Ryan,
+      template: Template.Welcome,
+      templateModel: { appUrl: user.appUrl }
+    })
+    if (affiliateCode) {
+      const affiliateId = (await this.affiliateCodeService.findOne({ code: affiliateCode }))?.affiliate
+      if (affiliateId) {
+        user.affiliate = affiliateId
+        user.affiliateCode = affiliateCode
+        user.save()
+      }
+    }
   }
 }

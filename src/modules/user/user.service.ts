@@ -3,13 +3,13 @@ import { Injectable } from '@nestjs/common'
 import { User } from './schema/user.schema'
 import { InjectModel } from '@nestjs/mongoose'
 import { CreateUserDto } from './dto/create-user.dto'
-import { Model, FilterQuery, LeanDocument } from 'mongoose'
 import { SalesService } from 'src/modules/sales/sales.service'
+import { FilterQuery, LeanDocument, PaginateModel } from 'mongoose'
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: PaginateModel<User>,
     private readonly salesService: SalesService
   ) {}
 
@@ -17,8 +17,11 @@ export class UserService {
     return new this.userModel(createUserDto).save()
   }
 
-  findAll(query: FilterQuery<User> = {}) {
-    return this.userModel.find(query)
+  findAll(query: FilterQuery<User>, page: number, limit: number, sort: string) {
+    page = page || 1
+    limit = limit || 20
+    sort = sort || '-createdAt'
+    return this.userModel.paginate(query, { sort, page, limit })
   }
 
   findById(id?: string) {
