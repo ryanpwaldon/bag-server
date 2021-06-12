@@ -58,7 +58,10 @@ export class AffiliateService {
       res.cookie('sessionToken', sessionToken, {
         expires: moment()
           .add(7, 'days')
-          .toDate()
+          .toDate(),
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
       })
       res.redirect(`${this.affiliateUrl}/dashboard`)
     } catch (err) {

@@ -22,7 +22,8 @@ async function bootstrap() {
     origin: [
       configService.get('ADMIN_URL') as string,
       configService.get('PLUGIN_URL') as string,
-      configService.get('MARKETING_URL') as string
+      configService.get('MARKETING_URL') as string,
+      configService.get('AFFILIATE_URL') as string
     ]
   })
   app.use(helmet())

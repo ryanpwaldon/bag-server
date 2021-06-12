@@ -20,6 +20,7 @@ export class ReferralController {
       expires: moment()
         .add(10, 'years')
         .toDate(),
+      httpOnly: true,
       sameSite: 'none',
       secure: true
     })
