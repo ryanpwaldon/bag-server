@@ -1,3 +1,6 @@
+export const AFFILIATE_COMMISSION = 0.3
+export const SHOPIFY_ADMIN_API_VERSION = '2020-07'
 export const HONEYBADGER_API_KEY = '5dca9763'
-export const SHOPIFY_API_VERSION = '2020-07'
 export const CRON_TIMEZONE = 'America/New_York'
+export const SHOPIFY_PARTNER_API_VERSION = '2021-04'
+export const SHOPIFY_PARTNER_ORGANIZATION_ID = '1632614'

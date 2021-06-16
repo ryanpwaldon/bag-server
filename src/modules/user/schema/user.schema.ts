@@ -3,6 +3,7 @@ import Cryptr from 'cryptr'
 import { Permission } from 'src/modules/user/user.types'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
+import { Interval } from 'src/modules/subscription/subscription.types'
 import { Affiliate } from 'src/modules/affiliate/schema/affiliate.schema'
 import { Notification } from 'src/modules/notification/notification.constants'
 import { getSubscriptions } from 'src/modules/subscription/subscription.constants'
@@ -13,6 +14,14 @@ export interface MonthlySalesRecord {
   orderCount: number
   startTime: Date
   endTime: Date
+}
+
+export interface Payment {
+  netAmount: number
+  createdAt: number
+  grossAmount: number
+  chargeId: Interval
+  billingInterval: Interval
 }
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
@@ -97,6 +106,9 @@ export class User extends Document {
 
   @Prop()
   affiliateCode?: string
+
+  @Prop({ type: [Object] })
+  payments!: Payment[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

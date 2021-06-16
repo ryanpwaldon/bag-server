@@ -11,6 +11,7 @@ import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MailModule } from './modules/mail/mail.module'
 import { UserModule } from './modules/user/user.module'
 import { TestModule } from './modules/test/test.module'
+import { TaskModule } from './modules/task/task.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
 import { ThemeModule } from './modules/theme/theme.module'
@@ -24,11 +25,14 @@ import { MonitorModule } from './modules/monitor/monitor.module'
 import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { VariantModule } from './modules/variant/variant.module'
+import { PartnerModule } from './modules/partner/partner.module'
 import { ReferralModule } from './modules/referral/referral.module'
 import { AffiliateModule } from './modules/affiliate/affiliate.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
+import { TransactionModule } from './modules/transaction/transaction.module'
+import { HoneybadgerModule } from './modules/honeybadger/honeybadger.module'
 import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
 import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
@@ -39,70 +43,75 @@ import { ExchangeRateModule } from './modules/exchange-rate/exchange-rate.module
 import { AffiliateCodeModule } from './modules/affiliate-code/affiliate-code.module'
 import { BulkOperationModule } from 'src/modules/bulk-operation/bulk-operation.module'
 
-@Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.APP_ENV}`,
-      load: [config],
-      isGlobal: true
-    }),
-    LoggerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        pinoHttp: {
-          prettifier,
-          level: configService.get('APP_ENV') === 'development' ? 'debug' : 'info',
-          prettyPrint: configService.get('APP_ENV') === 'development'
-        }
-      })
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-        useFindAndModify: false,
-        useCreateIndex: true,
-        connectionFactory: connection => {
-          connection.plugin(paginate)
-          connection.plugin(autopopulate)
-          return connection
-        }
-      })
-    }),
-    UserModule,
-    GdprModule,
-    CartModule,
-    TestModule,
-    MailModule,
-    AdminModule,
-    EventModule,
-    ThemeModule,
-    AssetModule,
-    SalesModule,
-    OrderModule,
-    PluginModule,
-    CouponModule,
-    VariantModule,
-    MonitorModule,
-    WebhookModule,
-    ProductModule,
-    ReferralModule,
-    ScriptTagModule,
-    CrossSellModule,
-    AffiliateModule,
-    ConversionModule,
-    AccessScopeModule,
-    ShopDetailsModule,
-    ProgressBarModule,
-    ExchangeRateModule,
-    SubscriptionModule,
-    InstallationModule,
-    NotificationModule,
-    BulkOperationModule,
-    AffiliateCodeModule,
-    ScheduleModule.forRoot()
-  ]
-})
+const imports = [
+  ConfigModule.forRoot({
+    envFilePath: `.env.${process.env.APP_ENV}`,
+    load: [config],
+    isGlobal: true
+  }),
+  LoggerModule.forRootAsync({
+    imports: [ConfigModule],
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService) => ({
+      pinoHttp: {
+        prettifier,
+        level: configService.get('APP_ENV') === 'development' ? 'debug' : 'info',
+        prettyPrint: configService.get('APP_ENV') === 'development'
+      }
+    })
+  }),
+  MongooseModule.forRootAsync({
+    imports: [ConfigModule],
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService) => ({
+      uri: configService.get<string>('MONGO_URI'),
+      useFindAndModify: false,
+      useCreateIndex: true,
+      connectionFactory: connection => {
+        connection.plugin(paginate)
+        connection.plugin(autopopulate)
+        return connection
+      }
+    })
+  }),
+  UserModule,
+  GdprModule,
+  CartModule,
+  TestModule,
+  MailModule,
+  TaskModule,
+  AdminModule,
+  EventModule,
+  ThemeModule,
+  AssetModule,
+  SalesModule,
+  OrderModule,
+  PluginModule,
+  CouponModule,
+  VariantModule,
+  MonitorModule,
+  WebhookModule,
+  ProductModule,
+  PartnerModule,
+  ReferralModule,
+  ScriptTagModule,
+  CrossSellModule,
+  AffiliateModule,
+  ConversionModule,
+  AccessScopeModule,
+  HoneybadgerModule,
+  ShopDetailsModule,
+  TransactionModule,
+  ProgressBarModule,
+  ExchangeRateModule,
+  SubscriptionModule,
+  InstallationModule,
+  NotificationModule,
+  BulkOperationModule,
+  AffiliateCodeModule
+]
+
+if (process.env.SCHEDULER_ENABLED === 'true') imports.push(ScheduleModule.forRoot())
+
+@Module({ imports })
 export class AppModule {}

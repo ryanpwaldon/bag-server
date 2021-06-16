@@ -17,7 +17,7 @@ export class UserService {
     return new this.userModel(createUserDto).save()
   }
 
-  findAll(query: FilterQuery<User>, page: number, limit: number, sort: string) {
+  findAll(query: FilterQuery<User>, page?: number, limit?: number, sort?: string) {
     page = page || 1
     limit = limit || 20
     sort = sort || '-createdAt'

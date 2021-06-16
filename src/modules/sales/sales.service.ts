@@ -14,9 +14,7 @@ export class SalesService {
   ) {}
 
   async fetchMonthlySalesRecord(user: User): Promise<MonthlySalesRecord> {
-    const endTime = moment()
-      .utc()
-      .startOf('month')
+    const endTime = moment().utc().startOf('month') // prettier-ignore
     const startTime = moment(endTime).subtract(1, 'month')
     const query = /* GraphQL */ `
       {

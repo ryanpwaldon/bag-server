@@ -1,6 +1,6 @@
 import { Logger } from 'nestjs-pino'
 import { User } from 'src/modules/user/schema/user.schema'
-import { SHOPIFY_API_VERSION } from 'src/common/constants'
+import { SHOPIFY_ADMIN_API_VERSION } from 'src/common/constants'
 import { Injectable, HttpService, InternalServerErrorException } from '@nestjs/common'
 
 @Injectable()
@@ -9,7 +9,7 @@ export class AdminService {
 
   async createGraphQLRequest({ shopOrigin, accessToken }: User, data: any) {
     const method = 'post'
-    const url = `https://${shopOrigin}/admin/api/${SHOPIFY_API_VERSION}/graphql.json`
+    const url = `https://${shopOrigin}/admin/api/${SHOPIFY_ADMIN_API_VERSION}/graphql.json`
     const headers = { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': accessToken }
     const response = await this.httpService.request({ method, headers, url, data }).toPromise()
     if (response.data.errors) {
@@ -20,7 +20,7 @@ export class AdminService {
   }
 
   async createRestRequest({ shopOrigin, accessToken }: User, method: 'post' | 'get' | 'put', path: string, data?: any) {
-    const url = `https://${shopOrigin}/admin/api/${SHOPIFY_API_VERSION}/${path}`
+    const url = `https://${shopOrigin}/admin/api/${SHOPIFY_ADMIN_API_VERSION}/${path}`
     const headers = { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': accessToken }
     const response = await this.httpService.request({ method, headers, url, data }).toPromise()
     if (response.data.errors) {
