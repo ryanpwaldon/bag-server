@@ -7,7 +7,7 @@ interface Payout {
   value: number
 }
 
-@Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
+@Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true, minimize: false })
 export class Affiliate extends Document {
   @Prop({ required: true, unique: true })
   email!: string
