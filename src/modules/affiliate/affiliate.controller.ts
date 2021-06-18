@@ -12,10 +12,23 @@ import { BadRequestException, Body, Controller, Get, Post, Query, Res, UseGuards
 export class AffiliateController {
   constructor(private readonly userService: UserService, private readonly affiliateService: AffiliateService) {}
 
+  @Get()
+  @UseGuards(AffiliateGuard)
+  async findMe(@GetAffiliate('id') affiliateId: string) {
+    return this.affiliateService.findById(affiliateId)
+  }
+
   @Post('login')
   async login(@Body('email') email: string) {
     if (!email) throw new BadRequestException()
     return this.affiliateService.login(email)
+  }
+
+  @Get('logout')
+  @UseGuards(AffiliateGuard)
+  async logout(@Res() res: Response) {
+    res.clearCookie('sessionToken', { sameSite: 'none', secure: true })
+    res.send()
   }
 
   @Get('auth')
