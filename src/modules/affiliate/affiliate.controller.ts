@@ -48,4 +48,10 @@ export class AffiliateController {
     query.affiliate = affiliate.id
     return this.userService.findAll(query, page, limit, sort)
   }
+
+  @Post('code')
+  @UseGuards(AffiliateGuard)
+  updateCode(@GetAffiliate() affiliate: Affiliate, @Body('code') code: string) {
+    return this.affiliateService.updateCode(affiliate, code)
+  }
 }

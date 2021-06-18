@@ -77,4 +77,10 @@ export class AffiliateService {
   findOne(query: FilterQuery<Affiliate>) {
     return this.affiliateModel.findOne(query)
   }
+
+  async updateCode(affiliate: Affiliate, code: string) {
+    const affiliateCode = await this.affiliateCodeService.create(affiliate.id as string, code)
+    affiliate.code = affiliateCode.code
+    return affiliate.save()
+  }
 }
