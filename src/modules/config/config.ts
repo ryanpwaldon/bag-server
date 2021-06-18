@@ -1,12 +1,10 @@
 export default () => ({
-  SERVER_URL: `https://${process.env.SERVER_HOST}`,
-  PLUGIN_URL: `https://${process.env.PLUGIN_HOST}`,
   APP_LIQUID_FILENAME: 'bag-app',
   get BLANK_SCRIPT_URL() {
-    return `${this.PLUGIN_URL}/script.js`
+    return `${process.env.PLUGIN_URL}/script.js`
   },
   get START_SCRIPT_URL() {
-    return `${this.PLUGIN_URL}/start.js`
+    return `${process.env.PLUGIN_URL}/start.js`
   },
   get THEME_LIQUID_KEY() {
     return `layout/theme.liquid`
