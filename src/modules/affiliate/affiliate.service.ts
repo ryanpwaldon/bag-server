@@ -32,7 +32,7 @@ export class AffiliateService {
 
   async create(email: string) {
     const affiliate = await new this.affiliateModel({ email }).save()
-    const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 6)
+    const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz', 6)
     const affiliateCode = await this.affiliateCodeService.create(affiliate.id as string, nanoid())
     affiliate.code = affiliateCode.code
     return affiliate.save()
