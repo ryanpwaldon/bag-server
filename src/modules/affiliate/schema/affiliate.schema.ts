@@ -1,7 +1,7 @@
 import { Document, Schema as MongooseSchema } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
-interface Payout {
+export interface Payout {
   periodEnd: Date
   periodStart: Date
   value: number

@@ -1,14 +1,15 @@
 import moment from 'moment'
 import jwt from 'jsonwebtoken'
+import { assign } from 'lodash'
 import { Response } from 'express'
 import { customAlphabet } from 'nanoid'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { ConfigService } from '@nestjs/config'
-import { FilterQuery, PaginateModel, Types } from 'mongoose'
 import { Template } from 'src/modules/mail/types/template'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
 import { Affiliate } from 'src/modules/affiliate/schema/affiliate.schema'
+import { FilterQuery, LeanDocument, PaginateModel, Types } from 'mongoose'
 import { AffiliateCodeService } from 'src/modules/affiliate-code/affiliate-code.service'
 
 @Injectable()
@@ -82,5 +83,9 @@ export class AffiliateService {
     const affiliateCode = await this.affiliateCodeService.create(affiliate.id as string, code)
     affiliate.code = affiliateCode.code
     return affiliate.save()
+  }
+
+  updateMe(affiliate: Affiliate, body: LeanDocument<Affiliate>) {
+    return assign(affiliate, body).save()
   }
 }

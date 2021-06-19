@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { FilterQuery } from 'mongoose'
+import { FilterQuery, LeanDocument } from 'mongoose'
 import { User } from 'src/modules/user/schema/user.schema'
 import { UserService } from 'src/modules/user/user.service'
 import { AffiliateGuard } from 'src/common/guards/affiliate.guard'
@@ -22,6 +22,12 @@ export class AffiliateController {
   async login(@Body('email') email: string) {
     if (!email) throw new BadRequestException()
     return this.affiliateService.login(email)
+  }
+
+  @Post()
+  @UseGuards(AffiliateGuard)
+  updateMe(@GetAffiliate() affiliate: Affiliate, @Body() body: LeanDocument<Affiliate>) {
+    return this.affiliateService.updateMe(affiliate, body)
   }
 
   @Get('logout')
