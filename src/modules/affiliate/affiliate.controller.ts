@@ -36,6 +36,16 @@ export class AffiliateController {
     return this.affiliateService.auth(authToken, res)
   }
 
+  @Get('referrals/stats')
+  @UseGuards(AffiliateGuard)
+  async findMyReferralStats(@GetAffiliate() affiliate: Affiliate) {
+    const referrals = (await this.userService.findAll({ affiliate: affiliate.id }, 1, Number.MAX_SAFE_INTEGER)).docs
+    const total = referrals.length
+    const active = referrals.filter(referral => !referral.uninstalled).length
+    const churned = total - active
+    return { total, active, churned }
+  }
+
   @Get('referrals')
   @UseGuards(AffiliateGuard)
   findMyReferrals(
