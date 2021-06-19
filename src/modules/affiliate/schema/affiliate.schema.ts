@@ -21,6 +21,12 @@ export class Affiliate extends Document {
   @Prop({ required: false })
   code!: string
 
+  @Prop({
+    type: Boolean,
+    default: true
+  })
+  referralNotification?: boolean
+
   @Prop({ type: MongooseSchema.Types.Mixed, default: {} })
   payouts!: Record<string, Payout>
 }
