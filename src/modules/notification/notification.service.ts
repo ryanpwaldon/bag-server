@@ -145,4 +145,20 @@ export class NotificationService {
       })
     }
   }
+
+  async sendAffiliateConversionNotification(affiliate: Affiliate, commission: string) {
+    if (affiliate.conversionNotification) {
+      const templateModel = {
+        commission,
+        date: moment().format('DD MMMM YYYY'),
+        affiliateSiteUrl: process.env.AFFILIATE_URL
+      }
+      this.mailService.sendWithTemplate({
+        templateModel,
+        to: affiliate.email,
+        from: Persona.Notifications,
+        template: Template.AffiliateConversion
+      })
+    }
+  }
 }

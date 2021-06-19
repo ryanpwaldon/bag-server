@@ -8,6 +8,7 @@ import { AffiliateService } from 'src/modules/affiliate/affiliate.service'
 import { AFFILIATE_COMMISSION, CRON_TIMEZONE } from 'src/common/constants'
 import { TransactionService } from 'src/modules/transaction/transaction.service'
 import { HoneybadgerService } from 'src/modules/honeybadger/honeybadger.service'
+import { NotificationService } from 'src/modules/notification/notification.service'
 
 @Injectable()
 export class TaskService {
@@ -17,7 +18,8 @@ export class TaskService {
     private readonly userService: UserService,
     private readonly affiliateService: AffiliateService,
     private readonly transactionService: TransactionService,
-    private readonly honeybadgerService: HoneybadgerService
+    private readonly honeybadgerService: HoneybadgerService,
+    private readonly notificationService: NotificationService
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_5AM, { timeZone: CRON_TIMEZONE })
@@ -28,12 +30,8 @@ export class TaskService {
       .subtract(1, 'day')
       .toISOString()
     for (const user of users) {
-      console.log('user')
-      console.log(user.shopOrigin)
       try {
         const transactions = await this.transactionService.find(user.shopOrigin, createdAtMin, createdAtMax)
-        console.log('transactions')
-        console.log(transactions)
         if (transactions.length) {
           const payments: Payment[] = transactions.map((transaction: any) => ({
             chargeId: transaction.node.chargeId,
@@ -43,8 +41,6 @@ export class TaskService {
             billingInterval: transaction.node.billingInterval
           }))
           user.payments = [...user.payments, ...payments]
-          console.log('payments')
-          console.log(user.payments)
           user.save()
           if (user.affiliate) {
             const affiliate = await this.affiliateService.findById(user.affiliate)
@@ -65,8 +61,7 @@ export class TaskService {
             }
             affiliate.markModified('payouts')
             affiliate.save()
-            console.log('affiliate payouts')
-            console.log(affiliate.payouts)
+            this.notificationService.sendAffiliateConversionNotification(affiliate, `$${totalAffiliateCommission}`)
           }
         }
       } catch (err) {

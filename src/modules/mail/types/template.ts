@@ -5,5 +5,6 @@ export enum Template {
   ConversionReportWeekly = 'conversion-report-weekly',
   ConversionReportDaily = 'conversion-report-daily',
   AffiliateLogin = 'affiliate-login',
-  AffiliateReferral = 'affiliate-referral'
+  AffiliateReferral = 'affiliate-referral',
+  AffiliateConversion = 'affiliate-conversion'
 }
