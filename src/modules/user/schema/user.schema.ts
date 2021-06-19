@@ -20,7 +20,7 @@ export interface Payment {
   netAmount: number
   createdAt: number
   grossAmount: number
-  chargeId: Interval
+  chargeId: string
   billingInterval: Interval
 }
 
