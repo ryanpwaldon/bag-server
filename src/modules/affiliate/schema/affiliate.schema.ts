@@ -32,3 +32,7 @@ export class Affiliate extends Document {
 }
 
 export const AffiliateSchema = SchemaFactory.createForClass(Affiliate)
+
+AffiliateSchema.virtual('setupComplete').get(function(this: Affiliate) {
+  return !!this.payPalEmail
+})
