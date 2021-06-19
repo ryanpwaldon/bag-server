@@ -5,6 +5,7 @@ import { CRON_TIMEZONE } from 'src/common/constants'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Template } from 'src/modules/mail/types/template'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
+import { Affiliate } from 'src/modules/affiliate/schema/affiliate.schema'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
 import { Notification } from 'src/modules/notification/notification.constants'
 import { forwardRef, Inject, Injectable, InternalServerErrorException } from '@nestjs/common'
@@ -125,6 +126,22 @@ export class NotificationService {
         templateModel,
         to: user.email,
         from: Persona.Notifications
+      })
+    }
+  }
+
+  async sendAffiliateReferralNotification(affiliate: Affiliate, user: User) {
+    if (affiliate.referralNotification) {
+      const templateModel = {
+        date: moment().format('DD MMMM YYYY'),
+        referredUserUrl: user.primaryDomain,
+        affiliateSiteUrl: process.env.AFFILIATE_URL
+      }
+      this.mailService.sendWithTemplate({
+        templateModel,
+        to: affiliate.email,
+        from: Persona.Notifications,
+        template: Template.AffiliateReferral
       })
     }
   }

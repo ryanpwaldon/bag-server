@@ -4,5 +4,6 @@ export enum Template {
   Uninstalled = 'uninstalled',
   ConversionReportWeekly = 'conversion-report-weekly',
   ConversionReportDaily = 'conversion-report-daily',
-  AffiliateLogin = 'affiliate-login'
+  AffiliateLogin = 'affiliate-login',
+  AffiliateReferral = 'affiliate-referral'
 }

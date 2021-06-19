@@ -11,9 +11,11 @@ import { WebhookService } from '../webhook/webhook.service'
 import { GetUser } from 'src/common/decorators/user.decorator'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
+import { AffiliateService } from 'src/modules/affiliate/affiliate.service'
 import { SubscriptionService } from '../subscription/subscription.service'
 import { REDIRECT_PATH } from 'src/modules/installation/installation.constants'
 import { ShopDetailsService } from 'src/modules/shop-details/shop-details.service'
+import { NotificationService } from 'src/modules/notification/notification.service'
 import { ShopifyInstallationGuard } from 'src/common/guards/shopify-installation.guard'
 import { REQUIRED_ACCESS_SCOPES } from 'src/modules/access-scope/access-scope.constants'
 import { AffiliateCodeService } from 'src/modules/affiliate-code/affiliate-code.service'
@@ -33,9 +35,11 @@ export class InstallationController {
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
     private readonly webhookService: WebhookService,
-    private readonly affiliateCodeService: AffiliateCodeService,
+    private readonly affiliateService: AffiliateService,
     private readonly shopDetailsService: ShopDetailsService,
-    private readonly subscriptionService: SubscriptionService
+    private readonly subscriptionService: SubscriptionService,
+    private readonly notificationService: NotificationService,
+    private readonly affiliateCodeService: AffiliateCodeService
   ) {}
 
   @Get('start')
@@ -119,9 +123,13 @@ export class InstallationController {
     if (affiliateCode) {
       const affiliateId = (await this.affiliateCodeService.findOne({ code: affiliateCode }))?.affiliate
       if (affiliateId) {
-        user.affiliate = affiliateId
-        user.affiliateCode = affiliateCode
-        user.save()
+        const affiliate = await this.affiliateService.findById(affiliateId)
+        if (affiliate) {
+          user.affiliate = affiliateId
+          user.affiliateCode = affiliateCode
+          user.save()
+          this.notificationService.sendAffiliateReferralNotification(affiliate, user)
+        }
       }
     }
   }

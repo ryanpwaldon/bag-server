@@ -5,8 +5,10 @@ import { WebhookModule } from '../webhook/webhook.module'
 import { MailModule } from 'src/modules/mail/mail.module'
 import { CartModule } from 'src/modules/cart/cart.module'
 import { InstallationController } from './installation.controller'
+import { AffiliateModule } from 'src/modules/affiliate/affiliate.module'
 import { SubscriptionModule } from '../subscription/subscription.module'
 import { ShopDetailsModule } from 'src/modules/shop-details/shop-details.module'
+import { NotificationModule } from 'src/modules/notification/notification.module'
 import { AffiliateCodeModule } from 'src/modules/affiliate-code/affiliate-code.module'
 
 @Module({
@@ -17,7 +19,9 @@ import { AffiliateCodeModule } from 'src/modules/affiliate-code/affiliate-code.m
     MailModule,
     AdminModule,
     WebhookModule,
+    AffiliateModule,
     ShopDetailsModule,
+    NotificationModule,
     SubscriptionModule,
     AffiliateCodeModule
   ],
