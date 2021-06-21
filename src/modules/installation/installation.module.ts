@@ -5,6 +5,7 @@ import { WebhookModule } from '../webhook/webhook.module'
 import { MailModule } from 'src/modules/mail/mail.module'
 import { CartModule } from 'src/modules/cart/cart.module'
 import { InstallationController } from './installation.controller'
+import { SlackModule } from 'src/modules/slack/slack/slack.module'
 import { AffiliateModule } from 'src/modules/affiliate/affiliate.module'
 import { SubscriptionModule } from '../subscription/subscription.module'
 import { ShopDetailsModule } from 'src/modules/shop-details/shop-details.module'
@@ -17,6 +18,7 @@ import { AffiliateCodeModule } from 'src/modules/affiliate-code/affiliate-code.m
     UserModule,
     CartModule,
     MailModule,
+    SlackModule,
     AdminModule,
     WebhookModule,
     AffiliateModule,

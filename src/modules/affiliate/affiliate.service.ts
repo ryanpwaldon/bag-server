@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { ConfigService } from '@nestjs/config'
 import { Template } from 'src/modules/mail/types/template'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
+import { SlackService } from 'src/modules/slack/slack/slack.service'
 import { Affiliate } from 'src/modules/affiliate/schema/affiliate.schema'
 import { FilterQuery, LeanDocument, PaginateModel, Types } from 'mongoose'
 import { AffiliateCodeService } from 'src/modules/affiliate-code/affiliate-code.service'
@@ -21,6 +22,7 @@ export class AffiliateService {
 
   constructor(
     private readonly mailService: MailService,
+    private readonly slackService: SlackService,
     private readonly configService: ConfigService,
     private readonly affiliateCodeService: AffiliateCodeService,
     @InjectModel(Affiliate.name) private readonly affiliateModel: PaginateModel<Affiliate>
@@ -36,6 +38,7 @@ export class AffiliateService {
     const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz', 6)
     const affiliateCode = await this.affiliateCodeService.create(affiliate.id as string, nanoid())
     affiliate.code = affiliateCode.code
+    this.slackService.notify(`Affiliate Signup: ${email}`)
     return affiliate.save()
   }
 

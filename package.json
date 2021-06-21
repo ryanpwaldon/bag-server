@@ -16,6 +16,7 @@
     "@nestjs/platform-express": "^7.4.2",
     "@nestjs/schedule": "^0.4.2",
     "@shopify/admin-graphql-api-utilities": "^0.1.1",
+    "@slack/webhook": "^6.0.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.41",
     "@types/cryptr": "^4.0.1",

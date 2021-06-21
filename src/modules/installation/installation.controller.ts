@@ -9,6 +9,7 @@ import { Template } from 'src/modules/mail/types/template'
 import { CartService } from 'src/modules/cart/cart.service'
 import { WebhookService } from '../webhook/webhook.service'
 import { GetUser } from 'src/common/decorators/user.decorator'
+import { SlackService } from 'src/modules/slack/slack/slack.service'
 import { MailService, Persona } from 'src/modules/mail/mail.service'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
 import { AffiliateService } from 'src/modules/affiliate/affiliate.service'
@@ -33,6 +34,7 @@ export class InstallationController {
     private readonly cartService: CartService,
     private readonly userService: UserService,
     private readonly mailService: MailService,
+    private readonly slackService: SlackService,
     private readonly configService: ConfigService,
     private readonly webhookService: WebhookService,
     private readonly affiliateService: AffiliateService,
@@ -132,5 +134,6 @@ export class InstallationController {
         }
       }
     }
+    this.slackService.notify(`Signup: ${user.primaryDomain}`)
   }
 }

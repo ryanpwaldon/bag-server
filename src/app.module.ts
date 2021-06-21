@@ -26,6 +26,7 @@ import { ProductModule } from './modules/product/product.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
 import { VariantModule } from './modules/variant/variant.module'
 import { PartnerModule } from './modules/partner/partner.module'
+import { SlackModule } from './modules/slack/slack/slack.module'
 import { ReferralModule } from './modules/referral/referral.module'
 import { AffiliateModule } from './modules/affiliate/affiliate.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
@@ -85,6 +86,7 @@ const imports = [
   ThemeModule,
   AssetModule,
   SalesModule,
+  SlackModule,
   OrderModule,
   PluginModule,
   CouponModule,
