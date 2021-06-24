@@ -81,6 +81,7 @@ export class InstallationController {
     user.currencyCode = shopDetails.currencyCode
     user.primaryDomain = shopDetails.primaryDomain
     user.developmentStore = shopDetails.developmentStore
+    if (user.shopifyPlan === 'staff_business') user.subscription = 'Free (v1)'
     await user.save()
     if (newSignup) this.runNewUserTasks(user, req.cookies.affiliateCode)
     res.redirect(`${user.appUrl}/setup`)
