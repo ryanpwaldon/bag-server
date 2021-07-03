@@ -138,7 +138,7 @@ export class SubscriptionService {
         `
       })
     }
-    user.subscription = undefined
+    user.subscription = 'Free (v1)'
     return user.save()
   }
 
