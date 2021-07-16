@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { CrossSell } from 'src/modules/cross-sell/schema/cross-sell.schema'
 
 @Schema()
-export class CrossSellImpression extends Document {
+export class CrossSellClick extends Document {
   @Prop({ required: true })
   cartToken!: string
 
@@ -16,4 +16,4 @@ export class CrossSellImpression extends Document {
   crossSell!: CrossSell
 }
 
-export const CrossSellImpressionSchema = SchemaFactory.createForClass(CrossSellImpression)
+export const CrossSellClickSchema = SchemaFactory.createForClass(CrossSellClick)

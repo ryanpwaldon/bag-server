@@ -1,15 +1,15 @@
 import { PluginGuard } from 'src/common/guards/plugin.guard'
 import { Body, Controller, Post, UseGuards } from '@nestjs/common'
-import { CrossSellImpression } from 'src/modules/event/modules/cross-sell-impression/schema/cross-sell-impression.schema'
-import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell-impression/cross-sell-impression.service'
+import { CrossSellClick } from 'src/modules/event/modules/cross-sell-click/schema/cross-sell-click.schema'
+import { CrossSellClickService } from 'src/modules/event/modules/cross-sell-click/cross-sell-click.service'
 
 @Controller('event')
 export class EventController {
-  constructor(private readonly crossSellImpressionService: CrossSellImpressionService) {}
+  constructor(private readonly crossSellClickService: CrossSellClickService) {}
 
-  @Post('cross-sell-impression')
+  @Post('cross-sell-click')
   @UseGuards(PluginGuard)
-  async createCrossSellImpressionEvent(@Body() data: Partial<CrossSellImpression>) {
-    this.crossSellImpressionService.create(data)
+  async createCrossSellClickEvent(@Body() data: Partial<CrossSellClick>) {
+    this.crossSellClickService.create(data)
   }
 }

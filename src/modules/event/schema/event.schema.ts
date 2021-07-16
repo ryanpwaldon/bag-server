@@ -2,7 +2,7 @@ import { Document } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 enum EventType {
-  CrossSellImpression = 'CrossSellImpression',
+  CrossSellClick = 'CrossSellClick',
   OrderCreated = 'OrderCreated'
 }
 

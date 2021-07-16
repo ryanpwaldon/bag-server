@@ -9,14 +9,14 @@ import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.servic
 import { NotificationService } from 'src/modules/notification/notification.service'
 import { FilterQuery, LeanDocument, PaginateModel, PaginateOptions, Types } from 'mongoose'
 import { Conversion, ConversionType } from 'src/modules/conversion/schema/conversion.schema'
-import { CrossSellImpressionService } from 'src/modules/event/modules/cross-sell-impression/cross-sell-impression.service'
+import { CrossSellClickService } from 'src/modules/event/modules/cross-sell-click/cross-sell-click.service'
 
 @Injectable()
 export class ConversionService {
   constructor(
     @Inject(forwardRef(() => NotificationService)) private readonly notificationService: NotificationService,
     @InjectModel(Conversion.name) private readonly conversionModel: PaginateModel<Conversion>,
-    private readonly crossSellImpressionService: CrossSellImpressionService,
+    private readonly crossSellClickService: CrossSellClickService,
     private readonly progressBarService: ProgressBarService
   ) {}
 
@@ -64,11 +64,10 @@ export class ConversionService {
     const cartToken = order.details.cart_token
     const lineItems = order.details.line_items
     const conversions: LeanDocument<Conversion>[] = []
-    const crossSellImpressions = await this.crossSellImpressionService.findAll({ cartToken })
+    const crossSellClicks = await this.crossSellClickService.findAll({ cartToken })
     for (const lineItem of lineItems) {
       const productId = composeGid('Product', lineItem.product_id)
-      const convertedCrossSell = crossSellImpressions.find(({ crossSell }) => crossSell.productId === productId)
-        ?.crossSell
+      const convertedCrossSell = crossSellClicks.find(({ crossSell }) => crossSell.productId === productId)?.crossSell
       if (!convertedCrossSell) continue
       conversions.push({
         order: Types.ObjectId(order.id),
