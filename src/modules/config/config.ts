@@ -1,21 +1,20 @@
 export default () => ({
-  APP_LIQUID_FILENAME: 'bag-app',
   get BLANK_SCRIPT_URL() {
     return `${process.env.PLUGIN_URL}/script.js`
   },
   get START_SCRIPT_URL() {
     return `${process.env.PLUGIN_URL}/start.js`
   },
-  get THEME_LIQUID_KEY() {
+  get APP_FILE_NAME() {
+    return 'bag-app'
+  },
+  get APP_FILE_PATH() {
+    return `snippets/${this.APP_FILE_NAME}.liquid`
+  },
+  get THEME_FILE_PATH() {
     return `layout/theme.liquid`
   },
-  get THEME_LIQUID_TRIGGER() {
-    return `\n  {% if content_for_header contains '${process.env.PLUGIN_HOST}' %}{% render '${this.APP_LIQUID_FILENAME}' %}{% endif %}\n\n`
-  },
-  get APP_LIQUID_KEY() {
-    return `snippets/${this.APP_LIQUID_FILENAME}.liquid`
-  },
-  get APP_LIQUID_VALUE() {
-    return `<script src="${this.START_SCRIPT_URL}" defer></script>`
+  get THEME_FILE_SNIPPET() {
+    return `\n  {% if content_for_header contains '${process.env.PLUGIN_HOST}' %}{% render '${this.APP_FILE_NAME}' %}{% endif %}\n\n`
   }
 })

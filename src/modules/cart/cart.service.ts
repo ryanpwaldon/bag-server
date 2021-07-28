@@ -8,6 +8,7 @@ import { ThemeService } from 'src/modules/theme/theme.service'
 import { AssetService } from 'src/modules/asset/asset.service'
 import { CreateCartDto } from 'src/modules/cart/dto/create-cart.dto'
 import { ScriptTagService } from 'src/modules/script-tag/script-tag.service'
+import generateAppFileContent from 'src/common/utils/generateAppFileContent'
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 
 @Injectable()
@@ -33,31 +34,36 @@ export class CartService {
     const cart = await this.cartModel.findOne({ user: user.id })
     if (!cart) throw new BadRequestException('Cart ID does not exist.')
     assign(cart, body)
-    if (cart.isModified('active')) {
-      if (cart.active) {
-        await this.updateThemeFiles(user)
-        await this.scriptTagService.createOrUpdate(user, this.configService.get('BLANK_SCRIPT_URL') as string)
-      } else await this.scriptTagService.delete(user)
+    if (cart.isModified()) {
+      if (cart.isModified('active')) {
+        if (cart.active) {
+          await this.scriptTagService.createOrUpdate(user, this.configService.get('BLANK_SCRIPT_URL') as string)
+        } else {
+          await this.scriptTagService.delete(user)
+        }
+      }
+      await this.updateThemeFiles(user, cart)
     }
     return cart.save()
   }
 
-  async updateThemeFiles(user: User) {
+  async updateThemeFiles(user: User, cart: Cart) {
     const pluginHost = this.configService.get('PLUGIN_HOST') as string
-    const appLiquidKey = this.configService.get('APP_LIQUID_KEY') as string
-    const themeLiquidKey = this.configService.get('THEME_LIQUID_KEY') as string
-    const appLiquidValue = this.configService.get('APP_LIQUID_VALUE') as string
-    const themeLiquidTrigger = this.configService.get('THEME_LIQUID_TRIGGER') as string
+    const appFilePath = this.configService.get('APP_FILE_PATH') as string
+    const startScriptUrl = this.configService.get('START_SCRIPT_URL') as string
+    const themeFilePath = this.configService.get('THEME_FILE_PATH') as string
+    const appFileContent = generateAppFileContent(startScriptUrl, cart.cartSettings)
+    const themeFileSnippet = this.configService.get('THEME_FILE_SNIPPET') as string
     const theme = await this.themeService.findMain(user)
-    const themeLiquid = await this.assetService.findOne(user, theme.id, themeLiquidKey)
-    const triggerExists = themeLiquid.value.includes(pluginHost)
-    if (!triggerExists) {
+    const themeFileContent = await this.assetService.findOne(user, theme.id, themeFilePath)
+    const snippetExists = themeFileContent.value.includes(pluginHost)
+    if (!snippetExists) {
       const target = '</head>'
-      const occurrences = themeLiquid.value.match(new RegExp(target, 'g'))?.length
+      const occurrences = themeFileContent.value.match(new RegExp(target, 'g'))?.length
       if (occurrences !== 1) throw new InternalServerErrorException('Insert trigger error.')
-      const value = themeLiquid.value.replace(target, `${themeLiquidTrigger}${target}`)
-      await this.assetService.createOrUpdate(user, theme.id, themeLiquidKey, value)
+      const value = themeFileContent.value.replace(target, `${themeFileSnippet}${target}`)
+      await this.assetService.createOrUpdate(user, theme.id, themeFilePath, value)
     }
-    await this.assetService.createOrUpdate(user, theme.id, appLiquidKey, appLiquidValue)
+    await this.assetService.createOrUpdate(user, theme.id, appFilePath, appFileContent)
   }
 }
