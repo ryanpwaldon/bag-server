@@ -22,6 +22,18 @@ export class CartSettings {
   cartPadding = 0
 
   @IsOptional()
+  @IsNumber()
+  checkoutButtonColor = '#171717'
+
+  @IsOptional()
+  @IsNumber()
+  checkoutButtonTextColor = '#ffffff'
+
+  @IsOptional()
+  @IsNumber()
+  progressBarColor = '#171717'
+
+  @IsOptional()
   @IsBoolean()
   roundCorners = true
 
@@ -43,7 +55,7 @@ export class CartSettings {
 
   @IsOptional()
   @IsString()
-  textColor3 = '#ffffff'
+  textColor3 = '#2563EB'
 
   @IsOptional()
   @IsString()
@@ -52,8 +64,4 @@ export class CartSettings {
   @IsOptional()
   @IsString()
   themeColor2 = '#ffffff'
-
-  @IsOptional()
-  @IsString()
-  themeColor3 = '#2563EB'
 }
