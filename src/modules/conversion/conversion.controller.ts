@@ -32,9 +32,10 @@ export class ConversionController {
     @GetUser('id') userId: string,
     @Query('page') page: number,
     @Query('sort') sort: string,
-    @Query('limit') limit: number
+    @Query('limit') limit: number,
+    @Query('populate') populate: string[]
   ) {
-    const options = { sort, page, limit }
+    const options = { sort, page, limit, populate }
     return this.conversionService.findByOffer(userId, offerId, conversionType, options)
   }
 }

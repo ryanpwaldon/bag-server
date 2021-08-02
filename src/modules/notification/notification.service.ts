@@ -90,10 +90,15 @@ export class NotificationService {
   async sendConversionReport(notification: Notification, template: Template) {
     const now = moment()
     const daysToSubtract = notification === Notification.ConversionReportDaily ? 1 : 7
-    const filter = { createdAt: { $gte: moment(now).subtract(daysToSubtract, 'days'), $lte: now } }
-    const conversions = (await this.conversionService.findAll(filter)).filter(
-      ({ object }) => !!object // filter out deleted offers
-    ) as PopulatedConversion[]
+    const startDate = moment(now)
+      .subtract(daysToSubtract, 'days')
+      .toDate()
+    const endDate = now.toDate()
+    const conversions = (await this.conversionService
+      .findAll({ createdAt: { $gte: startDate, $lte: endDate }, object: { $ne: null } })
+      .populate('object')
+      .populate('user')
+      .populate('order')) as PopulatedConversion[]
     const users: User[] = conversions.map(item => item.user)
     const uniqueUsers = uniqBy(users, 'id')
     for (const user of uniqueUsers) {

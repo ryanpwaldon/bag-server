@@ -17,8 +17,7 @@ export class Conversion extends Document {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: User.name,
-    required: true,
-    autopopulate: true
+    required: true
   })
   user!: Types.ObjectId | User
 
@@ -28,21 +27,21 @@ export class Conversion extends Document {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     refPath: 'type',
-    required: true,
-    autopopulate: true
+    required: true
   })
-  object!: Types.ObjectId | CrossSell | ProgressBar
+  object!: Types.ObjectId | CrossSell | ProgressBar | null
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: Order.name,
-    required: true,
-    autopopulate: true
+    required: true
   })
   order!: Types.ObjectId | Order
 
   @Prop()
   value?: number
+
+  createdAt?: Date
 }
 
 export const ConversionSchema = SchemaFactory.createForClass(Conversion)

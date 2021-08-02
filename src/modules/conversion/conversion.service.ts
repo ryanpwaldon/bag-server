@@ -1,4 +1,3 @@
-import { flatten } from 'lodash'
 import { InjectModel } from '@nestjs/mongoose'
 import { User } from 'src/modules/user/schema/user.schema'
 import { Order } from 'src/modules/order/schema/order.schema'
@@ -54,9 +53,10 @@ export class ConversionService {
 
   async trackConversions(order: Order, user: User) {
     const orderNumber = order.details.order_number
-    const conversions = flatten(
-      await Promise.all([this.trackCrossSellConversions(order, user), this.trackProgressBarConversions(order, user)])
-    )
+    const crossSellConversions = await this.trackCrossSellConversions(order, user)
+    const progressBarConversions = await this.trackProgressBarConversions(order, user)
+    let conversions = [...crossSellConversions, ...progressBarConversions]
+    conversions = await Promise.all(conversions.map(conversion => conversion.populate('user').populate('object').populate('order').execPopulate())) // prettier-ignore
     this.notificationService.sendConversionNotification(conversions as PopulatedConversion[], orderNumber)
   }
 
