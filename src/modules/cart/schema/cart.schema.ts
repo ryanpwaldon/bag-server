@@ -1,7 +1,7 @@
 import { User } from '../../user/schema/user.schema'
-import { CartSettings } from 'src/common/types/cart-settings'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types, Schema as MongooseSchema } from 'mongoose'
+import { CartSettings, CartSettingSchema } from 'src/modules/cart/schema/cart-settings.schema'
 
 @Schema({ toJSON: { getters: true }, toObject: { getters: true }, timestamps: true })
 export class Cart extends Document {
@@ -15,7 +15,7 @@ export class Cart extends Document {
   @Prop({ default: false })
   active!: boolean
 
-  @Prop({ default: new CartSettings() })
+  @Prop({ type: CartSettingSchema, default: () => ({}) })
   cartSettings!: CartSettings
 }
 

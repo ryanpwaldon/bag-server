@@ -1,5 +1,5 @@
-import { Model } from 'mongoose'
 import assign from 'lodash/assign'
+import { LeanDocument, Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { ConfigService } from '@nestjs/config'
 import { Cart } from 'src/modules/cart/schema/cart.schema'
@@ -30,7 +30,7 @@ export class CartService {
     return this.cartModel.findOne({ user: userId })
   }
 
-  async updateOneByUserId(user: User, body: Partial<Cart>): Promise<Cart> {
+  async updateOneByUserId(user: User, body: LeanDocument<Cart>): Promise<Cart> {
     const cart = await this.cartModel.findOne({ user: user.id })
     if (!cart) throw new BadRequestException('Cart ID does not exist.')
     assign(cart, body)
