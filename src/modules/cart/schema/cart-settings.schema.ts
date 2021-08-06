@@ -65,6 +65,12 @@ export class CartSettings extends Document {
 
   @Prop({ default: '' })
   termsLinkUrl!: string
+
+  @Prop({ default: false })
+  autoCloseEnabled!: boolean
+
+  @Prop({ default: 3 })
+  autoCloseDelay!: number
 }
 
 export const CartSettingSchema = SchemaFactory.createForClass(CartSettings)
