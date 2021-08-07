@@ -15,6 +15,6 @@ export default () => ({
     return `layout/theme.liquid`
   },
   get THEME_FILE_SNIPPET() {
-    return `\n  {% if content_for_header contains '${process.env.PLUGIN_HOST}' %}{% render '${this.APP_FILE_NAME}' %}{% endif %}\n\n`
+    return `\n\n  <!-- Bag app: will not be loaded if you uninstall the app, or if the cart is disabled. -->\n  {% if content_for_header contains '${process.env.PLUGIN_HOST}' %}{% render '${this.APP_FILE_NAME}' %}{% endif %}\n`
   }
 })

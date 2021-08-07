@@ -58,10 +58,10 @@ export class CartService {
     const themeFileContent = await this.assetService.findOne(user, theme.id, themeFilePath)
     const snippetExists = themeFileContent.value.includes(pluginHost)
     if (!snippetExists) {
-      const target = '</head>'
+      const target = '<head>'
       const occurrences = themeFileContent.value.match(new RegExp(target, 'g'))?.length
       if (occurrences !== 1) throw new InternalServerErrorException('Insert trigger error.')
-      const value = themeFileContent.value.replace(target, `${themeFileSnippet}${target}`)
+      const value = themeFileContent.value.replace(target, `${target}${themeFileSnippet}`)
       await this.assetService.createOrUpdate(user, theme.id, themeFilePath, value)
     }
     await this.assetService.createOrUpdate(user, theme.id, appFilePath, appFileContent)
