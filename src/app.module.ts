@@ -10,7 +10,6 @@ import { CartModule } from './modules/cart/cart.module'
 import { GdprModule } from './modules/gdpr/gdpr.module'
 import { MailModule } from './modules/mail/mail.module'
 import { UserModule } from './modules/user/user.module'
-import { TestModule } from './modules/test/test.module'
 import { TaskModule } from './modules/task/task.module'
 import { AdminModule } from './modules/admin/admin.module'
 import { EventModule } from './modules/event/event.module'
@@ -33,6 +32,7 @@ import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
 import { HoneybadgerModule } from './modules/honeybadger/honeybadger.module'
+import { MaintenanceModule } from './modules/maintenance/maintenance.module'
 import { AccessScopeModule } from './modules/access-scope/access-scope.module'
 import { ShopDetailsModule } from './modules/shop-details/shop-details.module'
 import { ProgressBarModule } from './modules/progress-bar/progress-bar.module'
@@ -77,7 +77,6 @@ const imports = [
   UserModule,
   GdprModule,
   CartModule,
-  TestModule,
   MailModule,
   TaskModule,
   AdminModule,
@@ -103,6 +102,7 @@ const imports = [
   ShopDetailsModule,
   TransactionModule,
   ProgressBarModule,
+  MaintenanceModule,
   ExchangeRateModule,
   SubscriptionModule,
   InstallationModule,
