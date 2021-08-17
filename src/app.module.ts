@@ -30,6 +30,7 @@ import { AffiliateModule } from './modules/affiliate/affiliate.module'
 import { CrossSellModule } from './modules/cross-sell/cross-sell.module'
 import { ScriptTagModule } from './modules/script-tag/script-tag.module'
 import { ConversionModule } from './modules/conversion/conversion.module'
+import { StatisticsModule } from './modules/statistics/statistics.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
 import { HoneybadgerModule } from './modules/honeybadger/honeybadger.module'
 import { MaintenanceModule } from './modules/maintenance/maintenance.module'
@@ -96,6 +97,7 @@ const imports = [
   ScriptTagModule,
   CrossSellModule,
   AffiliateModule,
+  StatisticsModule,
   ConversionModule,
   AccessScopeModule,
   HoneybadgerModule,

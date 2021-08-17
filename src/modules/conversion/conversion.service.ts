@@ -38,6 +38,10 @@ export class ConversionService {
     return this.conversionModel.paginate(query, options)
   }
 
+  aggregate(pipeline: any[]) {
+    return this.conversionModel.aggregate(pipeline)
+  }
+
   async getCrossSellIncome(userId: string, offerId: string) {
     return (
       await this.conversionModel.aggregate([
