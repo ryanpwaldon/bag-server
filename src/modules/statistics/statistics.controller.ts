@@ -29,6 +29,7 @@ export class StatisticsController {
     @Query('date') date: string,
     @GetUser('id') userId: string,
     @Query('period') period: TimeUnit,
+    @Query('offerId') offerId: string,
     @Query('timezone') timezone: string,
     @Query('periodLength') periodLength: number,
     @Query('conversionType') conversionType: ConversionType
@@ -41,7 +42,8 @@ export class StatisticsController {
         $match: {
           type: conversionType,
           user: Types.ObjectId(userId),
-          createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
+          createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() },
+          ...(offerId ? { object: Types.ObjectId(offerId) } : {})
         }
       },
       {
@@ -89,6 +91,7 @@ export class StatisticsController {
     @GetUser() user: User,
     @Query('date') date: string,
     @Query('period') period: TimeUnit,
+    @Query('offerId') offerId: string,
     @Query('timezone') timezone: string,
     @Query('periodLength') periodLength: number,
     @Query('conversionType') conversionType: ConversionType
@@ -100,7 +103,8 @@ export class StatisticsController {
         $match: {
           type: conversionType,
           user: Types.ObjectId(user.id),
-          createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
+          createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() },
+          ...(offerId ? { object: Types.ObjectId(offerId) } : {})
         }
       },
       {
