@@ -6,8 +6,13 @@ import { CrossSellService } from 'src/modules/cross-sell/cross-sell.service'
 import { ConversionService } from 'src/modules/conversion/conversion.service'
 import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.service'
 
-const logFail = (message: string) => console.log(`Fail: ${message}`)
-const logSuccess = (message: string) => console.log(`Success: ${message}`)
+const logStart = () => console.log(`🏁 Start`)
+const logSpacer = () => console.log(`\n`)
+const logInfo = (message: string) => console.log(message)
+const logIteration = (message: number | string) => console.log(`#️⃣ Iteration: ${message}`)
+const logFail = (message: string) => console.log(`🔴 Fail: ${message}`)
+const logSuccess = (message: string) => console.log(`🟢 Success: ${message}`)
+const logDone = () => console.log(`✅`)
 
 @Injectable()
 export class MaintenanceService {
@@ -18,6 +23,26 @@ export class MaintenanceService {
     private readonly conversionService: ConversionService,
     private readonly progressBarService: ProgressBarService
   ) {}
+
+  async deleteUserEmails() {
+    logStart()
+    const users = (await this.userService.findAll({}, 1, Number.MAX_SAFE_INTEGER)).docs
+    let iteration = 0
+    for (const user of users) {
+      iteration++
+      logSpacer()
+      logIteration(iteration)
+      logInfo(`User: ${user.shopOrigin}`)
+      try {
+        user.email = 'ryanpwaldon@gmail.com'
+        await user.save()
+        logSuccess(`Email updated.`)
+      } catch (err) {
+        logFail(err)
+      }
+    }
+    logDone()
+  }
 
   // delete all data related to uninstalled users (except for the user object)
   async deleteUninstalledUserData() {

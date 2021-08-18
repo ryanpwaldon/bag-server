@@ -21,6 +21,10 @@ export class CrossSellService {
     return this.crossSellModel.findById(id).exec()
   }
 
+  findByIds(ids: string[]) {
+    return this.crossSellModel.find().where('_id').in(ids).select(['_id', 'title', 'subtitle', 'productId']).exec() // prettier-ignore
+  }
+
   async updateOneById(id: string, body: Partial<CrossSell>): Promise<CrossSell> {
     const crossSell = await this.crossSellModel.findById(id)
     return assign(crossSell, body).save()

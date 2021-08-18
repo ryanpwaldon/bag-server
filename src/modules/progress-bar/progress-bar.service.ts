@@ -21,6 +21,10 @@ export class ProgressBarService {
     return this.progressBarModel.findById(id).exec()
   }
 
+  findByIds(ids: string[]) {
+    return this.progressBarModel.find().where('_id').in(ids).select(['_id', 'title', 'goal']).exec() // prettier-ignore
+  }
+
   async updateOneById(id: string, body: Partial<ProgressBar>): Promise<ProgressBar> {
     const progressBar = await this.progressBarModel.findById(id)
     return assign(progressBar, body).save()

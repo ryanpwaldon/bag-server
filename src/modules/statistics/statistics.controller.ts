@@ -8,12 +8,19 @@ import { ConversionService } from 'src/modules/conversion/conversion.service'
 import { ConversionType } from 'src/modules/conversion/schema/conversion.schema'
 import getMongoDateToStringFormat from 'src/modules/statistics/utils/getMongoDateToStringFormat'
 import { EmbeddedAppGuard } from 'src/common/guards/embedded-app.guard'
+import { CrossSellService } from 'src/modules/cross-sell/cross-sell.service'
+import { User } from 'src/modules/user/schema/user.schema'
+import { ProgressBarService } from 'src/modules/progress-bar/progress-bar.service'
 
 export type TimeUnit = 'hour' | 'day' | 'month' | 'year'
 
 @Controller('statistics')
 export class StatisticsController {
-  constructor(private readonly conversionService: ConversionService) {}
+  constructor(
+    private readonly conversionService: ConversionService,
+    private readonly crossSellService: CrossSellService,
+    private readonly progressBarService: ProgressBarService
+  ) {}
 
   // prettier-ignore
   @Get('chart')
@@ -79,8 +86,8 @@ export class StatisticsController {
   @Get('top-conversions')
   @UseGuards(EmbeddedAppGuard)
   async getTopConversions(
+    @GetUser() user: User,
     @Query('date') date: string,
-    @GetUser('id') userId: string,
     @Query('period') period: TimeUnit,
     @Query('timezone') timezone: string,
     @Query('periodLength') periodLength: number,
@@ -92,7 +99,7 @@ export class StatisticsController {
       {
         $match: {
           type: conversionType,
-          user: Types.ObjectId(userId),
+          user: Types.ObjectId(user.id),
           createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
         }
       },
@@ -105,12 +112,36 @@ export class StatisticsController {
       }
     ])
     const items = []
-    for (const item of aggregation) {
-      items.push({
-        convertedItem: item._id,
-        conversionCount: item.conversionCount,
-        conversionRevenue: item.conversionRevenue,
-      })
+    const ids = aggregation.map(({ _id }) => _id.toString())
+    if (conversionType === ConversionType.CrossSell) {
+      const crossSells = await this.crossSellService.findByIds(ids)
+      for (const crossSell of crossSells) {
+        const itemIndex = ids.indexOf(crossSell.id)
+        items.push({
+          convertedItem: {
+            id: crossSell.id,
+            title: `${crossSell.title} · ${crossSell.subtitle}`,
+            path: `/offers/cross-sells/${crossSell.id}`
+          },
+          conversionCount: aggregation[itemIndex].conversionCount,
+          conversionRevenue: aggregation[itemIndex].conversionRevenue,
+        })
+      }
+    }
+    if (conversionType === ConversionType.ProgressBar) {
+      const progressBars = await this.progressBarService.findByIds(ids)
+      for (const progressBar of progressBars) {
+        const itemIndex = ids.indexOf(progressBar.id)
+        items.push({
+          convertedItem: {
+            id: progressBar.id,
+            title: `${progressBar.title} · ${progressBar.goal}`,
+            path: `/offers/progress-bars/${progressBar.id}`
+          },
+          conversionCount: aggregation[itemIndex].conversionCount,
+          conversionRevenue: aggregation[itemIndex].conversionRevenue,
+        })
+      }
     }
     return {
       conversionType,
