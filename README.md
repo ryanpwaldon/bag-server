@@ -1,3 +1,3 @@
 # Bag (Server)
 
-Backend for Bag. Used by Plugin & Admin.
+A shopping cart, plus a suite of tools to help ecommerce stores grow their sales.
